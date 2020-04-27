@@ -24,7 +24,7 @@ class Role
     private $nom;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Personne")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Personne", inversedBy="Role")
      */
     private $Personne;
 

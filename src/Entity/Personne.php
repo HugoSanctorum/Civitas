@@ -49,7 +49,7 @@ class Personne implements UserInterface
     private $Commune;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Role")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Role", mappedBy="Personne")
      */
     private $Role;
 
