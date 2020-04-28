@@ -43,10 +43,16 @@ class Commune
      */
     private $Problemes;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Personne", mappedBy="Commune")
+     */
+    private $Personnes;
+
     public function __construct()
     {
         $this->Service = new ArrayCollection();
         $this->Problemes = new ArrayCollection();
+        $this->Personnes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -143,6 +149,37 @@ class Commune
             // set the owning side to null (unless already changed)
             if ($probleme->getCommune() === $this) {
                 $probleme->setCommune(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Personne[]
+     */
+    public function getPersonnes(): Collection
+    {
+        return $this->Personnes;
+    }
+
+    public function addPersonne(Personne $personne): self
+    {
+        if (!$this->Personnes->contains($personne)) {
+            $this->Personnes[] = $personne;
+            $personne->setCommune($this);
+        }
+
+        return $this;
+    }
+
+    public function removePersonne(Personne $personne): self
+    {
+        if ($this->Personnes->contains($personne)) {
+            $this->Personnes->removeElement($personne);
+            // set the owning side to null (unless already changed)
+            if ($personne->getCommune() === $this) {
+                $personne->setCommune(null);
             }
         }
 

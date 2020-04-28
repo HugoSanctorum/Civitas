@@ -33,10 +33,16 @@ class Role
      */
     private $Permissions;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Personne", mappedBy="Role")
+     */
+    private $Personnes;
+
     public function __construct()
     {
         $this->Personne = new ArrayCollection();
         $this->Permissions = new ArrayCollection();
+        $this->Personnes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -108,5 +114,13 @@ class Role
         }
 
         return $this;
+    }
+
+    /**
+     * @return Collection|Personne[]
+     */
+    public function getPersonnes(): Collection
+    {
+        return $this->Personnes;
     }
 }
