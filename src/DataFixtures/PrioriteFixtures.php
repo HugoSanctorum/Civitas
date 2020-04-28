@@ -12,7 +12,7 @@ class PrioriteFixtures extends Fixture
     {
         $priorite = new Priorite();
         $priorite->setNom("Haute");
-        $this->addReference("Haute",$priorite);
+        $this->addReference($priorite->getNom(),$priorite);
         $manager->persist($priorite);
         $manager->flush();
     }

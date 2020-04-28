@@ -12,7 +12,7 @@ class CategorieFixtures extends Fixture
     {
         $categorie = new Categorie();
         $categorie->setNom("Dégradation");
-        $this->addReference("Dégradation",$categorie);
+        $this->addReference($categorie->getNom(),$categorie);
         $manager->persist($categorie);
         $manager->flush();
     }

@@ -13,7 +13,7 @@ class Servicefixtures extends Fixture
     {
         $service = new Service();
         $service->setNom("Comptabilité");
-        $this->addReference("Comptabilité",$service);
+        $this->addReference($service->getNom(),$service);
         $manager->persist($service);
         $manager->flush();
     }

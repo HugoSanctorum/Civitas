@@ -21,7 +21,7 @@ class ProblemeFixtures extends Fixture implements DependentFixtureInterface
         $probleme->setDateDeDeclaration(new \DateTime('now'));
         $probleme->setLocalisation("Mairie de Lens");
         $probleme->setReference("123456789");
-        $this->addReference("123456789",$probleme);
+        $this->addReference($probleme->getReference(),$probleme);
         $manager->persist($probleme);
         $manager->flush();
     }

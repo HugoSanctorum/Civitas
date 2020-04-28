@@ -15,7 +15,7 @@ class CommuneFixtures extends Fixture implements DependentFixtureInterface
         $commune->setNom("Lens");
         $commune->setCodePostal("62300");
         $commune->setRegion("Hauts-de-France");
-        $this->addReference("Lens",$commune);
+        $this->addReference($commune->getNom(),$commune);
         $commune->addService($this->getReference("Comptabilité"));
         $manager->persist($commune);
         $manager->flush();
@@ -24,7 +24,7 @@ class CommuneFixtures extends Fixture implements DependentFixtureInterface
         $commune2->setNom("Lille");
         $commune2->setCodePostal("59000");
         $commune2->setRegion("Nord");
-        $this->addReference("Lille",$commune2);
+        $this->addReference($commune2->getNom(),$commune2);
         $commune2->addService($this->getReference("Comptabilité"));
         $manager->persist($commune2);
         $manager->flush();
