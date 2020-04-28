@@ -6,6 +6,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
+use App\Entity\Permission;
+
 /**
  * @ORM\Entity(repositoryClass="App\Repository\RoleRepository")
  */
@@ -85,25 +87,25 @@ class Role
     /**
      * @return Collection|Permission[]
      */
-    public function getPermission(): Collection
+    public function getPermissions(): Collection
     {
         return $this->Permission;
     }
 
-    public function addPermission(Permission $permission): self
+    public function addPermissions(Permission $permission): self
     {
-        if (!$this->Permission->contains($permission)) {
-            $this->Permission[] = $permission;
+        if (!$this->Permissions->contains($permission)) {
+            $this->Permissions[] = $permission;
             $permission->addRole($this);
         }
 
         return $this;
     }
 
-    public function removePermission(Permission $permission): self
+    public function removePermissions(Permission $permission): self
     {
-        if ($this->Permission->contains($permission)) {
-            $this->Permission->removeElement($permission);
+        if ($this->Permissions->contains($permission)) {
+            $this->Permissions->removeElement($permission);
             $permission->removeRole($this);
         }
 
