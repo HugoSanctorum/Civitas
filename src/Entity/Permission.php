@@ -28,9 +28,15 @@ class Permission
      */
     private $Role;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\HistoriqueAction", mappedBy="Permission")
+     */
+    private $HistoriqueActions;
+
     public function __construct()
     {
         $this->Role = new ArrayCollection();
+        $this->HistoriqueActions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -71,6 +77,37 @@ class Permission
     {
         if ($this->Role->contains($role)) {
             $this->Role->removeElement($role);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|HistoriqueAction[]
+     */
+    public function getHistoriqueActions(): Collection
+    {
+        return $this->HistoriqueActions;
+    }
+
+    public function addHistoriqueAction(HistoriqueAction $historiqueAction): self
+    {
+        if (!$this->HistoriqueActions->contains($historiqueAction)) {
+            $this->HistoriqueActions[] = $historiqueAction;
+            $historiqueAction->setPermission($this);
+        }
+
+        return $this;
+    }
+
+    public function removeHistoriqueAction(HistoriqueAction $historiqueAction): self
+    {
+        if ($this->HistoriqueActions->contains($historiqueAction)) {
+            $this->HistoriqueActions->removeElement($historiqueAction);
+            // set the owning side to null (unless already changed)
+            if ($historiqueAction->getPermission() === $this) {
+                $historiqueAction->setPermission(null);
+            }
         }
 
         return $this;

@@ -38,11 +38,17 @@ class Role
      */
     private $Personnes;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\HistoriqueAction", mappedBy="Role")
+     */
+    private $HistoriqueActions;
+
     public function __construct()
     {
         $this->Personne = new ArrayCollection();
         $this->Permissions = new ArrayCollection();
         $this->Personnes = new ArrayCollection();
+        $this->HistoriqueActions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -122,5 +128,36 @@ class Role
     public function getPersonnes(): Collection
     {
         return $this->Personnes;
+    }
+
+    /**
+     * @return Collection|HistoriqueAction[]
+     */
+    public function getHistoriqueAction(): Collection
+    {
+        return $this->HistoriqueActions;
+    }
+
+    public function addHistoriqueAction(HistoriqueAction $historiqueAction): self
+    {
+        if (!$this->HistoriqueActions->contains($historiqueAction)) {
+            $this->HistoriqueActions[] = $historiqueAction;
+            $historiqueAction->setRole($this);
+        }
+
+        return $this;
+    }
+
+    public function removeHistoriqueAction(HistoriqueAction $historiqueAction): self
+    {
+        if ($this->HistoriqueActions->contains($historiqueAction)) {
+            $this->HistoriqueActions->removeElement($historiqueAction);
+            // set the owning side to null (unless already changed)
+            if ($historiqueAction->getRole() === $this) {
+                $historiqueAction->setRole(null);
+            }
+        }
+
+        return $this;
     }
 }
