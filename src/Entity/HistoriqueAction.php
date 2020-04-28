@@ -34,6 +34,10 @@ class HistoriqueAction
      */
     private $Permission;
 
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $createdAt;
 
 
     public function getId(): ?int
@@ -41,17 +45,6 @@ class HistoriqueAction
         return $this->id;
     }
 
-    public function getAction(): ?string
-    {
-        return $this->action;
-    }
-
-    public function setAction(string $action): self
-    {
-        $this->action = $action;
-
-        return $this;
-    }
 
     public function getPersonne(): ?Personne
     {
@@ -85,6 +78,18 @@ class HistoriqueAction
     public function setPermission(?Permission $Permission): self
     {
         $this->Permission = $Permission;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    {
+        $this->createdAt = $createdAt;
 
         return $this;
     }

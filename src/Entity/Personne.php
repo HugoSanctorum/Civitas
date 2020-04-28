@@ -30,7 +30,7 @@ class Personne implements UserInterface
     private $prenom;
 
     /**
-     * @ORM\Column(type="text", length=255, unique=true)
+     * @ORM\Column(type="string", length=255, unique=true)
      */
     private $mail;
 
