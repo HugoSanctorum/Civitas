@@ -93,13 +93,13 @@ class Role
      */
     public function getPermission(): Collection
     {
-        return $this->Permission;
+        return $this->Permissions;
     }
 
     public function addPermission(Permission $permission): self
     {
-        if (!$this->Permission->contains($permission)) {
-            $this->Permission[] = $permission;
+        if (!$this->Permissions->contains($permission)) {
+            $this->Permissions[] = $permission;
             $permission->addRole($this);
         }
 
@@ -108,8 +108,8 @@ class Role
 
     public function removePermission(Permission $permission): self
     {
-        if ($this->Permission->contains($permission)) {
-            $this->Permission->removeElement($permission);
+        if ($this->Permissions->contains($permission)) {
+            $this->Permissions->removeElement($permission);
             $permission->removeRole($this);
         }
 
