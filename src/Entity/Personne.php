@@ -30,7 +30,7 @@ class Personne implements UserInterface
     private $prenom;
 
     /**
-     * @ORM\Column(type="text", length=255)
+     * @ORM\Column(type="text", length=255, unique=true)
      */
     private $mail;
 
@@ -43,15 +43,6 @@ class Personne implements UserInterface
      */
     private $createdAt;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Commune")
-     */
-    private $Commune;
-
-    /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Role", mappedBy="Personne")
-     */
-    private $Role;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\HistoriqueAction", mappedBy="Personne")
@@ -63,8 +54,21 @@ class Personne implements UserInterface
      */
     private $Intervenir;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Commune", inversedBy="Personnes")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $Commune;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Role", inversedBy="Personnes")
+     */
+    private $Role;
+
     public function __construct()
     {
+        $this->Role = new ArrayCollection();
+        $this->Commune = new ArrayCollection();
         $this->HistoriqueActions = new ArrayCollection();
         $this->Intervenir = new ArrayCollection();
     }
@@ -202,4 +206,117 @@ class Personne implements UserInterface
 
         return $this;
     }
+
+
+    /**
+     * @return mixed
+     */
+    public function getNom()
+    {
+        return $this->nom;
+    }
+
+    /**
+     * @param mixed $nom
+     */
+    public function setNom($nom): void
+    {
+        $this->nom = $nom;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPrenom()
+    {
+        return $this->prenom;
+    }
+
+    /**
+     * @param mixed $prenom
+     */
+    public function setPrenom($prenom): void
+    {
+        $this->prenom = $prenom;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMail()
+    {
+        return $this->mail;
+    }
+
+    /**
+     * @param mixed $mail
+     */
+    public function setMail($mail): void
+    {
+        $this->mail = $mail;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * @param mixed $createdAt
+     */
+    public function setCreatedAt($createdAt): void
+    {
+        $this->createdAt = $createdAt;
+    }
+
+    public function getCommune(): ?Commune
+    {
+        return $this->Commune;
+    }
+
+    public function setCommune(?Commune $Commune): self
+    {
+        $this->Commune = $Commune;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Role[]
+     */
+    public function getRole(): Collection
+    {
+        return $this->Role;
+    }
+
+    public function addRole(Role $role): self
+    {
+        if (!$this->Role->contains($role)) {
+            $this->Role[] = $role;
+        }
+
+        return $this;
+    }
+
+    public function removeRole(Role $role): self
+    {
+        if ($this->Role->contains($role)) {
+            $this->Role->removeElement($role);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param mixed $password
+     */
+    public function setPassword($password): void
+    {
+        $this->password = $password;
+    }
+
+
 }
