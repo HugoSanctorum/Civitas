@@ -10,19 +10,35 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+use App\Service\Personne\PermissionChecker;
+
+
 /**
  * @Route("/commune")
  */
 class CommuneController extends AbstractController
 {
+    private $permissionChecker;
+
+    public function __construct(
+        PermissionChecker $permissionChecker
+    ){
+        $this->permissionChecker = $permissionChecker;
+    }
+
     /**
      * @Route("/", name="commune_index", methods={"GET"})
      */
     public function index(CommuneRepository $communeRepository): Response
     {
-        return $this->render('commune/index.html.twig', [
+        if($this->permissionChecker->isUserGranted("GET_OTHER_COMMUNE")){
+            return $this->render('commune/index.html.twig', [
             'communes' => $communeRepository->findAll(),
-        ]);
+            ]);
+        }
+        $response = new Response();
+        $response->setStatusCode(500);
+        return $response;
     }
 
     /**
