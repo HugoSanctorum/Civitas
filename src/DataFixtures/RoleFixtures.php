@@ -30,10 +30,11 @@ class RoleFixtures extends Fixture implements DependentFixtureInterface
         $gestionnaire = new Role();
         $admin = new Role();
 
-        $user->setNom("UTILISATEUR");
-        $gestionnaire->setNom("GESTIONNAIRE");
-        $admin->setNom("ADMIN");
-        $this->addReference($admin->getNom(),$admin);
+        $user->setRole("ROLE_UTILISATEUR");
+        $gestionnaire->setRole("ROLE_GESTIONNAIRE");
+        $admin->setRole("ROLE_ADMIN");
+        $this->addReference($admin->getRole(),$admin);
+        $this->addReference($gestionnaire->getRole(),$gestionnaire);
 
 		$userPermissions = [
 			$this->getReference("GET_SELF_PROBLEME"),

@@ -13,7 +13,7 @@ class HistoriqueActionFixtures extends Fixture implements DependentFixtureInterf
     {
         $historiqueAction = new HistoriqueAction();
         $historiqueAction->setPersonne($this->getReference("hugo_duporge@ens.univ-artois.fr"));
-        $historiqueAction->setRole($this->getReference("ADMIN"));
+        $historiqueAction->setRole($this->getReference("ROLE_ADMIN"));
         $historiqueAction->setPermission($this->getReference("GET_OTHER_PROBLEME"));
         $historiqueAction->setCreatedAt(new \DateTime('now'));
         $manager->persist($historiqueAction);

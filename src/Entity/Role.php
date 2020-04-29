@@ -23,7 +23,7 @@ class Role
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $nom;
+    private $role;
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\Permission", mappedBy="Role")
@@ -52,14 +52,14 @@ class Role
         return $this->id;
     }
 
-    public function getNom(): ?string
+    public function getRole(): ?string
     {
-        return $this->nom;
+        return $this->role;
     }
 
-    public function setNom(string $nom): self
+    public function setRole(string $role): self
     {
-        $this->nom = $nom;
+        $this->role = $role;
 
         return $this;
     }

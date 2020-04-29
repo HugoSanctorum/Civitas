@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use App\Entity\Role;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -10,7 +11,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\PersonneRepository")
  */
-class Personne
+class Personne implements UserInterface
 {
     /**
      * @ORM\Id()
@@ -71,6 +72,11 @@ class Personne
      */
     private $Roles;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $username;
+
     public function __construct()
     {
         $this->Commune = new ArrayCollection();
@@ -97,10 +103,14 @@ class Personne
      *
      * @return string|null The encoded password if any
      */
-    public function getPassword()
+    /**
+     * @see UserInterface
+     */
+    public function getPassword(): string
     {
-        // TODO: Implement getPassword() method.
+        return (string)$this->password;
     }
+
 
     /**
      * Returns the salt that was originally used to encode the password.
@@ -315,11 +325,17 @@ class Personne
     }
 
     /**
-     * @return Collection|Role[]
+     * @see UserInterface
      */
-    public function getRoles(): Collection
+    public function getRoles(): array
     {
-        return $this->Roles;
+        $roles = $this->Roles;
+        $array = $roles->toArray();
+        $roleToString = [];
+        foreach($array as $role){
+            array_push($roleToString,$role->getRole());
+        }
+        return (array_unique(array_merge(['ROLE_USER'],$roleToString)));
     }
 
     public function addRole(Role $role): self
@@ -336,6 +352,13 @@ class Personne
         if ($this->Roles->contains($role)) {
             $this->Roles->removeElement($role);
         }
+
+        return $this;
+    }
+
+    public function setUsername(string $username): self
+    {
+        $this->username = $username;
 
         return $this;
     }
