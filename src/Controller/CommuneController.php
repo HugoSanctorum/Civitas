@@ -8,6 +8,7 @@ use App\Repository\CommuneRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
 use App\Service\Personne\PermissionChecker;
@@ -36,7 +37,7 @@ class CommuneController extends AbstractController
             'communes' => $communeRepository->findAll(),
             ]);
         }
-        $response = new Response();
+        $response = new RedirectResponse("/");
         $response->setStatusCode(500);
         return $response;
     }

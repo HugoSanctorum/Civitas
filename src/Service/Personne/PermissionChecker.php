@@ -9,7 +9,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
-class PermissionChecker(){
+class PermissionChecker{
 	
 	private $em;
 	private $user;
@@ -17,13 +17,14 @@ class PermissionChecker(){
 
 	public function  __construct(
 		EntityManagerInterface $entityManager,
-		TokenStorageInterface $tokenStorageInterface,
+		TokenStorageInterface $tokenStorageInterface
 	){
 		$this->em = $entityManager;
 		$this->user = $tokenStorageInterface->getToken()->getUser();
 	}
 
-	public function isUserGranted(Permission $permission){
+	public function isUserGranted(String $permission){
+		dd($this->user);
 		foreach ($this->user->getRoles() as $role) {
 			foreach ($role->getPermissions() as $valid_permission) {
 				if($permission == $valid_permission->getPermission()){
