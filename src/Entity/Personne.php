@@ -10,7 +10,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\PersonneRepository")
  */
-class Personne implements UserInterface
+class Personne
 {
     /**
      * @ORM\Id()
@@ -60,17 +60,24 @@ class Personne implements UserInterface
      */
     private $Commune;
 
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\CompteRendu", mappedBy="Personne")
+     */
+    private $CompteRendus;
+
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\Role", inversedBy="Personnes")
      */
-    private $Role;
+    private $Roles;
 
     public function __construct()
     {
-        $this->Role = new ArrayCollection();
         $this->Commune = new ArrayCollection();
         $this->HistoriqueActions = new ArrayCollection();
         $this->Intervenir = new ArrayCollection();
+        $this->CompteRendus = new ArrayCollection();
+        $this->Roles = new ArrayCollection();
     }
 
 
@@ -80,24 +87,7 @@ class Personne implements UserInterface
         return $this->id;
     }
 
-    /**
-     * Returns the roles granted to the user.
-     *
-     *     public function getRoles()
-     *     {
-     *         return ['ROLE_USER'];
-     *     }
-     *
-     * Alternatively, the roles might be stored on a ``roles`` property,
-     * and populated in any number of different ways when the user object
-     * is created.
-     *
-     * @return string[] The user roles
-     */
-    public function getRoles()
-    {
-        // TODO: Implement getRoles() method.
-    }
+
 
     /**
      * Returns the password used to authenticate the user.
@@ -284,31 +274,6 @@ class Personne implements UserInterface
         return $this;
     }
 
-    /**
-     * @return Collection|Role[]
-     */
-    public function getRole(): Collection
-    {
-        return $this->Role;
-    }
-
-    public function addRole(Role $role): self
-    {
-        if (!$this->Role->contains($role)) {
-            $this->Role[] = $role;
-        }
-
-        return $this;
-    }
-
-    public function removeRole(Role $role): self
-    {
-        if ($this->Role->contains($role)) {
-            $this->Role->removeElement($role);
-        }
-
-        return $this;
-    }
 
     /**
      * @param mixed $password
@@ -316,6 +281,63 @@ class Personne implements UserInterface
     public function setPassword($password): void
     {
         $this->password = $password;
+    }
+
+    /**
+     * @return Collection|CompteRendu[]
+     */
+    public function getCompteRendus(): Collection
+    {
+        return $this->CompteRendus;
+    }
+
+    public function addCompteRendus(CompteRendu $compteRendus): self
+    {
+        if (!$this->CompteRendus->contains($compteRendus)) {
+            $this->CompteRendus[] = $compteRendus;
+            $compteRendus->setPersonne($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCompteRendus(CompteRendu $compteRendus): self
+    {
+        if ($this->CompteRendus->contains($compteRendus)) {
+            $this->CompteRendus->removeElement($compteRendus);
+            // set the owning side to null (unless already changed)
+            if ($compteRendus->getPersonne() === $this) {
+                $compteRendus->setPersonne(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Role[]
+     */
+    public function getRoles(): Collection
+    {
+        return $this->Roles;
+    }
+
+    public function addRole(Role $role): self
+    {
+        if (!$this->Roles->contains($role)) {
+            $this->Roles[] = $role;
+        }
+
+        return $this;
+    }
+
+    public function removeRole(Role $role): self
+    {
+        if ($this->Roles->contains($role)) {
+            $this->Roles->removeElement($role);
+        }
+
+        return $this;
     }
 
 

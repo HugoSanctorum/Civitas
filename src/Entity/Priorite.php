@@ -28,6 +28,11 @@ class Priorite
      */
     private $Problemes;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $poids;
+
     public function __construct()
     {
         $this->Problemes = new ArrayCollection();
@@ -77,6 +82,18 @@ class Priorite
                 $probleme->setPriorite(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getPoids(): ?int
+    {
+        return $this->poids;
+    }
+
+    public function setPoids(int $poids): self
+    {
+        $this->poids = $poids;
 
         return $this;
     }
