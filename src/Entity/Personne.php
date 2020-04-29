@@ -72,10 +72,6 @@ class Personne implements UserInterface
      */
     private $Roles;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $username;
 
     public function __construct()
     {
@@ -124,15 +120,7 @@ class Personne implements UserInterface
         // TODO: Implement getSalt() method.
     }
 
-    /**
-     * Returns the username used to authenticate the user.
-     *
-     * @return string The username
-     */
-    public function getUsername()
-    {
-        // TODO: Implement getUsername() method.
-    }
+
 
     /**
      * Removes sensitive data from the user.
@@ -356,12 +344,14 @@ class Personne implements UserInterface
         return $this;
     }
 
-    public function setUsername(string $username): self
+
+    /**
+     * Returns the username used to authenticate the user.
+     *
+     * @return string The username
+     */
+    public function getUsername()
     {
-        $this->username = $username;
-
-        return $this;
+        // TODO: Implement getUsername() method.
     }
-
-
 }

@@ -414,7 +414,7 @@
             "./config/packages/webpack_encore.yaml",
             "./package.json",
             "./webpack.config.js"
-        ]
+        ],
     "symfony/web-server-bundle": {
         "version": "3.3",
         "recipe": {
@@ -436,4 +436,5 @@
     "webimpress/safe-writer": {
         "version": "2.0.1"
     }
+}
 }
