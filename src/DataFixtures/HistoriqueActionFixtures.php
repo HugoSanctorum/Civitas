@@ -29,7 +29,10 @@ class HistoriqueActionFixtures extends Fixture implements DependentFixtureInterf
     public function getDependencies()
     {
         return array(
-            PersonneFixtures::class
+            PersonneFixtures::class,
+            RoleFixtures::class,
+            PermissionFixtures::class,
+
         );
     }
 }

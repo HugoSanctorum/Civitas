@@ -15,6 +15,7 @@ class PersonneFixtures extends Fixture implements DependentFixtureInterface
         $personne->setPrenom("Hugo");
         $personne->setNom("Duporge");
         $personne->setMail("hugo_duporge@ens.univ-artois.fr");
+        $personne->addRole($this->getReference("ADMIN"));
         $this->addReference($personne->getMail(),$personne);
         $personne->setCommune($this->getReference("Lens"));
         $personne->setCreatedAt(new \DateTime('now'));
@@ -33,6 +34,7 @@ class PersonneFixtures extends Fixture implements DependentFixtureInterface
     {
         return array(
             CommuneFixtures::class,
+            RoleFixtures::class,
         );
     }
 }

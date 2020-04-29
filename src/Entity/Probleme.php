@@ -74,11 +74,17 @@ class Probleme
      */
     private $Intervenirs;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\CompteRendu", mappedBy="Probleme")
+     */
+    private $CompteRendus;
+
     public function __construct()
     {
         $this->HistoriqueStatuts = new ArrayCollection();
         $this->Images = new ArrayCollection();
         $this->Intervenirs = new ArrayCollection();
+        $this->CompteRendus = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -269,6 +275,37 @@ class Probleme
             // set the owning side to null (unless already changed)
             if ($intervenir->getProbleme() === $this) {
                 $intervenir->setProbleme(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|CompteRendu[]
+     */
+    public function getCompteRendus(): Collection
+    {
+        return $this->CompteRendus;
+    }
+
+    public function addCompteRendus(CompteRendu $compteRendus): self
+    {
+        if (!$this->CompteRendus->contains($compteRendus)) {
+            $this->CompteRendus[] = $compteRendus;
+            $compteRendus->setProbleme($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCompteRendus(CompteRendu $compteRendus): self
+    {
+        if ($this->CompteRendus->contains($compteRendus)) {
+            $this->CompteRendus->removeElement($compteRendus);
+            // set the owning side to null (unless already changed)
+            if ($compteRendus->getProbleme() === $this) {
+                $compteRendus->setProbleme(null);
             }
         }
 
