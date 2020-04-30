@@ -12,19 +12,24 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
 use App\Service\Personne\PermissionChecker;
-
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/commune")
+ * @IsGranted("ROLE_USER")
  */
 class CommuneController extends AbstractController
 {
     private $permissionChecker;
+    private $user;
 
     public function __construct(
-        PermissionChecker $permissionChecker
+        PermissionChecker $permissionChecker,
+        TokenStorageInterface $tokenStorageInterface
     ){
         $this->permissionChecker = $permissionChecker;
+        $this->user = $tokenStorageInterface->getToken()->getUser();
     }
 
     /**
@@ -72,7 +77,10 @@ class CommuneController extends AbstractController
      */
     public function show(Commune $commune): Response
     {
-        if(!$this->permissionChecker->isUserGranted(["GET_OTHER_COMMUNE"])){
+        if(!$this->permissionChecker->isUserGrantedSelf(
+            ["GET_SELF_COMMUNE"],
+            $commune==$this->user->getCommune()
+        )){
             return new RedirectResponse("/");
         }
 

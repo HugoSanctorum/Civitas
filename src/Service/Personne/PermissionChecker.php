@@ -25,7 +25,6 @@ class PermissionChecker{
 	}
 
 	public function isUserGranted(Array $permissions){
-		if($this->user == "anon.") return false;
 		foreach($permissions as $permission){
 			foreach ($this->user->getUserRoles() as $role) {
 				foreach ($role->getPermissions() as $valid_permission) {
@@ -38,4 +37,7 @@ class PermissionChecker{
 		return false;
 	}
 
+	public function isUserGrantedSelf(Array $permissions, boolean $self){
+		if($self) $this->isUserGranted();
+	}
 }
