@@ -6,6 +6,7 @@ use App\Entity\Personne;
 use App\Entity\Role;
 use App\Entity\Permission;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
@@ -23,15 +24,18 @@ class PermissionChecker{
 		$this->user = $tokenStorageInterface->getToken()->getUser();
 	}
 
-	public function isUserGranted(String $permission){
-		dd($this->user);
-		foreach ($this->user->getRoles() as $role) {
-			foreach ($role->getPermissions() as $valid_permission) {
-				if($permission == $valid_permission->getPermission()){
-					dump($permission + " / " + $valid_permission->getPermission());
+	public function isUserGranted(Array $permissions){
+		if($this->user == "anon.") return false;
+		foreach($permissions as $permission){
+			foreach ($this->user->getUserRoles() as $role) {
+				foreach ($role->getPermissions() as $valid_permission) {
+					if($permission == $valid_permission->getPermission()){
+						return true;
+					}
 				}
 			}
 		}
+		return false;
 	}
 
 }

@@ -38,7 +38,7 @@ class RoleFixtures extends Fixture implements DependentFixtureInterface
 
 		$userPermissions = [
 			$this->getReference("GET_SELF_PROBLEME"),
-			$this->getReference("POST_SELF_PROBLEME"),
+			$this->getReference("POST_PROBLEME"),
 			$this->getReference("UPDATE_SELF_PROBLEME"),
 			$this->getReference("DELETE_SELF_PROBLEME"),
 
@@ -48,14 +48,16 @@ class RoleFixtures extends Fixture implements DependentFixtureInterface
 
 			$this->getReference("GET_SELF_ROLE"),
 
+			$this->getReference("GET_SELF_COMMUNE"),
+
 			$this->getReference("GET_SELF_HISTORIQUE_ACTION"),
-			$this->getReference("POST_SELF_HISTORIQUE_ACTION"),
+			$this->getReference("POST_HISTORIQUE_ACTION"),
 
 			$this->getReference("GET_SELF_INTERVENTION"),
-			$this->getReference("POST_SELF_INTERVENTION"),
+			$this->getReference("POST_INTERVENTION"),
 
 			$this->getReference("GET_SELF_IMAGE"),
-			$this->getReference("POST_SELF_IMAGE"),
+			$this->getReference("POST_IMAGE"),
 			$this->getReference("UPDATE_SELF_IMAGE"),
 			$this->getReference("DELETE_SELF_IMAGE"),
 
@@ -65,7 +67,7 @@ class RoleFixtures extends Fixture implements DependentFixtureInterface
 			$this->getReference("GET_SELF_HISTORIQUE_STATUT"),
 
 			$this->getReference("GET_SELF_PRIORITE"),
-			$this->getReference("POST_SELF_PRIORITE"),
+			$this->getReference("POST_PRIORITE"),
 
 			$this->getReference("GET_SELF_CATEGORIE"),
 			$this->getReference("GET_OTHER_CATEGORIE")
@@ -81,13 +83,15 @@ class RoleFixtures extends Fixture implements DependentFixtureInterface
 			$this->getReference("GET_SELF_ROLE"),
 			$this->getReference("GET_OTHER_ROLE"),
 
+			$this->getReference("GET_SELF_COMMUNE"),
+
 			$this->getReference("GET_SELF_HISTORIQUE_ACTION"),
 			$this->getReference("GET_OTHER_HISTORIQUE_ACTION"),
-			$this->getReference("POST_SELF_HISTORIQUE_ACTION"),
+			$this->getReference("POST_HISTORIQUE_ACTION"),
 
 			$this->getReference("GET_SELF_INTERVENTION"),
 			$this->getReference("GET_OTHER_INTERVENTION"),
-			$this->getReference("POST_SELF_INTERVENTION"),
+			$this->getReference("POST_INTERVENTION"),
 
 			$this->getReference("GET_OTHER_IMAGE"),
 
@@ -109,8 +113,7 @@ class RoleFixtures extends Fixture implements DependentFixtureInterface
 
         	$this->getReference("GET_SELF_CATEGORIE"),
         	$this->getReference("GET_OTHER_CATEGORIE"),
-        	$this->getReference("POST_SELF_CATEGORIE"),
-        	$this->getReference("POST_OTHER_CATEGORIE"),
+        	$this->getReference("POST_CATEGORIE"),
         	$this->getReference("UPDATE_SELF_CATEGORIE"),
         	$this->getReference("UPDATE_OTHER_CATEGORIE"),
         	$this->getReference("DELETE_SELF_CATEGORIE"),
