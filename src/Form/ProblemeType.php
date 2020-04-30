@@ -43,9 +43,43 @@ class ProblemeType extends AbstractType
         $form->remove('date_de_declaration');
         $entity->setDateDeDeclaration(new \DateTime('now'));
         $entity->setReference(rand(1,2000));
-        $form->add('Image', FileType::class, [
+        $form->add('Image1', FileType::class, [
             'label' => 'Image',
             'mapped' => false,
+            'required' => false,
+            'constraints' => [
+                new File([
+                    'maxSize' => '200M','mimeTypes' => ['image/png','image/jpg','image/jpeg',],
+                    'mimeTypesMessage' => 'Please upload a valid png/jpg document',
+                ])
+            ],
+        ]);
+        $form->add('Image2', FileType::class, [
+            'label' => 'Image',
+            'mapped' => false,
+            'required' => false,
+            'constraints' => [
+                new File([
+                    'maxSize' => '200M','mimeTypes' => ['image/png','image/jpg','image/jpeg',],
+                    'mimeTypesMessage' => 'Please upload a valid png/jpg document',
+                ])
+            ],
+        ]);
+        $form->add('Image3', FileType::class, [
+            'label' => 'Image',
+            'mapped' => false,
+            'required' => false,
+            'constraints' => [
+                new File([
+                    'maxSize' => '200M','mimeTypes' => ['image/png','image/jpg','image/jpeg',],
+                    'mimeTypesMessage' => 'Please upload a valid png/jpg document',
+                ])
+            ],
+        ]);
+        $form->add('Image4', FileType::class, [
+            'label' => 'Image',
+            'mapped' => false,
+            'required' => false,
             'constraints' => [
                 new File([
                     'maxSize' => '200M','mimeTypes' => ['image/png','image/jpg','image/jpeg',],

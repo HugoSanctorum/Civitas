@@ -5,7 +5,9 @@ namespace App\Controller;
 use App\Entity\Image;
 use App\Entity\Probleme;
 use App\Form\ProblemeType;
+use App\Repository\ImageRepository;
 use App\Repository\ProblemeRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
@@ -32,44 +34,47 @@ class ProblemeController extends AbstractController
      */
     public function new(Request $request): Response
     {
+        $entityManager = $this->getDoctrine()->getManager();
         $probleme = new Probleme();
-        $image = new Image();
         $form = $this->createForm(ProblemeType::class, $probleme);
         $form->handleRequest($request);
+        $imageArray = []; // 1,2,3,4
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $imageToProbleme = $form['Image']->getData();
-            if ($imageToProbleme){
-                $originalFilename = pathinfo($imageToProbleme->getClientOriginalName(), PATHINFO_FILENAME);
-                $safeFilename = transliterator_transliterate(
-                    'Any-Latin; Latin-ASCII; [^A-Za-z0-9_] remove; Lower()',
-                    $originalFilename);
-                $newFilename = $safeFilename . '-' . uniqid() . '.' .
-                    $imageToProbleme->guessExtension();
+            for ($i = 1; $i <= 4; $i++) {
+                $imageArray[$i] = new Image();
+                $imageToProbleme = $form['Image' . $i]->getData();
+                if ($imageToProbleme) {
+                    $originalFilename = pathinfo($imageToProbleme->getClientOriginalName(), PATHINFO_FILENAME);
+                    $safeFilename = transliterator_transliterate(
+                        'Any-Latin; Latin-ASCII; [^A-Za-z0-9_] remove; Lower()',
+                        $originalFilename);
+                    $newFilename = $safeFilename . '-' . uniqid() . '.' .
+                        $imageToProbleme->guessExtension();
+                    // Move the file to the directory where brochures are stored
+                    try {
+                        $imageToProbleme->move(
+                            $this->getParameter('probleme_directory'),
+                            $newFilename
+                        );
+                    } catch (FileException $e) {
+                        $this->addFlash('danger',
+                            'Error on fileUpload :' . $e->getMessage());
+                        return $this->redirectToRoute('home');
+                    }
 
-                // Move the file to the directory where brochures are stored
-                try {
-                    $imageToProbleme->move(
-                        $this->getParameter('probleme_directory'),
-                        $newFilename
-                    );
-                } catch (FileException $e) {
-                    $this->addFlash('danger',
-                        'Error on fileUpload :' . $e->getMessage());
-                    return $this->redirectToRoute('home');
+                    if ($imageArray[$i] != null) {
+                        $imageArray[$i]->setProbleme($probleme);
+                        $imageArray[$i]->setURL($newFilename);
+                        $entityManager->persist($imageArray[$i]);
+                    }
                 }
-
             }
-            $image->setProbleme($probleme);
-            $image->setURL($newFilename);
-            $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($probleme);
-            $entityManager->persist($image);
             $entityManager->flush();
 
             return $this->redirectToRoute('probleme_index');
         }
-
         return $this->render('probleme/new.html.twig', [
             'probleme' => $probleme,
             'form' => $form->createView(),
@@ -79,10 +84,13 @@ class ProblemeController extends AbstractController
     /**
      * @Route("/{id}", name="probleme_show", methods={"GET"})
      */
-    public function show(Probleme $probleme): Response
+    public function show(Probleme $probleme,ImageRepository $imageRepository): Response
     {
+
         return $this->render('probleme/show.html.twig', [
             'probleme' => $probleme,
+            'images' => $imageRepository->findbyProbleme($probleme)
+
         ]);
     }
 

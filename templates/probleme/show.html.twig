@@ -31,6 +31,12 @@
                 <th>Reference</th>
                 <td>{{ probleme.reference }}</td>
             </tr>
+            {% for image in images %}
+            <tr>
+                <th>Image</th>
+                <img src="{{ asset('/probleme/'~image.url) }}">
+            </tr>
+            {% endfor %}
         </tbody>
     </table>
 

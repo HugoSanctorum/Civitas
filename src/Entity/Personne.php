@@ -80,7 +80,6 @@ class Personne implements UserInterface
 
     public function __construct()
     {
-        $this->Commune = new ArrayCollection();
         $this->HistoriqueActions = new ArrayCollection();
         $this->Intervenir = new ArrayCollection();
         $this->CompteRendus = new ArrayCollection();
@@ -93,8 +92,6 @@ class Personne implements UserInterface
     {
         return $this->id;
     }
-
-
 
     /**
      * Returns the password used to authenticate the user.
@@ -124,8 +121,6 @@ class Personne implements UserInterface
     {
         // TODO: Implement getSalt() method.
     }
-
-
 
     /**
      * Removes sensitive data from the user.
@@ -265,15 +260,14 @@ class Personne implements UserInterface
         $this->createdAt = $createdAt;
     }
 
-    public function getCommune(): ?Commune
+    public function getCommune()
     {
         return $this->Commune;
     }
 
-    public function setCommune(?Commune $Commune): self
+    public function setCommune(Commune $Commune)
     {
         $this->Commune = $Commune;
-
         return $this;
     }
 

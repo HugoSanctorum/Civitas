@@ -73,4 +73,11 @@ class CompteRendu
 
         return $this;
     }
+
+    public function __toString()
+    {
+        return $this->getUrlDocument();
+    }
+
+
 }

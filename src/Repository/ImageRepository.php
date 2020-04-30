@@ -47,4 +47,13 @@ class ImageRepository extends ServiceEntityRepository
         ;
     }
     */
+    public function findbyProbleme($probleme)
+    {
+        return $this->createQueryBuilder('i')
+            ->andWhere('i.Probleme = :probleme')
+            ->setParameter('probleme', $probleme)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
 }
