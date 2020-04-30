@@ -4,13 +4,45 @@
 
 {% block body %}
 
-<div class="container">
-	<div class="jumbotron jumbotron-fluid">
-	  <div class="container">
-	    <h1 class="display-4">Fluid jumbotron</h1>
-	    <p class="lead">This is a modified jumbotron that occupies the entire horizontal space of its parent.</p>
-	  </div>
-	</div>
+<div class="jumbotron jumbotron-fluid">
+  <div class="container">
+    <h1 class="display-4">Fluid jumbotron</h1>
+    <p class="lead">This is a modified jumbotron that occupies the entire horizontal space of its parent.</p>
+  </div>
+</div>
+<div class="container">	
+	<div id="mapid" style="width: 600px; height: 400px;"></div>
 </div>
 
+{% endblock %}
+
+{% block map %}
+	<script type="text/javascript">
+        var map = L.map('mapid').fitWorld();
+        L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+            maxZoom: 18,
+            id: 'mapbox/streets-v11',
+            tileSize: 512,
+            zoomOffset: -1,
+            accessToken: 'pk.eyJ1IjoiYW5hY29tYiIsImEiOiJjazltdG82d2EwMnp5M21scGc1cWdtOGM3In0.WbSl0RvM9KcZkU3C4EDrug'
+        }).addTo(map);
+        function onLocationFound(e) {
+			var radius = e.accuracy / 2;
+
+			L.marker(e.latlng).addTo(map)
+				.bindPopup("You are within " + radius + " meters from this point").openPopup();
+
+			L.circle(e.latlng, radius).addTo(map);
+		}
+
+		function onLocationError(e) {
+			map.setView([50.432, 2.83], 13);
+		}
+
+		map.on('locationfound', onLocationFound);
+		map.on('locationerror', onLocationError);
+
+		map.locate({setView: true, maxZoom: 16});
+	</script>
 {% endblock %}

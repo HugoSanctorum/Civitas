@@ -19,6 +19,7 @@
         "build": "encore production --progress"
     },
     "dependencies": {
-        "bootswatch": "^4.4.1"
+        "bootswatch": "^4.4.1",
+        "leaflet": "^1.6.0"
     }
 }
