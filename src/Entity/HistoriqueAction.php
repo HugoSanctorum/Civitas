@@ -93,4 +93,10 @@ class HistoriqueAction
 
         return $this;
     }
+
+    public function __toString()
+    {
+        return $this->getPersonne().' '.$this->getRole().' '.$this->getPermission().' '.$this->getCreatedAt()->format("DMY");
+    }
+
 }

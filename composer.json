@@ -6,6 +6,7 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "doctrine/doctrine-bundle": "^2.0",
+        "easycorp/easyadmin-bundle": "^2.3",
         "monolog/monolog": "^2.0",
         "sensio/framework-extra-bundle": "^5.5",
         "symfony/apache-pack": "^1.0",
