@@ -4,6 +4,13 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
+    base_url: '%env(resolve:BASE_URL)%'
+    username_default: '%env(USERNAME_DEFAULT)%'
+    avatar_path: '/images/users/avatar'
+    avatar_directory: '%kernel.project_dir%/public/images/users/avatar'
+    probleme_path: '/probleme'
+    probleme_directory: '%kernel.project_dir%/public/probleme'
+
 
 services:
     # default configuration for services in *this* file
