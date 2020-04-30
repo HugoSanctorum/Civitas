@@ -39,7 +39,7 @@ class Probleme
     private $localisation;
 
     /**
-     * @ORM\Column(type="string", length=255, unique=true)
+     * @ORM\Column(type="string")
      */
     private $reference;
 

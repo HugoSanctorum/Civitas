@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Intervenir{% endblock %}
+
+{% block body %}
+    <h1>Edit Intervenir</h1>
+
+    {{ include('intervenir/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('intervenir_index') }}">back to list</a>
+
+    {{ include('intervenir/_delete_form.html.twig') }}
+{% endblock %}

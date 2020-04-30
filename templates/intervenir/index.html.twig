@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Intervenir index{% endblock %}
+
+{% block body %}
+    <h1>Intervenir index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>CreatedAt</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for intervenir in intervenirs %}
+            <tr>
+                <td>{{ intervenir.id }}</td>
+                <td>{{ intervenir.createdAt ? intervenir.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>
+                    <a href="{{ path('intervenir_show', {'id': intervenir.id}) }}">show</a>
+                    <a href="{{ path('intervenir_edit', {'id': intervenir.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('intervenir_new') }}">Create new</a>
+{% endblock %}
