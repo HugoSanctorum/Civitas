@@ -72,6 +72,11 @@ class Personne implements UserInterface
      */
     private $Roles;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $username;
+
 
     public function __construct()
     {
@@ -357,6 +362,19 @@ class Personne implements UserInterface
      */
     public function getUsername()
     {
-        // TODO: Implement getUsername() method.
+        return $this->getNom().' '.$this->getPrenom();
     }
+
+    public function setUsername(string $username): self
+    {
+        $this->username = $username;
+
+        return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->getUsername();
+    }
+
 }
