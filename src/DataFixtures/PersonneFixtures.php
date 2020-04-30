@@ -24,6 +24,7 @@ class PersonneFixtures extends Fixture implements DependentFixtureInterface
         $personne->setPrenom("Hugo");
         $personne->setNom("Duporge");
         $personne->setMail("hugo_duporge@ens.univ-artois.fr");
+        $personne->setUsername($personne->getNom().'_'.$personne->getPrenom());
         $personne->addRole($this->getReference("ROLE_ADMIN"));
         $personne->addRole($this->getReference("ROLE_GESTIONNAIRE"));
         $plainPassword = "hugo";
