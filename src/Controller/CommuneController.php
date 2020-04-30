@@ -32,14 +32,12 @@ class CommuneController extends AbstractController
      */
     public function index(CommuneRepository $communeRepository): Response
     {
-        if($this->permissionChecker->isUserGranted("GET_OTHER_COMMUNE")){
-            return $this->render('commune/index.html.twig', [
-            'communes' => $communeRepository->findAll(),
-            ]);
+        if(!$this->permissionChecker->isUserGranted(["GET_OTHER_COMMUNE"])){
+            return new RedirectResponse("/");
         }
-        $response = new RedirectResponse("/");
-        $response->setStatusCode(500);
-        return $response;
+        return $this->render('commune/index.html.twig', [
+            'communes' => $communeRepository->findAll(),
+        ]);
     }
 
     /**
@@ -47,6 +45,10 @@ class CommuneController extends AbstractController
      */
     public function new(Request $request): Response
     {
+        if(!$this->permissionChecker->isUserGranted(["POST_COMMUNE"])){
+            return new RedirectResponse("/");
+        }
+
         $commune = new Commune();
         $form = $this->createForm(CommuneType::class, $commune);
         $form->handleRequest($request);
@@ -70,6 +72,10 @@ class CommuneController extends AbstractController
      */
     public function show(Commune $commune): Response
     {
+        if(!$this->permissionChecker->isUserGranted(["GET_OTHER_COMMUNE"])){
+            return new RedirectResponse("/");
+        }
+
         return $this->render('commune/show.html.twig', [
             'commune' => $commune,
         ]);

@@ -331,6 +331,11 @@ class Personne implements UserInterface
         return (array_unique(array_merge(['ROLE_USER'],$roleToString)));
     }
 
+    public function getUserRoles(): Collection
+    {
+        return $this->Roles;
+    }
+
     public function addRole(Role $role): self
     {
         if (!$this->Roles->contains($role)) {
