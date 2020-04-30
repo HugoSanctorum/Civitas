@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\HistoriqueAction;
 use App\Entity\Probleme;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -47,5 +48,4 @@ class ProblemeRepository extends ServiceEntityRepository
         ;
     }
     */
-
 }
