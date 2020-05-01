@@ -2,11 +2,13 @@
 
 namespace App\Controller;
 
+use App\Entity\HistoriqueStatut;
 use App\Entity\Image;
 use App\Entity\Probleme;
 use App\Form\ProblemeType;
 use App\Repository\ImageRepository;
 use App\Repository\ProblemeRepository;
+use App\Repository\StatutRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
@@ -32,10 +34,12 @@ class ProblemeController extends AbstractController
     /**
      * @Route("/new", name="probleme_new", methods={"GET","POST"})
      */
-    public function new(Request $request): Response
+    public function new(Request $request, StatutRepository $statutRepository): Response
     {
         $entityManager = $this->getDoctrine()->getManager();
         $probleme = new Probleme();
+        $statut = $statutRepository->findOneBy(['nom' => 'Nouveau']);
+        $historiqueStatut = new HistoriqueStatut();
         $form = $this->createForm(ProblemeType::class, $probleme);
         $form->handleRequest($request);
         $imageArray = []; // 1,2,3,4
@@ -70,6 +74,11 @@ class ProblemeController extends AbstractController
                     }
                 }
             }
+            $historiqueStatut->setProbleme($probleme);
+            $historiqueStatut->setStatut($statut);
+            $historiqueStatut->setDate(new \DateTime('now'));
+            $historiqueStatut->setDescription('Le problème a été créé');
+            $entityManager->persist($historiqueStatut);
             $entityManager->persist($probleme);
             $entityManager->flush();
 

@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}HistoriqueStatut{% endblock %}
+
+{% block body %}
+    <h1>HistoriqueStatut</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ historique_statut.id }}</td>
+            </tr>
+            <tr>
+                <th>Date</th>
+                <td>{{ historique_statut.date ? historique_statut.date|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Description</th>
+                <td>{{ historique_statut.description }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('historique_statut_index') }}">back to list</a>
+
+    <a href="{{ path('historique_statut_edit', {'id': historique_statut.id}) }}">edit</a>
+
+    {{ include('historique_statut/_delete_form.html.twig') }}
+{% endblock %}

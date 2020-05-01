@@ -10,15 +10,42 @@ class StatutFixtures extends Fixture
 {
     public function load(ObjectManager $manager)
     {
-        $statut = new Statut();
-        $statut->setNom("Nouvelle Demande");
-        $this->addReference($statut->getNom(),$statut);
-        $manager->persist($statut);
+        $statutNew = new Statut();
+        $statutNew->setNom("Nouveau");
+        $this->addReference($statutNew->getNom(),$statutNew);
+        $manager->persist($statutNew);
+
+        $statutOuvert = new Statut();
+        $statutOuvert->setNom("Ouvert");
+        $this->addReference($statutOuvert->getNom(),$statutOuvert);
+        $manager->persist($statutOuvert);
+
+        $statutPris = new Statut();
+        $statutPris->setNom("Pris");
+        $this->addReference($statutPris->getNom(),$statutPris);
+        $manager->persist($statutPris);
+
+        $statutAffecte = new Statut();
+        $statutAffecte->setNom("Affecté");
+        $this->addReference($statutAffecte->getNom(),$statutAffecte);
+        $manager->persist($statutAffecte);
+
+        $statutTraitement = new Statut();
+        $statutTraitement->setNom("En cours de traitement");
+        $this->addReference($statutTraitement->getNom(),$statutTraitement);
+        $manager->persist($statutTraitement);
+
+        $statutTraite = new Statut();
+        $statutTraite->setNom("Traité");
+        $this->addReference($statutTraite->getNom(),$statutTraite);
+        $manager->persist($statutTraite);
+
 
         $statutResolu = new Statut();
         $statutResolu->setNom("Résolu");
         $this->addReference($statutResolu->getNom(),$statutResolu);
         $manager->persist($statutResolu);
+
         $manager->flush();
     }
 }

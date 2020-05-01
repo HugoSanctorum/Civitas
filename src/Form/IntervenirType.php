@@ -24,7 +24,10 @@ class IntervenirType extends AbstractType{
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+       /* $historiqueStatut = $this->historiqueStatutRepository->findLastestHistoriqueStatut();
+        dd($historiqueStatut);*/
         $problemes=$this->problemeStatutRepository->findAllUnresolvedProblem();
+        dd($problemes);
         $builder
             ->add('createdAt')
             ->add('Personne')

@@ -47,10 +47,10 @@ class HistoriqueStatutRepository extends ServiceEntityRepository
         ;
     }
     */
-    public function findUnresolvedProblem(){
+    public function findLastestHistoriqueStatut(){
         return $this->createQueryBuilder('h')
-            ->Join('h.Probleme','p')
-            ->where("h.Statut != 2")
+            ->select('h.id, Max(h.date)')
+            ->groupBy('h.Probleme')
             ->getQuery()
             ->getResult();
     }
