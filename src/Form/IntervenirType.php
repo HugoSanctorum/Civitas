@@ -30,7 +30,7 @@ class IntervenirType extends AbstractType{
             ->add('Personne')
             ->add('Probleme', ChoiceType::class,[
                 "choices"=>$problemes,
-                'choice_label' => 'Titre',
+                'choice_label' => 'Label',
             ])
         ;
     }

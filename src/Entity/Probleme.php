@@ -312,6 +312,12 @@ class Probleme
         return $this;
     }
 
+    public function getLabel(): ?string
+    {
+        return $this->titre."(".$this->getReference().")";
+    }
+
+
     public function __toString()
     {
         return $this->getTitre();
