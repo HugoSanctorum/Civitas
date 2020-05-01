@@ -24,6 +24,11 @@ class Commune
     private $nom;
 
     /**
+     * @ORM\Column(type="text")
+     */
+    private $mairie;
+
+    /**
      * @ORM\Column(type="string", length=5)
      */
     private $code_postal;
@@ -68,6 +73,18 @@ class Commune
     public function setNom(string $nom): self
     {
         $this->nom = $nom;
+
+        return $this;
+    }
+
+    public function getMairie(): ?string
+    {
+        return $this->mairie;
+    }
+
+    public function setMairie(string $mairie): self
+    {
+        $this->mairie = $mairie;
 
         return $this;
     }
