@@ -54,7 +54,7 @@ class ProblemeRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('p')
             ->Join('p.HistoriqueStatuts','h')
             ->join("h.Statut","s")
-            ->where("s.id != 2")
+            ->where("s.nom != 'Résolu'")
             ->orderBy('p.titre', 'ASC')
             ->getQuery()
             ->getResult();
