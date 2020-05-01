@@ -14,6 +14,11 @@ class StatutFixtures extends Fixture
         $statut->setNom("Nouvelle Demande");
         $this->addReference($statut->getNom(),$statut);
         $manager->persist($statut);
+
+        $statutResolu = new Statut();
+        $statutResolu->setNom("Résolu");
+        $this->addReference($statutResolu->getNom(),$statutResolu);
+        $manager->persist($statutResolu);
         $manager->flush();
     }
 }

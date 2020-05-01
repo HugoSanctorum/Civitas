@@ -23,6 +23,18 @@ class ProblemeFixtures extends Fixture implements DependentFixtureInterface
         $probleme->setReference("123456789");
         $this->addReference($probleme->getReference(),$probleme);
         $manager->persist($probleme);
+
+        $probleme2 = new Probleme();
+        $probleme2->setCommune($this->getReference("Lille"));
+        $probleme2->setCategorie($this->getReference("Dégradation"));
+        $probleme2->setPriorite($this->getReference("Haute"));
+        $probleme2->setTitre("poubelle renversée");
+        $probleme2->setDescription("Déchets à terre ");
+        $probleme2->setDateDeDeclaration(new \DateTime('now'));
+        $probleme2->setLocalisation("Mairie de Lille");
+        $probleme2->setReference("987654321");
+        $this->addReference($probleme2->getReference(),$probleme2);
+        $manager->persist($probleme2);
         $manager->flush();
     }
 
