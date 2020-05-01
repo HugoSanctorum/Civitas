@@ -48,4 +48,15 @@ class ProblemeRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    public function findAllUnresolvedProblem()
+    {
+        return $this->createQueryBuilder('p')
+            ->Join('p.HistoriqueStatuts','h')
+            ->join("h.Statut","s")
+            ->where("s.nom != 'Résolue'")
+            ->orderBy('p.titre', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }
