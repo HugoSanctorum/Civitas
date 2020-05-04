@@ -52,6 +52,7 @@ class ProblemeRepository extends ServiceEntityRepository
     public function findAllUnresolvedProblem()
     {
         return $this->createQueryBuilder('p')
+            ->select("p.titre")
             ->Join('p.HistoriqueStatuts','h')
             ->join("h.Statut","s")
             ->where("s.id != 2")
@@ -59,4 +60,5 @@ class ProblemeRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
 }

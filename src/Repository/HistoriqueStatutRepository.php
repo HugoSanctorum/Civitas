@@ -48,10 +48,16 @@ class HistoriqueStatutRepository extends ServiceEntityRepository
     }
     */
     public function findUnresolvedProblem(){
-        return $this->createQueryBuilder('h')
-            ->Join('h.Probleme','p')
-            ->where("h.Statut != 2")
-            ->getQuery()
-            ->getResult();
+        $conn = $this->getEntityManager()->getConnection();
+
+        $sql = '
+        SELECT max(date), id, probleme_id,description FROM historique_statut h
+        GROUP by probleme_id
+        ';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+
+        // returns an array of arrays (i.e. a raw data set)
+        return $stmt->fetchAll();
     }
 }
