@@ -3,13 +3,9 @@
 {% block title %}Civitas Home{% endblock %}
 
 {% block body %}
-<div class="jumbotron jumbotron-fluid">
-  <div class="container">
-    <h1 class="display-4">Civitas</h1>
-    <p class="lead">This is a modified jumbotron that occupies the entire horizontal space of its parent.</p>
-  </div>
-</div>
-<div id="mapid" style="width: 100%; height: 400px;" data-longitude="{{ coordonnees.longitude }}" data-latitude="{{ coordonnees.latitude }}" data-problemes="{{ problemes|json_encode|e('html_attr') }}"</div>
+
+<div id="mapid" style="flex-grow : 1;" data-longitude="{{ coordonnees.longitude }}" data-latitude="{{ coordonnees.latitude }}" data-problemes="{{ problemes|json_encode|e('html_attr') }}"</div>
+
 {% endblock %}
 
 {% block map %}
@@ -39,6 +35,7 @@
 		map.on('locationerror', onLocationError);
 
         let problemes = JSON.parse(document.getElementById("mapid").dataset.problemes);
+
         console.log(problemes);
         for(probleme of problemes){
             let marker = L.marker(probleme.coordonnees).addTo(map);

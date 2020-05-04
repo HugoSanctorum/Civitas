@@ -88,7 +88,7 @@ class UserAuthenticator extends AbstractFormLoginAuthenticator
         if ($targetPath = $this->getTargetPath($request->getSession(), $providerKey)) {
             return new RedirectResponse($targetPath);
         }
-        return new RedirectResponse($this->urlGenerator->generate('probleme_index'));
+        return new RedirectResponse($this->urlGenerator->generate('home_index'));
     }
 
     protected function getLoginUrl()
