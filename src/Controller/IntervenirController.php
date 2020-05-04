@@ -9,12 +9,22 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
  * @Route("/intervenir")
  */
 class IntervenirController extends AbstractController
 {
+    private $tokenStorage;
+    private $authorizationChecker;
+
+    public function __construct(TokenStorageInterface $tokenStorage, AuthorizationCheckerInterface $authorizationChecker)
+    {
+        $this->tokenStorage = $tokenStorage; // le token utilisateur
+        $this->authorizationChecker = $authorizationChecker; // le service de controle d'utilisateur
+    }
     /**
      * @Route("/", name="intervenir_index", methods={"GET"})
      */
@@ -30,6 +40,8 @@ class IntervenirController extends AbstractController
      */
     public function new(Request $request): Response
     {
+
+
         $intervenir = new Intervenir();
         $form = $this->createForm(IntervenirType::class, $intervenir);
         $form->handleRequest($request);

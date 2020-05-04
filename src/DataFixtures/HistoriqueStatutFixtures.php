@@ -13,7 +13,7 @@ class HistoriqueStatutFixtures extends Fixture implements DependentFixtureInterf
     {
         $historiqueStatut = new HistoriqueStatut();
         $historiqueStatut->setProbleme($this->getReference("123456789"));
-        $historiqueStatut->setStatut($this->getReference("Nouvelle Demande"));
+        $historiqueStatut->setStatut($this->getReference("Nouveau"));
         $historiqueStatut->setDate(new \DateTime('now'));
         $historiqueStatut->setDescription("Le problème va être traité");
         $manager->persist($historiqueStatut);
@@ -24,6 +24,14 @@ class HistoriqueStatutFixtures extends Fixture implements DependentFixtureInterf
         $historiqueStatut2->setDate(new \DateTime('now'));
         $historiqueStatut2->setDescription("Le problème est résolu");
         $manager->persist($historiqueStatut2);
+
+        $historiqueStatut3 = new HistoriqueStatut();
+        $historiqueStatut3->setProbleme($this->getReference("9189189189189"));
+        $historiqueStatut3->setStatut($this->getReference("Nouveau"));
+        $historiqueStatut3->setDate(new \DateTime('now'));
+        $historiqueStatut3->setDescription("Nouveau probleme");
+        $manager->persist($historiqueStatut3);
+
         $manager->flush();
     }
 

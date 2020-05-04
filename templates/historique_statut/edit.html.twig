@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit HistoriqueStatut{% endblock %}
+
+{% block body %}
+    <h1>Edit HistoriqueStatut</h1>
+
+    {{ include('historique_statut/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('historique_statut_index') }}">back to list</a>
+
+    {{ include('historique_statut/_delete_form.html.twig') }}
+{% endblock %}

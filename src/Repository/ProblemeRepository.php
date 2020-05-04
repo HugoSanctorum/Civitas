@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\HistoriqueAction;
+use App\Repository\HistoriqueStatutRepository;
 use App\Entity\Probleme;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -15,9 +16,12 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class ProblemeRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    private $historiqueStatutRepository;
+
+    public function __construct(ManagerRegistry $registry, HistoriqueStatutRepository $historiqueStatutRepository)
     {
         parent::__construct($registry, Probleme::class);
+        $this->historiqueStatutRepository = $historiqueStatutRepository;
     }
 
     // /**
@@ -49,16 +53,28 @@ class ProblemeRepository extends ServiceEntityRepository
     }
     */
 
+
+
+
+
     public function findAllUnresolvedProblem()
     {
-        return $this->createQueryBuilder('p')
-            ->select("p.titre")
-            ->Join('p.HistoriqueStatuts','h')
-            ->join("h.Statut","s")
-            ->where("s.id != 2")
-            ->orderBy('p.titre', 'ASC')
-            ->getQuery()
-            ->getResult();
+
+        $historiqueStatuts = $this->historiqueStatutRepository->findLatestHistoriqueStatutByProblem();
+        $idHistoriqueStatut = [];
+        foreach ($historiqueStatuts as $historiqueStatut){
+            array_push($idHistoriqueStatut,$historiqueStatut['id']);
+        }
+         return $this->createQueryBuilder('p')
+             ->Join('p.HistoriqueStatuts','h')
+             ->join('h.Statut','s')
+             ->where("s.nom != 'Résolu'")
+             ->andWhere('h.Probleme IN (:historiqueStatut)')
+             ->setParameter('historiqueStatut', $idHistoriqueStatut)
+             ->orderBy('p.titre')
+             ->getQuery()
+             ->getResult();
+
     }
 
 }

@@ -47,7 +47,8 @@ class HistoriqueStatutRepository extends ServiceEntityRepository
         ;
     }
     */
-    public function findUnresolvedProblem(){
+
+    public function findLatestHistoriqueStatutByProblem(){
         $conn = $this->getEntityManager()->getConnection();
 
         $sql = '
@@ -59,5 +60,6 @@ class HistoriqueStatutRepository extends ServiceEntityRepository
 
         // returns an array of arrays (i.e. a raw data set)
         return $stmt->fetchAll();
+
     }
 }
