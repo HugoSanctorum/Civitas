@@ -38,10 +38,11 @@
 		map.on('locationfound', onLocationFound);
 		map.on('locationerror', onLocationError);
 
-        let $problemes = JSON.parse(document.getElementById("mapid").dataset.problemes);
-        for($probleme of $problemes){
-            $marker = L.marker($probleme.coordonnees).addTo(map);
-            $marker.bindPopup($probleme.titre + '</br><a href="/probleme/'+ $probleme.id +'">Voir le problème</a>');
+        let problemes = JSON.parse(document.getElementById("mapid").dataset.problemes);
+        console.log(problemes);
+        for(probleme of problemes){
+            let marker = L.marker(probleme.coordonnees).addTo(map);
+            marker.bindPopup(probleme.titre + '</br><a href="/probleme/'+ probleme.id +'">Voir le problème</a>');
         }
 
 		map.locate({setView: true, maxZoom: 16});

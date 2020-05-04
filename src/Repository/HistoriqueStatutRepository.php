@@ -52,8 +52,16 @@ class HistoriqueStatutRepository extends ServiceEntityRepository
         $conn = $this->getEntityManager()->getConnection();
 
         $sql = '
-        SELECT max(date), id, probleme_id,description FROM historique_statut h
-        GROUP by probleme_id
+       SELECT *
+        FROM historique_statut AS t1
+        LEFT OUTER JOIN 
+            (
+                SELECT probleme_id, MAX(date) as maxdate
+                FROM historique_statut
+                GROUP BY probleme_id
+            ) 
+            AS t2 USING (probleme_id)
+        WHERE t1.date = t2.maxdate
         ';
         $stmt = $conn->prepare($sql);
         $stmt->execute();
