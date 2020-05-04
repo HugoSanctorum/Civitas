@@ -3,7 +3,6 @@
 {% block title %}Civitas Home{% endblock %}
 
 {% block body %}
-
 <div class="jumbotron jumbotron-fluid">
   <div class="container">
     <h1 class="display-4">Civitas</h1>
@@ -11,7 +10,6 @@
   </div>
 </div>
 <div id="mapid" style="width: 100%; height: 400px;" data-longitude="{{ coordonnees.longitude }}" data-latitude="{{ coordonnees.latitude }}" data-problemes="{{ problemes|json_encode|e('html_attr') }}"</div>
-
 {% endblock %}
 
 {% block map %}
