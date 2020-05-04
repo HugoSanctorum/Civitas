@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Personne;
+use App\Entity\Commune;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -22,19 +23,16 @@ class PersonneRepository extends ServiceEntityRepository
     // /**
     //  * @return Personne[] Returns an array of Personne objects
     //  */
-    /*
-    public function findByExampleField($value)
+    
+    /*public function findProblemesByCommune(Commune $commune)
     {
         return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('p.id', 'ASC')
-            ->setMaxResults(10)
+            ->join('p.Commune = :commune')
+            ->setParameter('commune', $commune)
             ->getQuery()
             ->getResult()
         ;
-    }
-    */
+    }*/
 
     /*
     public function findOneBySomeField($value): ?Personne

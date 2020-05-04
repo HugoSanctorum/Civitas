@@ -19,7 +19,7 @@ class ProblemeFixtures extends Fixture implements DependentFixtureInterface
         $probleme->setTitre("tag à la bombe de peinture");
         $probleme->setDescription("Nique l'état bouh sur le mur de la mairie oulahaha cest pas bien");
         $probleme->setDateDeDeclaration(new \DateTime('now'));
-        $probleme->setLocalisation("Mairie de Lens");
+        $probleme->setLocalisation("16 Rue de l'Université, 62307 Lens");
         $probleme->setReference("123456789");
         $this->addReference($probleme->getReference(),$probleme);
         $manager->persist($probleme);
@@ -31,7 +31,7 @@ class ProblemeFixtures extends Fixture implements DependentFixtureInterface
         $probleme2->setTitre("poubelle renversée");
         $probleme2->setDescription("Déchets à terre ");
         $probleme2->setDateDeDeclaration(new \DateTime('now'));
-        $probleme2->setLocalisation("Mairie de Lille");
+        $probleme2->setLocalisation("34 rue Nicolas Leblanc, 59800 Lille");
         $probleme2->setReference("987654321");
         $this->addReference($probleme2->getReference(),$probleme2);
         $manager->persist($probleme2);
@@ -43,7 +43,7 @@ class ProblemeFixtures extends Fixture implements DependentFixtureInterface
         $probleme3->setTitre("Accident de voiture");
         $probleme3->setDescription("Déchets à terre ");
         $probleme3->setDateDeDeclaration(new \DateTime('now'));
-        $probleme3->setLocalisation(" 12 Rue de la paix");
+        $probleme3->setLocalisation("17 rue Mourmant, 59000 Lille");
         $probleme3->setReference("9189189189189");
         $this->addReference($probleme3->getReference(),$probleme3);
         $manager->persist($probleme3);

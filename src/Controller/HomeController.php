@@ -20,9 +20,14 @@ class HomeController extends AbstractController
     public function index(TokenStorageInterface $tokenStorageInterface){
 
     	$user = $tokenStorageInterface->getToken()->getUser();
+        $problemes = [];
+        $coordonnees_problemes = [];
+
     	if(is_string($user)) $mairie = '17 Place Jean Jaurès, 62300 Lens, France'; //Querry par IP A FAIRE
     	else{
-    		$mairie = $user->getCommune()->getMairie();
+    		$commune = $user->getCommune();
+            $mairie = $commune->getMairie();
+            $problemes = $commune->getProblemes();
     	}
 
     	$httpClient = new HttpClient();
@@ -30,10 +35,26 @@ class HomeController extends AbstractController
     	$geocoder = new StatefulGeocoder($provider, 'fr');
 
     	$result = $geocoder->geocodeQuery(GeocodeQuery::create($mairie));
-    	$coordonnees = ["latitude" => $result->first()->getCoordinates()->getLatitude(), "longitude" => $result->first()->getCoordinates()->getLongitude()];
+    	$coordonnees = [
+            "latitude" => $result->first()->getCoordinates()->getLatitude(),
+            "longitude" => $result->first()->getCoordinates()->getLongitude()
+        ];
+
+        foreach ($problemes as $probleme) {
+            $result = $geocoder->geocodeQuery(GeocodeQuery::create($probleme->getLocalisation( )))->first();
+            array_push($coordonnees_problemes, [
+                "id" => $probleme->getId(),
+                "titre" =>$probleme->getTitre(),
+                "coordonnees" => [
+                    $result->getCoordinates()->getLatitude(),
+                    $result->getCoordinates()->getLongitude()
+                ]
+            ]);
+        }
 
         return $this->render('home/index.html.twig', [
-        	"coordonnees" => $coordonnees
+        	"coordonnees" => $coordonnees,
+            "problemes" => $coordonnees_problemes
         ]);
     }
 }
