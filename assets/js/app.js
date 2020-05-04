@@ -7,6 +7,7 @@
 
 // any CSS you import will output into a single css file (app.css in this case)
 require('../css/global.scss');
+require('../css/app.css');
 
 // Need jQuery? Install it with "yarn add jquery", then uncomment to import it.
 const $ = require('jquery');
