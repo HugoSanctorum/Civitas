@@ -7,3 +7,7 @@ body {
   	flex-flow: column;
   	height: 100%;
 }
+
+.fill {
+	flex-grow : 1;
+}
