@@ -69,7 +69,7 @@ class ProblemeRepository extends ServiceEntityRepository
              ->Join('p.HistoriqueStatuts','h')
              ->join('h.Statut','s')
              ->where("s.nom != 'Résolu'")
-             ->andWhere('h.Probleme IN (:historiqueStatut)')
+             ->andWhere('h.id IN (:historiqueStatut)')
              ->setParameter('historiqueStatut', $idHistoriqueStatut)
              ->orderBy('p.titre')
              ->getQuery()

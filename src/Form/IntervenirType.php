@@ -8,6 +8,8 @@ use App\Repository\ProblemeRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class IntervenirType extends AbstractType{
@@ -24,19 +26,29 @@ class IntervenirType extends AbstractType{
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-
         $problemes=$this->problemeStatutRepository->findAllUnresolvedProblem();
         $builder
-            ->add('createdAt')
             ->add('Personne')
             ->add('Probleme', ChoiceType::class,[
                 "choices"=>$problemes,
                 'choice_label' => 'Label',
             ])
         ;
+        $builder->addEventListener(
+            FormEvents::PRE_SET_DATA,
+            [$this, 'onPreSetData']
+        );;
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function onPreSetData(FormEvent $event)
+    {
+        $form = $event->getForm(); //récupération du formulaire
+        $entity = $event->getData();
+
+        $form->remove('createAt');
+        $entity->setCreatedAt(New \DateTime('now'));
+    }
+        public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
             'data_class' => Intervenir::class,
