@@ -4,7 +4,15 @@
 
 {% block body %}
 
-<div id="mapid" style="flex-grow : 1;" data-longitude="{{ coordonnees.longitude }}" data-latitude="{{ coordonnees.latitude }}" data-problemes="{{ problemes|json_encode|e('html_attr') }}"</div>
+{% if is_granted('ROLE_USER') %}
+    <div id="mapid" class="fill" data-longitude="{{ coordonnees.longitude }}" data-latitude="{{ coordonnees.latitude }}" data-problemes="{{ problemes|json_encode|e('html_attr') }}"</div>
+{% else %}
+    <div class="fill">
+        <div class="container">
+            <a href="/login" type="button" style="margin-top:25%;" class="btn btn-success btn-lg btn-block">Se connecter <i class="fa fa-user"></i></button>
+        </div>
+    </div>
+{% endif %}
 
 {% endblock %}
 
@@ -43,6 +51,6 @@
         }
 
 		map.locate({setView: true, maxZoom: 16});
-
+        console.log("balek");
 	</script>
 {% endblock %}
