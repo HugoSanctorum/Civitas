@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Supprimer Rôle{% endblock %}
+
+{% block body %}
+    <h1>Supprimer Rôle</h1>
+
+    {{ include('manageRole/_form.html.twig') }}
+
+    <a href="{{ path('personne_index') }}">back to list</a>
+{% endblock %}

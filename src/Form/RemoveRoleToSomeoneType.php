@@ -19,23 +19,23 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class AddRoleToSomeoneType extends AbstractType
+class RemoveRoleToSomeoneType extends AbstractType
 {
 
-        public function buildForm(FormBuilderInterface $builder, array $options)
-        {
-        $builder
-            ->add('role', EntityType::class,[
-                'class' => Role::class,
-                'query_builder' => function (RoleRepository $er) {
-                    return $er->createQueryBuilder('r');},
-                'choice_label' => 'Label'
-            ])
-        ;
+    private $roleRepository;
+
+    public function __construct(RoleRepository $roleRepository)
+    {
+        $this->roleRepository = $roleRepository;
+    }
+
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
         $builder->addEventListener(
             FormEvents::PRE_SET_DATA,
             [$this, 'onPreSetData']
         );
+
 
     }
 
@@ -43,18 +43,12 @@ class AddRoleToSomeoneType extends AbstractType
     {
         $form = $event->getForm();
         $entity = $event->getData();
+        $query = $this->roleRepository->findRoleByPersonne($entity->getId());
         if ($entity != null) {
-            $form->add('personne', EntityType::class,[
-                'class'=> Personne::class,
-                'data' => $entity,
-
-            ]);
-        }else{
-            $form->add('personne', EntityType::class,[
-                'class' => Personne::class,
-                'query_builder' => function (PersonneRepository $er) {
-                    return $er->createQueryBuilder('p');},
-                'choice_label' => 'Label'
+            $form->add('role', EntityType::class,[
+                'class' => Role::class,
+                'choices' => $this->roleRepository->findRoleByPersonne($entity->getId()),
+                'choice_label' => 'Label',
             ]);
         }
     }

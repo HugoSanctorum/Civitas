@@ -158,6 +158,7 @@ class Role
     }
     public function getLabel(): ?string
     {
-        return $this->getRole();
+            return $this->getRole();
     }
+
 }
