@@ -14,8 +14,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\PersonneRepository")
- * @UniqueEntity("email")
- */
+ * @UniqueEntity(fields={"mail"}, message="Ce mail est déjà utilisé !.") */
 class Personne implements UserInterface
 {
     /**
@@ -37,7 +36,8 @@ class Personne implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=255, unique=true)
-     * @Assert\Email
+     * @Assert\NotBlank()
+     * @Assert\Email()
      */
     private $mail;
 
@@ -372,9 +372,24 @@ class Personne implements UserInterface
         return $this;
     }
 
+    public function getLabel(): ?string
+    {
+        return $this->getNom().' '.$this->getPrenom();
+    }
+
     public function __toString(): string
     {
         return $this->getUsername();
     }
+
+    /**
+     * @param mixed $id
+     */
+    public function setId($id): void
+    {
+        $this->id = $id;
+    }
+
+
 
 }
