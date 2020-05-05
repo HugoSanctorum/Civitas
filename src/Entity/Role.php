@@ -156,4 +156,8 @@ class Role
     {
         return $this->getRole();
     }
+    public function getLabel(): ?string
+    {
+        return $this->getRole();
+    }
 }
