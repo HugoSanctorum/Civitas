@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\HistoriqueStatut;
+use App\Entity\Probleme;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -36,33 +37,50 @@ class HistoriqueStatutRepository extends ServiceEntityRepository
     }
     */
 
-    /*
-    public function findOneBySomeField($value): ?HistoriqueStatut
+    
+    public function findLatestHistoriqueStatutForOneProblemExcludingNewAndResolved(Probleme $probleme)
     {
-        return $this->createQueryBuilder('h')
-            ->andWhere('h.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
-
-    public function findLatestHistoriqueStatutByProblem(){
         $conn = $this->getEntityManager()->getConnection();
 
         $sql = '
-       SELECT *
-        FROM historique_statut AS t1
-        LEFT OUTER JOIN 
-            (
-                SELECT probleme_id, MAX(date) as maxdate
-                FROM historique_statut
-                GROUP BY probleme_id
-            ) 
-            AS t2 USING (probleme_id)
-        WHERE t1.date = t2.maxdate
-        ';
+            SELECT *
+            FROM historique_statut
+            WHERE probleme_id = :probleme
+                AND date = 
+                (
+                    SELECT MAX(date)
+                    FROM historique_statut
+                    WHERE probleme_id = :probleme
+                )
+                AND statut_id NOT IN 
+                (
+                    SELECT id
+                    FROM statut
+                    WHERE nom = "Nouveau" OR nom = "Résolu"
+                )
+            ';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute(['probleme' => $probleme->getId()]);
+
+        return $stmt->fetchAll();
+    }
+
+    public function findLatestHistoriqueStatutByProblem()
+    {
+        $conn = $this->getEntityManager()->getConnection();
+
+        $sql = '
+            SELECT *
+            FROM historique_statut AS t1
+            LEFT OUTER JOIN 
+                (
+                    SELECT probleme_id, MAX(date) as maxdate
+                    FROM historique_statut
+                    GROUP BY probleme_id
+                ) 
+                AS t2 USING (probleme_id)
+            WHERE t1.date = t2.maxdate
+            ';
         $stmt = $conn->prepare($sql);
         $stmt->execute();
 

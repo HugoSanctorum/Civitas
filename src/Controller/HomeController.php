@@ -2,6 +2,9 @@
 
 namespace App\Controller;
 
+use App\Repository\HistoriqueStatutRepository;
+use App\Repository\StatutRepository;
+
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -17,7 +20,11 @@ class HomeController extends AbstractController
     /**
      * @Route("/", name="home_index" )
      */
-    public function index(TokenStorageInterface $tokenStorageInterface){
+    public function index(
+        TokenStorageInterface $tokenStorageInterface,
+        HistoriqueStatutRepository $historiqueStatutRepository,
+        StatutRepository $statutRepository
+    ){
 
     	$user = $tokenStorageInterface->getToken()->getUser();
         $problemes = [];
@@ -42,16 +49,20 @@ class HomeController extends AbstractController
 
         foreach ($problemes as $probleme) {
             $result = $geocoder->geocodeQuery(GeocodeQuery::create($probleme->getLocalisation( )))->first();
-            array_push($coordonnees_problemes, [
-                "id" => $probleme->getId(),
-                "titre" =>$probleme->getTitre(),
-                "coordonnees" => [
-                    $result->getCoordinates()->getLatitude(),
-                    $result->getCoordinates()->getLongitude()
-                ]
-            ]);
+            $latest = $historiqueStatutRepository->findLatestHistoriqueStatutForOneProblemExcludingNewAndResolved($probleme);
+            if($latest){
+                array_push($coordonnees_problemes, [
+                    "id" => $probleme->getId(),
+                    "titre" => $probleme->getTitre(),
+                    "statut" => $statutRepository->findStatutById(intval($latest[0]['statut_id']))->getNom(),
+                    "categorie" => $probleme->getCategorie(),
+                    "coordonnees" => [
+                        $result->getCoordinates()->getLatitude(),
+                        $result->getCoordinates()->getLongitude()
+                    ]
+                ]);
+            }
         }
-
         return $this->render('home/index.html.twig', [
         	"coordonnees" => $coordonnees,
             "problemes" => $coordonnees_problemes

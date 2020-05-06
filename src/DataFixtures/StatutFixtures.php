@@ -20,11 +20,6 @@ class StatutFixtures extends Fixture
         $this->addReference($statutOuvert->getNom(),$statutOuvert);
         $manager->persist($statutOuvert);
 
-        $statutPris = new Statut();
-        $statutPris->setNom("Pris");
-        $this->addReference($statutPris->getNom(),$statutPris);
-        $manager->persist($statutPris);
-
         $statutAffecte = new Statut();
         $statutAffecte->setNom("Affecté");
         $this->addReference($statutAffecte->getNom(),$statutAffecte);

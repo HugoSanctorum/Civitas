@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Categorie{% endblock %}
+
+{% block body %}
+    <h1>Create new Categorie</h1>
+
+    {{ include('categorie/_form.html.twig') }}
+
+    <a href="{{ path('categorie_index') }}">back to list</a>
+{% endblock %}
+
+{% block moreScript %}
+	<script type="text/javascript">
+	    $( document ).ready(function() {
+	        $('.icp-dd').iconpicker();
+	        console.log("test");
+
+	    });
+	    $('.icp').on('iconpickerSelected', function (e) {
+	    	$icone = document.getElementById('categorie_icone');
+	        $icone.value = e.iconpickerInstance.options.fullClassFormatter(e.iconpickerValue);
+	    });
+    </script>
+{% endblock %}

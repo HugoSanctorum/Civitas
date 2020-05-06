@@ -28,6 +28,16 @@ class Categorie
      */
     private $Problemes;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $couleur;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $icone;
+
     public function __construct()
     {
         $this->Problemes = new ArrayCollection();
@@ -83,5 +93,29 @@ class Categorie
     public function __toString()
     {
         return $this->getNom();
+    }
+
+    public function getCouleur(): ?string
+    {
+        return $this->couleur;
+    }
+
+    public function setCouleur(string $couleur): self
+    {
+        $this->couleur = $couleur;
+
+        return $this;
+    }
+
+    public function getIcone(): ?string
+    {
+        return $this->icone;
+    }
+
+    public function setIcone(?string $icone): self
+    {
+        $this->icone = $icone;
+
+        return $this;
     }
 }
