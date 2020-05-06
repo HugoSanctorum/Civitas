@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\HistoriqueStatut;
 use App\Entity\Image;
+use App\Entity\Intervenir;
 use App\Entity\Probleme;
 use App\Form\ProblemeType;
 use App\Repository\ImageRepository;
@@ -15,12 +16,22 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * @Route("/probleme")
  */
 class ProblemeController extends AbstractController
 {
+
+    private $personne;
+
+
+    public function __construct(
+        TokenStorageInterface $tokenStorageInterface
+    ){
+        $this->personne = $tokenStorageInterface->getToken()->getUser();
+    }
     /**
      * @Route("/", name="probleme_index", methods={"GET"})
      */
@@ -34,12 +45,13 @@ class ProblemeController extends AbstractController
     /**
      * @Route("/new", name="probleme_new", methods={"GET","POST"})
      */
-    public function new(Request $request, StatutRepository $statutRepository): Response
+    public function new(\Swift_Mailer $mailer,Request $request, StatutRepository $statutRepository): Response
     {
         $entityManager = $this->getDoctrine()->getManager();
         $probleme = new Probleme();
         $statut = $statutRepository->findOneBy(['nom' => 'Nouveau']);
         $historiqueStatut = new HistoriqueStatut();
+        $intervenir = new Intervenir();
         $form = $this->createForm(ProblemeType::class, $probleme);
         $form->handleRequest($request);
         $imageArray = []; // 1,2,3,4
@@ -78,8 +90,19 @@ class ProblemeController extends AbstractController
             $historiqueStatut->setStatut($statut);
             $historiqueStatut->setDate(new \DateTime('now'));
             $historiqueStatut->setDescription('Le problème a été créé');
+            $intervenir->setProbleme($probleme);
+            $intervenir->setPersonne($this->personne);
+            $intervenir->setCreatedAt(new \DateTime('now'));
+            $intervenir->setDescription('Signaleur');
             $entityManager->persist($historiqueStatut);
             $entityManager->persist($probleme);
+            $entityManager->persist($intervenir);
+            $message = (new \Swift_Message('test'))
+                ->setFrom('CivitasNotification@gmail.com')
+                ->setTo('hugo62430@hotmail.fr')
+                ->setBody("test");
+            $mailer->send($message);
+
             $entityManager->flush();
 
             return $this->redirectToRoute('probleme_index');

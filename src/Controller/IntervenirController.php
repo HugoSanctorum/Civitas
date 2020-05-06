@@ -2,9 +2,13 @@
 
 namespace App\Controller;
 
+use App\Entity\HistoriqueStatut;
 use App\Entity\Intervenir;
 use App\Form\IntervenirType;
+use App\Repository\HistoriqueStatutRepository;
 use App\Repository\IntervenirRepository;
+use App\Repository\ProblemeRepository;
+use App\Repository\StatutRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,11 +23,16 @@ class IntervenirController extends AbstractController
 {
     private $tokenStorage;
     private $authorizationChecker;
+    private $statutRepository;
+    private $problemeRepository;
 
-    public function __construct(TokenStorageInterface $tokenStorage, AuthorizationCheckerInterface $authorizationChecker)
+    public function __construct(TokenStorageInterface $tokenStorage, AuthorizationCheckerInterface $authorizationChecker,
+                                StatutRepository $statutRepository, ProblemeRepository $problemeRepository)
     {
         $this->tokenStorage = $tokenStorage; // le token utilisateur
         $this->authorizationChecker = $authorizationChecker; // le service de controle d'utilisateur
+        $this->statutRepository =$statutRepository;
+        $this->problemeRepository = $problemeRepository;
     }
     /**
      * @Route("/", name="intervenir_index", methods={"GET"})
@@ -43,12 +52,20 @@ class IntervenirController extends AbstractController
 
 
         $intervenir = new Intervenir();
+        $statut = $this->statutRepository->findOneBy(['nom' => 'Affecté']);
+        $historiqueStatut = new HistoriqueStatut();
         $form = $this->createForm(IntervenirType::class, $intervenir);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($intervenir);
+            $probleme = $this->problemeRepository->findOneBy(['id' =>$request->request->all()['intervenir']['Probleme']]);
+            $historiqueStatut->setProbleme($probleme);
+            $historiqueStatut->setStatut($statut);
+            $historiqueStatut->setDate(new \DateTime('now'));
+            $historiqueStatut->setDescription('Le probleme a été affecté');
+            $entityManager->persist($historiqueStatut);
             $entityManager->flush();
 
             return $this->redirectToRoute('intervenir_index');
