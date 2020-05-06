@@ -14,6 +14,7 @@ class IntervenirFixtures extends Fixture implements DependentFixtureInterface
         $intervenir = new Intervenir();
         $intervenir->setPersonne($this->getReference("hugo_duporge@ens.univ-artois.fr"));
         $intervenir->setProbleme($this->getReference("123456789"));
+        $intervenir->setDescription('Signaleur');
         $intervenir->setCreatedAt(new \DateTime('now'));
         $manager->persist($intervenir);
         $manager->flush();

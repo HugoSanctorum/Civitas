@@ -12,6 +12,18 @@
                 <td>{{ intervenir.id }}</td>
             </tr>
             <tr>
+                <th>Personne</th>
+                <td>{{ intervenir.Personne }}</td>
+            </tr>
+            <tr>
+                <th>Probleme</th>
+                <td>{{ intervenir.Probleme }}</td>
+            </tr>
+            <tr>
+                <th>Description</th>
+                <td>{{ intervenir.description }}</td>
+            </tr>
+            <tr>
                 <th>CreatedAt</th>
                 <td>{{ intervenir.createdAt ? intervenir.createdAt|date('Y-m-d H:i:s') : '' }}</td>
             </tr>

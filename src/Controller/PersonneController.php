@@ -9,12 +9,20 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 /**
  * @Route("/personne")
  */
 class PersonneController extends AbstractController
 {
+
+    private $encoder;
+
+    public function __construct(UserPasswordEncoderInterface $encoder)
+    {
+        $this->encoder = $encoder;
+    }
     /**
      * @Route("/", name="personne_index", methods={"GET"})
      */
@@ -35,6 +43,12 @@ class PersonneController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $nom =$request->request->all()['personne']['nom'];
+            $prenom = $request->request->all()['personne']['prenom'];
+            $personne->setUsername($nom.'_'.$prenom);
+            $plainPassword = $request->request->all()['personne']['password'];
+            $encoded = $this->encoder->encodePassword($personne, $plainPassword);
+            $personne->setPassword($encoded);
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($personne);
             $entityManager->flush();

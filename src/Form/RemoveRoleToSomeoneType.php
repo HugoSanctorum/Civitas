@@ -43,7 +43,6 @@ class RemoveRoleToSomeoneType extends AbstractType
     {
         $form = $event->getForm();
         $entity = $event->getData();
-        $query = $this->roleRepository->findRoleByPersonne($entity->getId());
         if ($entity != null) {
             $form->add('role', EntityType::class,[
                 'class' => Role::class,

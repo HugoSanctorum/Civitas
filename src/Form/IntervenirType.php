@@ -3,8 +3,10 @@
 namespace App\Form;
 
 use App\Entity\Intervenir;
+use App\Entity\Probleme;
 use App\Repository\HistoriqueStatutRepository;
 use App\Repository\ProblemeRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -26,11 +28,11 @@ class IntervenirType extends AbstractType{
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $problemes=$this->problemeStatutRepository->findAllUnresolvedProblem();
         $builder
             ->add('Personne')
-            ->add('Probleme', ChoiceType::class,[
-                "choices"=>$problemes,
+            ->add('Probleme', EntityType::class,[
+                "class" => Probleme::class,
+                "choices"=>$this->problemeStatutRepository->findAllUnresolvedProblem(),
                 'choice_label' => 'Label',
             ])
         ;
@@ -47,6 +49,7 @@ class IntervenirType extends AbstractType{
 
         $form->remove('createAt');
         $entity->setCreatedAt(New \DateTime('now'));
+        $entity->setDescription('Intervenant');
     }
         public function configureOptions(OptionsResolver $resolver)
     {
