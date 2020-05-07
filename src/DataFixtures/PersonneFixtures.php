@@ -49,6 +49,23 @@ class PersonneFixtures extends Fixture implements DependentFixtureInterface
         $personne2->setCreatedAt(new \DateTime('now'));
         $manager->persist($personne2);
 
+        for($i = 1; $i < 10; $i++){
+            $user = new Personne();
+            $user->setUsername('user'.$i);
+            $user->setPrenom('user'.$i);
+            $user->setNom('user'.$i);
+            $user->setMail($user->getUsername().'@gmail.com');
+            $plainPassword = $user->getUsername();
+            $encoded = $this->encoder->encodePassword($user, $plainPassword);
+            $user->setPassword($encoded);
+            $user->setCreatedAt(new \DateTime('now'));
+            $this->addReference($user->getUsername(), $user);
+            $user->setCommune($this->getReference("Lens"));
+            $user->setCreatedAt(new \DateTime('now'));
+            $manager->persist($user);
+        }
+
+
         $manager->flush();
     }
 

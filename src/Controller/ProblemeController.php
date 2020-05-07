@@ -97,10 +97,18 @@ class ProblemeController extends AbstractController
             $entityManager->persist($historiqueStatut);
             $entityManager->persist($probleme);
             $entityManager->persist($intervenir);
-            $message = (new \Swift_Message('test'))
+            $message = (new \Swift_Message('Nouveau probleme'))
                 ->setFrom('CivitasNotification@gmail.com')
-                ->setTo('hugo62430@hotmail.fr')
-                ->setBody("test");
+                ->setTo($this->personne->getMail())
+                ->addPart(
+                    $this->renderView(
+                        'email/notifNouveauProbleme.html.twig',
+                        [
+                            "probleme"=> $probleme,
+                            "personne"=>$this->personne,
+                            ]),
+                    'text/html'
+                );
             $mailer->send($message);
 
             $entityManager->flush();

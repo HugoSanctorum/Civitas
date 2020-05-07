@@ -7,6 +7,7 @@ use App\Entity\Intervenir;
 use App\Form\IntervenirType;
 use App\Repository\HistoriqueStatutRepository;
 use App\Repository\IntervenirRepository;
+use App\Repository\PersonneRepository;
 use App\Repository\ProblemeRepository;
 use App\Repository\StatutRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -25,14 +26,18 @@ class IntervenirController extends AbstractController
     private $authorizationChecker;
     private $statutRepository;
     private $problemeRepository;
+    private $intervenirRepository;
+    private $personneRepository;
 
     public function __construct(TokenStorageInterface $tokenStorage, AuthorizationCheckerInterface $authorizationChecker,
-                                StatutRepository $statutRepository, ProblemeRepository $problemeRepository)
+                                StatutRepository $statutRepository, ProblemeRepository $problemeRepository, PersonneRepository $personneRepository,IntervenirRepository $intervenirRepository)
     {
         $this->tokenStorage = $tokenStorage; // le token utilisateur
         $this->authorizationChecker = $authorizationChecker; // le service de controle d'utilisateur
         $this->statutRepository =$statutRepository;
         $this->problemeRepository = $problemeRepository;
+        $this->intervenirRepository = $intervenirRepository;
+        $this->personneRepository = $personneRepository;
     }
     /**
      * @Route("/", name="intervenir_index", methods={"GET"})
@@ -47,7 +52,7 @@ class IntervenirController extends AbstractController
     /**
      * @Route("/new", name="intervenir_new", methods={"GET","POST"})
      */
-    public function new(Request $request): Response
+    public function new(\Swift_Mailer $mailer,Request $request): Response
     {
 
 
@@ -60,13 +65,42 @@ class IntervenirController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($intervenir);
+            $technicien = $this->personneRepository->findOneBy(['id' =>$request->request->all()['intervenir']['Personne']]);
+
             $probleme = $this->problemeRepository->findOneBy(['id' =>$request->request->all()['intervenir']['Probleme']]);
             $historiqueStatut->setProbleme($probleme);
             $historiqueStatut->setStatut($statut);
             $historiqueStatut->setDate(new \DateTime('now'));
             $historiqueStatut->setDescription('Le probleme a été affecté');
+            $test = $this->personneRepository->findOneBy(['id'=>1]);
+            $signaleur = $this->intervenirRepository->findSignaleurByProbleme($probleme);
             $entityManager->persist($historiqueStatut);
             $entityManager->flush();
+            $technicienMail = (new \Swift_Message('Probleme affecté'))
+                ->setFrom('civitasnotification@gmail.com')
+                ->setTo($technicien->getMail())
+                ->addPart(
+                    $this->renderView('email/notifNouvelleIntervention.html.twig',
+                        [
+                            "probleme" => $probleme,
+                            "technicien" => $technicien
+                        ]),
+           'text/html'
+                );
+            $signaleurMail = (new \Swift_Message('Probleme affecté'))
+                ->setFrom('civitasnotification@gmail.com')
+                ->setTo($signaleur->getPersonne()->getMail())
+                ->addPart(
+                    $this->renderView('email/notifProblemeAffecte.html.twig',
+                        [
+                            "probleme" => $probleme,
+                            "signaleur" => $signaleur
+                        ]),
+                    'text/html'
+                );
+
+            $mailer->send($technicienMail);
+            $mailer->send($signaleurMail);
 
             return $this->redirectToRoute('intervenir_index');
         }
