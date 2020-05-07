@@ -47,6 +47,8 @@ class ProblemeController extends AbstractController
      */
     public function new(\Swift_Mailer $mailer,Request $request, StatutRepository $statutRepository): Response
     {
+        $lng = $request->query->get('lng');
+        $lat = $request->query->get('lat');
         $entityManager = $this->getDoctrine()->getManager();
         $probleme = new Probleme();
         $statut = $statutRepository->findOneBy(['nom' => 'Nouveau']);
