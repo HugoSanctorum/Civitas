@@ -3,8 +3,10 @@
 namespace App\Form;
 
 use App\Entity\Intervenir;
+use App\Entity\Personne;
 use App\Entity\Probleme;
 use App\Repository\HistoriqueStatutRepository;
+use App\Repository\PersonneRepository;
 use App\Repository\ProblemeRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -18,18 +20,24 @@ class IntervenirType extends AbstractType{
 
     private $historiqueStatutRepository;
     private $problemeStatutRepository;
+    private $personneRepository;
 
-    public function __construct(HistoriqueStatutRepository $historiqueStatutRepository,ProblemeRepository $problemeRepository)
+    public function __construct(HistoriqueStatutRepository $historiqueStatutRepository,ProblemeRepository $problemeRepository, PersonneRepository $personneRepository)
     {
         $this->historiqueStatutRepository = $historiqueStatutRepository;
         $this->problemeStatutRepository = $problemeRepository;
+        $this->personneRepository = $personneRepository;
     }
 
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('Personne')
+            ->add('Personne', EntityType::class,[
+                "class" => Personne::class,
+                "choices"=>$this->personneRepository->getPersonneByPermission('CAN_DO_INTERVENTION'),
+                'choice_label' => 'Label'
+            ])
             ->add('Probleme', EntityType::class,[
                 "class" => Probleme::class,
                 "choices"=>$this->problemeStatutRepository->findAllUnresolvedProblem(),

@@ -58,6 +58,7 @@ class PermissionFixtures extends Fixture
         	"UPDATE_OTHER_INTERVENTION",
         	"DELETE_SELF_INTERVENTION",
         	"DELETE_OTHER_INTERVENTION",
+            "CAN_DO_INTERVENTION",
 
         	"GET_SELF_IMAGE",
         	"GET_OTHER_IMAGE",

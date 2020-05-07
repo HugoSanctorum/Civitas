@@ -53,7 +53,8 @@ class IntervenirRepository extends ServiceEntityRepository
             ->andWhere("i.description = 'Signaleur'")
             ->setParameter('probleme', $probleme)
             ->getQuery()
-            ->getResult();
+            ->getOneOrNullResult();
+
     }
     public function findTechnicienByProbleme($probleme){
         return $this->createQueryBuilder('i')

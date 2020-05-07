@@ -65,6 +65,8 @@ class IntervenirController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($intervenir);
+            $technicien = $this->personneRepository->findOneBy(['id' =>$request->request->all()['intervenir']['Personne']]);
+
             $probleme = $this->problemeRepository->findOneBy(['id' =>$request->request->all()['intervenir']['Probleme']]);
             $historiqueStatut->setProbleme($probleme);
             $historiqueStatut->setStatut($statut);
@@ -72,22 +74,33 @@ class IntervenirController extends AbstractController
             $historiqueStatut->setDescription('Le probleme a été affecté');
             $test = $this->personneRepository->findOneBy(['id'=>1]);
             $signaleur = $this->intervenirRepository->findSignaleurByProbleme($probleme);
-            $technicien = $this->intervenirRepository->findTechnicienByProbleme($probleme);
             $entityManager->persist($historiqueStatut);
             $entityManager->flush();
-           /* $message = (new \Swift_Message('Nouveau probleme'))
-                ->setFrom('CivitasNotification@gmail.com')
-                ->setTo($this->personne->getMail())
+            $technicienMail = (new \Swift_Message('Probleme affecté'))
+                ->setFrom('civitasnotification@gmail.com')
+                ->setTo($technicien->getMail())
                 ->addPart(
-                    $this->renderView(
-                        'email/notifNouvelleIntervention.html.twig',
+                    $this->renderView('email/notifNouvelleIntervention.html.twig',
                         [
-                            "probleme"=> $probleme,
-                            "personne"=>$this->personne,
+                            "probleme" => $probleme,
+                            "technicien" => $technicien
+                        ]),
+           'text/html'
+                );
+            $signaleurMail = (new \Swift_Message('Probleme affecté'))
+                ->setFrom('civitasnotification@gmail.com')
+                ->setTo($signaleur->getPersonne()->getMail())
+                ->addPart(
+                    $this->renderView('email/notifProblemeAffecte.html.twig',
+                        [
+                            "probleme" => $probleme,
+                            "signaleur" => $signaleur
                         ]),
                     'text/html'
                 );
-            $mailer->send($message);*/
+
+            $mailer->send($technicienMail);
+            $mailer->send($signaleurMail);
 
             return $this->redirectToRoute('intervenir_index');
         }

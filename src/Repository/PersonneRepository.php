@@ -45,6 +45,15 @@ class PersonneRepository extends ServiceEntityRepository
         ;
     }
     */
+    public function getPersonneByPermission($permission){
+        return $this->createQueryBuilder('p')
+            ->Join('p.Roles','r')
+            ->Join('r.Permissions','perms')
+            ->where('perms.permission = :permission')
+            ->setParameter('permission',$permission)
+            ->getQuery()
+            ->getResult();
 
+    }
 
 }
