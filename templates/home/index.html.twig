@@ -47,7 +47,7 @@
         for(probleme of problemes){
             let markerstyle = L.AwesomeMarkers.icon({
                 prefix: 'fa',
-                icon: probleme.marker_icone,
+                icon: probleme.marker_icone ? probleme.marker_icone : "times-circle",
                 markerColor: probleme.marker_color
             });
             let marker = L.marker(probleme.coordonnees, {icon: markerstyle}).addTo(map);
@@ -56,6 +56,4 @@
 
 		map.locate({setView: true, maxZoom: 16});
 	</script>
-{% endblock %}
-{% block moreScript %}
 {% endblock %}
