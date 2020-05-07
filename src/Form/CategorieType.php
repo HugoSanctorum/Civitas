@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Categorie;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -13,8 +14,8 @@ class CategorieType extends AbstractType
     {
         $builder
             ->add('nom')
-            ->add('couleur')
-            ->add('icone')
+            ->add('couleur', HiddenType::class)
+            ->add('icone', HiddenType::class)
         ;
     }
 

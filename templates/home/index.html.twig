@@ -10,15 +10,6 @@
     <div class="fill">
         <div class="container">
             <a href="/login" type="button" style="margin-top:25%;" class="btn btn-success btn-lg btn-block">Se connecter <i class="fa fa-user"></i></a>
-            <div class="btn-group">
-                <button id="demo" data-selected="graduation-cap" type="button"
-                        class="icp icp-dd btn btn-primary dropdown-toggle iconpicker-component"
-                        data-toggle="dropdown">
-                    Icône : <i class="fa fa-fw"></i>
-                    <span class="caret"></span>
-                </button>
-                <div class="dropdown-menu"></div>
-            </div>
         </div>
     </div>
 {% endif %}
@@ -53,31 +44,18 @@
 
         let problemes = JSON.parse(document.getElementById("mapid").dataset.problemes);
 
-        /* MARQUEUR DE COULEUR : */
-        
-        /*var redMarker = L.AwesomeMarkers.icon({
-            prefix: 'fa',
-            icon: 'user',
-            markerColor: 'red'
-        });
-          
-        L.marker([51.941196,4.512291], {icon: redMarker}).addTo(map);*/
-
         for(probleme of problemes){
-            let marker = L.marker(probleme.coordonnees).addTo(map);
-            marker.bindPopup(probleme.titre + '</br><a href="/probleme/'+ probleme.id +'">Voir le problème</a>');
+            let markerstyle = L.AwesomeMarkers.icon({
+                prefix: 'fa',
+                icon: probleme.marker_icone,
+                markerColor: probleme.marker_color
+            });
+            let marker = L.marker(probleme.coordonnees, {icon: markerstyle}).addTo(map);
+            marker.bindPopup('<b>' + probleme.titre + '</b></br><i>' + probleme.statut + '</i></br><a href="/probleme/'+ probleme.id +'">Voir le problème</a>');
         }
 
 		map.locate({setView: true, maxZoom: 16});
 	</script>
-    <script type="text/javascript">
-    
-    $( document ).ready(function() {
-        $('.icp-dd').iconpicker();
-
-    });
-    $('.icp').on('iconpickerSelected', function (e) {
-        console.log(e.iconpickerInstance.options.fullClassFormatter(e.iconpickerValue));
-    });
-    </script>
+{% endblock %}
+{% block moreScript %}
 {% endblock %}
