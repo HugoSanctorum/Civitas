@@ -49,7 +49,7 @@ class IntervenirType extends AbstractType{
 
         $form->remove('createAt');
         $entity->setCreatedAt(New \DateTime('now'));
-        $entity->setDescription('Intervenant');
+        $entity->setDescription('Technicien');
     }
         public function configureOptions(OptionsResolver $resolver)
     {

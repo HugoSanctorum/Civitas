@@ -118,5 +118,12 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="typeit" level="application" />
+    <orderEntry type="library" name="chartist" level="application" />
+    <orderEntry type="library" name="Sortable" level="application" />
+    <orderEntry type="library" name="dropzone" level="application" />
+    <orderEntry type="library" name="jasny-bootstrap" level="application" />
+    <orderEntry type="library" name="leaflet.awesome-markers" level="application" />
+    <orderEntry type="library" name="fontawesome-iconpicker" level="application" />
   </component>
 </module>

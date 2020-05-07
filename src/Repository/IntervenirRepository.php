@@ -47,4 +47,20 @@ class IntervenirRepository extends ServiceEntityRepository
         ;
     }
     */
+    public function findSignaleurByProbleme($probleme){
+        return $this->createQueryBuilder('i')
+            ->where('i.Probleme = :probleme')
+            ->andWhere("i.description = 'Signaleur'")
+            ->setParameter('probleme', $probleme)
+            ->getQuery()
+            ->getResult();
+    }
+    public function findTechnicienByProbleme($probleme){
+        return $this->createQueryBuilder('i')
+            ->where('i.Probleme = :probleme')
+            ->andWhere("i.description = 'Technicien'")
+            ->setParameter('probleme', $probleme)
+            ->getQuery()
+            ->getResult();
+    }
 }
