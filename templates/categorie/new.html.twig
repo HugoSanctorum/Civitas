@@ -75,7 +75,9 @@
 
 	    $('.icp').on('iconpickerSelected', function (e) {
 	    	$icone = document.getElementById('categorie_icone');
-	        $icone.value = e.iconpickerInstance.options.fullClassFormatter(e.iconpickerValue);
+	    	let str = e.iconpickerInstance.options.fullClassFormatter(e.iconpickerValue);
+	    	let newstr = str.substring(7);
+	        $icone.value = newstr;
 	    });
 
 	    
