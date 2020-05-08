@@ -13,6 +13,7 @@ use Symfony\Component\Validator\Constraints\Date;
 
 class PersonneType extends AbstractType
 {
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
@@ -32,18 +33,19 @@ class PersonneType extends AbstractType
 
     public function onPreSetData(FormEvent $event)
     {
-        $form = $event->getForm(); //récupération du formulaire
+        $form = $event->getForm();
         $entity = $event->getData();
+
         $form->remove('CreatedAt');
         $form->remove('username');
-        $entity->setCreatedAt(New \DateTime('now'));
 
+        $entity->setCreatedAt(New \DateTime('now'));
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => Personne::class,
+            'data_class' => Personne::class
         ]);
     }
 }

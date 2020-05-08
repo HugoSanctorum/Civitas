@@ -10,6 +10,7 @@ use App\Form\ProblemeType;
 use App\Repository\ImageRepository;
 use App\Repository\ProblemeRepository;
 use App\Repository\StatutRepository;
+use App\Service\Geocoder\GeocoderService;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
@@ -45,10 +46,13 @@ class ProblemeController extends AbstractController
     /**
      * @Route("/new", name="probleme_new", methods={"GET","POST"})
      */
-    public function new(\Swift_Mailer $mailer,Request $request, StatutRepository $statutRepository): Response
+    public function new(
+        \Swift_Mailer $mailer,
+        Request $request,
+        StatutRepository $statutRepository,
+        GeocoderService $geocoderService
+    ): Response
     {
-        $lng = $request->query->get('lng');
-        $lat = $request->query->get('lat');
         $entityManager = $this->getDoctrine()->getManager();
         $probleme = new Probleme();
         $statut = $statutRepository->findOneBy(['nom' => 'Nouveau']);
@@ -57,6 +61,11 @@ class ProblemeController extends AbstractController
         $form = $this->createForm(ProblemeType::class, $probleme);
         $form->handleRequest($request);
         $imageArray = []; // 1,2,3,4
+
+        $lng = $request->query->get('lng');
+        $lat = $request->query->get('lat');
+
+        $lng && $lat ? $adresse = $geocoderService->getAdressFromCoordinate($lat, $lng) : $adresse = null;
 
         if ($form->isSubmitted() && $form->isValid()) {
             for ($i = 1; $i <= 4; $i++) {
@@ -120,6 +129,7 @@ class ProblemeController extends AbstractController
         return $this->render('probleme/new.html.twig', [
             'probleme' => $probleme,
             'form' => $form->createView(),
+            'adresse' => $adresse 
         ]);
     }
 

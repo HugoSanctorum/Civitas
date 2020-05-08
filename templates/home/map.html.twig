@@ -19,7 +19,6 @@
         }).addTo(map);
         
         let coordonneesMairie = JSON.parse(document.getElementById("mapid").dataset.coordonneesMairie);
-        console.log(coordonneesMairie);
 		map.setView(coordonneesMairie, 13);
 
         let problemes = JSON.parse(document.getElementById("mapid").dataset.problemes);

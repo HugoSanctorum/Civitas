@@ -23,7 +23,6 @@ class HomeController extends AbstractController
         StatutRepository $statutRepository,
         GeocoderService $geocoderService
     ){
-
     	$user = $tokenStorageInterface->getToken()->getUser();
         $problemes = [];
         $infos_problemes = [];

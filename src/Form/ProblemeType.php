@@ -35,9 +35,8 @@ class ProblemeType extends AbstractType
     }
     public function onPreSetData(FormEvent $event)
     {
-        $form = $event->getForm(); //récupération du formulaire
+        $form = $event->getForm();
         $entity = $event->getData();
-
 
         $form->remove('reference');
         $form->remove('date_de_declaration');
@@ -87,6 +86,7 @@ class ProblemeType extends AbstractType
                 ])
             ],
         ]);
+
     }
 
     public function configureOptions(OptionsResolver $resolver)
