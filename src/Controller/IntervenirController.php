@@ -10,6 +10,7 @@ use App\Repository\IntervenirRepository;
 use App\Repository\PersonneRepository;
 use App\Repository\ProblemeRepository;
 use App\Repository\StatutRepository;
+use App\Service\MailerService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -52,7 +53,7 @@ class IntervenirController extends AbstractController
     /**
      * @Route("/new", name="intervenir_new", methods={"GET","POST"})
      */
-    public function new(\Swift_Mailer $mailer,Request $request): Response
+    public function new(MailerService $mailerService,Request $request): Response
     {
 
 
@@ -72,35 +73,15 @@ class IntervenirController extends AbstractController
             $historiqueStatut->setStatut($statut);
             $historiqueStatut->setDate(new \DateTime('now'));
             $historiqueStatut->setDescription('Le probleme a été affecté');
-            $test = $this->personneRepository->findOneBy(['id'=>1]);
-            $signaleur = $this->intervenirRepository->findSignaleurByProbleme($probleme);
+
+            $signaleurIntervention = $this->intervenirRepository->findSignaleurByProbleme($probleme);
+            $signaleur = $signaleurIntervention->getPersonne();
             $entityManager->persist($historiqueStatut);
             $entityManager->flush();
-            $technicienMail = (new \Swift_Message('Probleme affecté'))
-                ->setFrom('civitasnotification@gmail.com')
-                ->setTo($technicien->getMail())
-                ->addPart(
-                    $this->renderView('email/notifNouvelleIntervention.html.twig',
-                        [
-                            "probleme" => $probleme,
-                            "technicien" => $technicien
-                        ]),
-           'text/html'
-                );
-            $signaleurMail = (new \Swift_Message('Probleme affecté'))
-                ->setFrom('civitasnotification@gmail.com')
-                ->setTo($signaleur->getPersonne()->getMail())
-                ->addPart(
-                    $this->renderView('email/notifProblemeAffecte.html.twig',
-                        [
-                            "probleme" => $probleme,
-                            "signaleur" => $signaleur
-                        ]),
-                    'text/html'
-                );
 
-            $mailer->send($technicienMail);
-            $mailer->send($signaleurMail);
+
+            $mailerService->sendMailToTechnicienAffectedProbleme($technicien,$probleme);
+            $mailerService->sendMailToSignaleurAffectedProbleme($signaleur,$probleme);
 
             return $this->redirectToRoute('intervenir_index');
         }

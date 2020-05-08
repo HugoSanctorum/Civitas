@@ -54,7 +54,7 @@ class PersonneFixtures extends Fixture implements DependentFixtureInterface
             $user->setUsername('user'.$i);
             $user->setPrenom('user'.$i);
             $user->setNom('user'.$i);
-            $user->setMail($user->getUsername().'@gmail.com');
+            $user->setMail($user->getPrenom().'@gmail.com');
             $plainPassword = $user->getUsername();
             $encoded = $this->encoder->encodePassword($user, $plainPassword);
             $user->setPassword($encoded);

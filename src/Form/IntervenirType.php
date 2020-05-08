@@ -11,6 +11,7 @@ use App\Repository\ProblemeRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -36,7 +37,8 @@ class IntervenirType extends AbstractType{
             ->add('Personne', EntityType::class,[
                 "class" => Personne::class,
                 "choices"=>$this->personneRepository->getPersonneByPermission('CAN_DO_INTERVENTION'),
-                'choice_label' => 'Label'
+                'choice_label' => 'Label',
+
             ])
             ->add('Probleme', EntityType::class,[
                 "class" => Probleme::class,

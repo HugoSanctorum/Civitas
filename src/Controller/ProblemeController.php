@@ -11,6 +11,7 @@ use App\Repository\ImageRepository;
 use App\Repository\ProblemeRepository;
 use App\Repository\StatutRepository;
 use App\Service\Geocoder\GeocoderService;
+use App\Service\MailerService;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
@@ -47,7 +48,7 @@ class ProblemeController extends AbstractController
      * @Route("/new", name="probleme_new", methods={"GET","POST"})
      */
     public function new(
-        \Swift_Mailer $mailer,
+        MailerService $mailerService,
         Request $request,
         StatutRepository $statutRepository,
         GeocoderService $geocoderService
@@ -101,26 +102,17 @@ class ProblemeController extends AbstractController
             $historiqueStatut->setStatut($statut);
             $historiqueStatut->setDate(new \DateTime('now'));
             $historiqueStatut->setDescription('Le problème a été créé');
+
             $intervenir->setProbleme($probleme);
             $intervenir->setPersonne($this->personne);
             $intervenir->setCreatedAt(new \DateTime('now'));
             $intervenir->setDescription('Signaleur');
+
             $entityManager->persist($historiqueStatut);
             $entityManager->persist($probleme);
             $entityManager->persist($intervenir);
-            $message = (new \Swift_Message('Nouveau probleme'))
-                ->setFrom('CivitasNotification@gmail.com')
-                ->setTo($this->personne->getMail())
-                ->addPart(
-                    $this->renderView(
-                        'email/notifNouveauProbleme.html.twig',
-                        [
-                            "probleme"=> $probleme,
-                            "personne"=>$this->personne,
-                            ]),
-                    'text/html'
-                );
-            $mailer->send($message);
+
+            $mailerService->sendMailToSignaleurNewProbleme($this->personne,$probleme);
 
             $entityManager->flush();
 
