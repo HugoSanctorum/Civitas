@@ -12,10 +12,19 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Validator\Constraints\File;
 
 class ProblemeType extends AbstractType
 {
+    private $user;
+
+    public function __construct(
+        TokenStorageInterface $tokenStorageInterface
+    ){
+        $this->user = $tokenStorageInterface->getToken()->getUser();
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder

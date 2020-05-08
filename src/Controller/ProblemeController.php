@@ -5,8 +5,10 @@ namespace App\Controller;
 use App\Entity\HistoriqueStatut;
 use App\Entity\Image;
 use App\Entity\Intervenir;
+use App\Entity\Personne;
 use App\Entity\Probleme;
 use App\Form\ProblemeType;
+use App\Form\RedirectProblemeType;
 use App\Repository\ImageRepository;
 use App\Repository\ProblemeRepository;
 use App\Repository\StatutRepository;
@@ -69,6 +71,7 @@ class ProblemeController extends AbstractController
         $lng && $lat ? $adresse = $geocoderService->getAdressFromCoordinate($lat, $lng) : $adresse = null;
 
         if ($form->isSubmitted() && $form->isValid()) {
+
             for ($i = 1; $i <= 4; $i++) {
                 $imageArray[$i] = new Image();
                 $imageToProbleme = $form['Image' . $i]->getData();
@@ -98,13 +101,25 @@ class ProblemeController extends AbstractController
                     }
                 }
             }
+
             $historiqueStatut->setProbleme($probleme);
             $historiqueStatut->setStatut($statut);
             $historiqueStatut->setDate(new \DateTime('now'));
             $historiqueStatut->setDescription('Le problème a été créé');
 
             $intervenir->setProbleme($probleme);
-            $intervenir->setPersonne($this->personne);
+            if($this->personne != "anon.") {
+                $intervenir->setPersonne($this->personne);
+            }else{
+                return $this->redirectToRoute('probleme_redirect',[
+                    "titre" => $probleme->getTitre(),
+                    "description" => $probleme->getDescription(),
+                    "localisation" => $probleme->getLocalisation(),
+                    "commune" => $probleme->getCommune(),
+                    "categorie" => $probleme->getCategorie(),
+                    "priorite" => $probleme->getPriorite(),
+                ]);
+            }
             $intervenir->setCreatedAt(new \DateTime('now'));
             $intervenir->setDescription('Signaleur');
 
@@ -170,5 +185,29 @@ class ProblemeController extends AbstractController
         }
 
         return $this->redirectToRoute('probleme_index');
+    }
+
+    /**
+     * @Route("/{titre}/redirect", name="probleme_redirect", methods={"GET","POST"})
+     */
+    public function redirectUserWhenAnonyme(Request $request): Response
+    {
+
+        $personne = new Personne();
+        $form = $this->createForm(RedirectProblemeType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $personne->setMail($request->request->all()["redirect_probleme"]["mail"]);
+            $personne->setCreatedAt(new \DateTime('now'));
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($personne);
+            $entityManager->flush();
+            return $this->redirectToRoute('probleme_index');
+        }
+        return $this->render('probleme/redirect.html.twig',[
+            'form' => $form->createView()
+        ]);
+
     }
 }

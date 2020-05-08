@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Fournisser une adresse mail{% endblock %}
+
+{% block body %}
+    <h1>Fournisser une adresse mail</h1>
+
+    {{ include('probleme/_formRedirect.html.twig') }}
+
+    <a href="{{ path('probleme_index') }}">back to list</a>
+{% endblock %}

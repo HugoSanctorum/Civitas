@@ -26,12 +26,12 @@ class Personne implements UserInterface,ArrayAccess
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $nom;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $prenom;
 
@@ -43,7 +43,7 @@ class Personne implements UserInterface,ArrayAccess
     private $mail;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $password;
     /**
@@ -64,7 +64,7 @@ class Personne implements UserInterface,ArrayAccess
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Commune", inversedBy="Personnes")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      */
     private $Commune;
 
@@ -80,7 +80,7 @@ class Personne implements UserInterface,ArrayAccess
     private $Roles;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $username;
 

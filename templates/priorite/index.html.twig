@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Priorite index{% endblock %}
+
+{% block body %}
+    <h1>Priorite index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nom</th>
+                <th>Poids</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for priorite in priorites %}
+            <tr>
+                <td>{{ priorite.id }}</td>
+                <td>{{ priorite.nom }}</td>
+                <td>{{ priorite.poids }}</td>
+                <td>
+                    <a href="{{ path('priorite_show', {'id': priorite.id}) }}">show</a>
+                    <a href="{{ path('priorite_edit', {'id': priorite.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('priorite_new') }}">Create new</a>
+{% endblock %}

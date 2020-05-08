@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Priorite{% endblock %}
+
+{% block body %}
+    <h1>Priorite</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ priorite.id }}</td>
+            </tr>
+            <tr>
+                <th>Nom</th>
+                <td>{{ priorite.nom }}</td>
+            </tr>
+            <tr>
+                <th>Poids</th>
+                <td>{{ priorite.poids }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('priorite_index') }}">back to list</a>
+
+    <a href="{{ path('priorite_edit', {'id': priorite.id}) }}">edit</a>
+
+    {{ include('priorite/_delete_form.html.twig') }}
+{% endblock %}

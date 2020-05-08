@@ -79,7 +79,6 @@ class IntervenirController extends AbstractController
             $entityManager->persist($historiqueStatut);
             $entityManager->flush();
 
-
             $mailerService->sendMailToTechnicienAffectedProbleme($technicien,$probleme);
             $mailerService->sendMailToSignaleurAffectedProbleme($signaleur,$probleme);
 
