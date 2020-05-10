@@ -24,19 +24,19 @@ class Commune
     private $nom;
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="array")
      */
-    private $mairie;
+    private $centre;
 
     /**
-     * @ORM\Column(type="string", length=5)
+     * @ORM\Column(type="array")
      */
-    private $code_postal;
+    private $codePostal;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="integer")
      */
-    private $region;
+    private $codeRegion;
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\Service", mappedBy="Commune")
@@ -52,6 +52,21 @@ class Commune
      * @ORM\OneToMany(targetEntity="App\Entity\Personne", mappedBy="Commune")
      */
     private $Personnes;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $codeDepartement;
+
+    /**
+     * @ORM\Column(type="array")
+     */
+    private $contour = [];
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $codeInsee;
 
     public function __construct()
     {
@@ -77,38 +92,38 @@ class Commune
         return $this;
     }
 
-    public function getMairie(): ?string
+    public function getCentre(): ?array
     {
-        return $this->mairie;
+        return $this->centre;
     }
 
-    public function setMairie(string $mairie): self
+    public function setCentre(array $centre): self
     {
-        $this->mairie = $mairie;
+        $this->centre = $centre;
 
         return $this;
     }
 
-    public function getCodePostal(): ?string
+    public function getCodePostal(): ?array
     {
-        return $this->code_postal;
+        return $this->codePostal;
     }
 
-    public function setCodePostal(string $code_postal): self
+    public function setCodePostal(array $codePostal): self
     {
-        $this->code_postal = $code_postal;
+        $this->codePostal = $codePostal;
 
         return $this;
     }
 
-    public function getRegion(): ?string
+    public function getCodeRegion(): ?int
     {
-        return $this->region;
+        return $this->codeRegion;
     }
 
-    public function setRegion(string $region): self
+    public function setCodeRegion(int $codeRegion): self
     {
-        $this->region = $region;
+        $this->codeRegion = $codeRegion;
 
         return $this;
     }
@@ -208,4 +223,39 @@ class Commune
         return $this->getNom();
     }
 
+    public function getCodeDepartement(): ?int
+    {
+        return $this->codeDepartement;
+    }
+
+    public function setCodeDepartement(int $codeDepartement): self
+    {
+        $this->codeDepartement = $codeDepartement;
+
+        return $this;
+    }
+
+    public function getContour(): ?array
+    {
+        return $this->contour;
+    }
+
+    public function setContour(array $contour): self
+    {
+        $this->contour = $contour;
+
+        return $this;
+    }
+
+    public function getCodeInsee(): ?string
+    {
+        return $this->codeInsee;
+    }
+
+    public function setCodeInsee(string $codeInsee): self
+    {
+        $this->codeInsee = $codeInsee;
+
+        return $this;
+    }
 }

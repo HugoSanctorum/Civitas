@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service\Personne;
+namespace App\Services\Personne;
 
 use App\Entity\Personne;
 use App\Entity\Role;

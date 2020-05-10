@@ -18,8 +18,33 @@
             accessToken: 'pk.eyJ1IjoiYW5hY29tYiIsImEiOiJjazltdG82d2EwMnp5M21scGc1cWdtOGM3In0.WbSl0RvM9KcZkU3C4EDrug'
         }).addTo(map);
         
-        let coordonneesMairie = JSON.parse(document.getElementById("mapid").dataset.coordonneesMairie);
-		map.setView(coordonneesMairie, 13);
+        let centre = JSON.parse(document.getElementById("mapid").dataset.centre).reverse();
+		map.setView(centre, 13);
+
+        let contour = JSON.parse(document.getElementById("mapid").dataset.contour);
+
+        /*for(let tab of contour[0]){
+            tab.reverse();
+        }*/
+
+        let feature = {
+            "type": "Feature",
+            "geometry": {
+                "type": "Polygon",
+                "coordinates": contour
+            }
+        };
+
+        let featureStyle = {
+            "color": "#000",
+            "weight": 0.8,
+            "opacity": 0.8,
+            "fillOpacity": 0.1
+        };
+
+        L.geoJSON(feature, {
+            style: featureStyle      
+        }).addTo(map);
 
         let problemes = JSON.parse(document.getElementById("mapid").dataset.problemes);
 

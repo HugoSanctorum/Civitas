@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service\Geocoder;
+namespace App\Services\Geocoder;
 
 use App\Entity\Commune;
 use App\Repository\CommuneRepository;

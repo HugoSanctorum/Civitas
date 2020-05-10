@@ -10,7 +10,7 @@ use App\Repository\IntervenirRepository;
 use App\Repository\PersonneRepository;
 use App\Repository\ProblemeRepository;
 use App\Repository\StatutRepository;
-use App\Service\MailerService;
+use App\Services\Mailer\MailerService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

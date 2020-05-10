@@ -5,7 +5,7 @@ namespace App\Controller;
 use App\Repository\HistoriqueStatutRepository;
 use App\Repository\StatutRepository;
 
-use App\Service\Geocoder\GeocoderService;
+use App\Services\Geocoder\GeocoderService;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -27,14 +27,13 @@ class HomeController extends AbstractController
         $problemes = [];
         $infos_problemes = [];
 
-    	if(is_string($user)) $mairie = '17 Place Jean Jaurès, 62300 Lens, France';
+    	if(is_string($user)) $centre = '17 Place Jean Jaurès, 62300 Lens, France';
     	else{
     		$commune = $user->getCommune();
-            $mairie = $commune->getMairie();
+            $centre = $commune->getCentre();
             $problemes = $commune->getProblemes();
+            $contour = $commune->getContour();
     	}
-
-    	$coordonnees_mairie = $geocoderService->getCoordinateFromAdress($mairie);
 
         foreach ($problemes as $probleme) {
             $latest = $historiqueStatutRepository->findLatestHistoriqueStatutForOneProblemExcludingNewAndResolved($probleme);
@@ -51,7 +50,8 @@ class HomeController extends AbstractController
             }
         }
         return $this->render('home/index.html.twig', [
-        	"coordonnees_mairie" => $coordonnees_mairie,
+        	"centre" => $centre,
+            "contour" => $contour,
             "problemes" => $infos_problemes
         ]);
     }

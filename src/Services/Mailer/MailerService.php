@@ -1,7 +1,7 @@
 <?php
 
+namespace App\Services\Mailer;
 
-namespace App\Service;
 use App\Entity\Personne;
 use Swift_Mailer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
