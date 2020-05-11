@@ -9,18 +9,24 @@ use App\Entity\Personne;
 use App\Entity\Probleme;
 use App\Form\ProblemeType;
 use App\Form\RedirectProblemeType;
+use App\Repository\CategorieRepository;
+use App\Repository\CommuneRepository;
 use App\Repository\ImageRepository;
+use App\Repository\PrioriteRepository;
 use App\Repository\ProblemeRepository;
 use App\Repository\StatutRepository;
 use App\Services\Geocoder\GeocoderService;
 use App\Services\Mailer\MailerService;
+use App\Services\Probleme\ProblemeService;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Validator\Constraints\Date;
 
 /**
  * @Route("/probleme")
@@ -29,7 +35,6 @@ class ProblemeController extends AbstractController
 {
 
     private $personne;
-
 
     public function __construct(
         TokenStorageInterface $tokenStorageInterface
@@ -50,17 +55,14 @@ class ProblemeController extends AbstractController
      * @Route("/new", name="probleme_new", methods={"GET","POST"})
      */
     public function new(
-        MailerService $mailerService,
         Request $request,
-        StatutRepository $statutRepository,
-        GeocoderService $geocoderService
+        GeocoderService $geocoderService,
+        SessionInterface $session,ProblemeService $problemeService
     ): Response
     {
         $entityManager = $this->getDoctrine()->getManager();
         $probleme = new Probleme();
-        $statut = $statutRepository->findOneBy(['nom' => 'Nouveau']);
-        $historiqueStatut = new HistoriqueStatut();
-        $intervenir = new Intervenir();
+
         $form = $this->createForm(ProblemeType::class, $probleme);
         $form->handleRequest($request);
         $imageArray = []; // 1,2,3,4
@@ -71,6 +73,19 @@ class ProblemeController extends AbstractController
         $lng && $lat ? $adresse = $geocoderService->getAdressFromCoordinate($lat, $lng) : $adresse = null;
 
         if ($form->isSubmitted() && $form->isValid()) {
+            if($this->personne != "anon.") {
+                $problemeService->CreateNewProblemeAuthentificated($probleme,$this->personne);
+            }else{
+                $session->set('titre',$probleme->getTitre());
+                $session->set('description',$probleme->getDescription());
+                $session->set('localisation',$probleme->getLocalisation());
+                $session->set('commune',$probleme->getCommune());
+                $session->set('categorie',$probleme->getCategorie());
+                $session->set('priorite',$probleme->getPriorite());
+                return $this->redirectToRoute('probleme_redirect',[
+                    'titre' => $probleme->getTitre(),
+                ]);
+            }
 
             for ($i = 1; $i <= 4; $i++) {
                 $imageArray[$i] = new Image();
@@ -102,34 +117,7 @@ class ProblemeController extends AbstractController
                 }
             }
 
-            $historiqueStatut->setProbleme($probleme);
-            $historiqueStatut->setStatut($statut);
-            $historiqueStatut->setDate(new \DateTime('now'));
-            $historiqueStatut->setDescription('Le problème a été créé');
 
-            $intervenir->setProbleme($probleme);
-            if($this->personne != "anon.") {
-                $intervenir->setPersonne($this->personne);
-            }else{
-                return $this->redirectToRoute('probleme_redirect',[
-                    "titre" => $probleme->getTitre(),
-                    "description" => $probleme->getDescription(),
-                    "localisation" => $probleme->getLocalisation(),
-                    "commune" => $probleme->getCommune(),
-                    "categorie" => $probleme->getCategorie(),
-                    "priorite" => $probleme->getPriorite(),
-                ]);
-            }
-            $intervenir->setCreatedAt(new \DateTime('now'));
-            $intervenir->setDescription('Signaleur');
-
-            $entityManager->persist($historiqueStatut);
-            $entityManager->persist($probleme);
-            $entityManager->persist($intervenir);
-
-            $mailerService->sendMailToSignaleurNewProbleme($this->personne,$probleme);
-
-            $entityManager->flush();
 
             return $this->redirectToRoute('probleme_index');
         }
@@ -188,20 +176,34 @@ class ProblemeController extends AbstractController
     }
 
     /**
-     * @Route("/{titre}/redirect", name="probleme_redirect", methods={"GET","POST"})
+     * @Route("/redirect/{titre}", name="probleme_redirect", methods={"GET","POST"})
      */
-    public function redirectUserWhenAnonyme(Request $request): Response
+    public function redirectUserWhenAnonyme(ProblemeService $problemeService,Request $request,  SessionInterface $session,CommuneRepository $communeRepository,CategorieRepository $categorieRepository, PrioriteRepository $prioriteRepository): Response
     {
 
-        $personne = new Personne();
+
         $form = $this->createForm(RedirectProblemeType::class);
         $form->handleRequest($request);
+        $probleme = new Probleme();
+
+        $probleme->setTitre($session->get('titre'));
+        $probleme->setDescription($session->get('description'));
+        $probleme->setLocalisation($session->get('localisation'));
+
+        $commune = $communeRepository->findOneBy(['id'=> $session->get('commune')->getId()]);
+        $categorie =$categorieRepository->findOneBy(['id' =>$session->get('categorie')->getId()]);
+        $priorite = $prioriteRepository->findOneBy(['id' => $session->get('priorite')->getId()]);
+
+        $probleme->setCommune($commune);
+        $probleme->setCategorie($categorie);
+        $probleme->setPriorite($priorite);
+        $probleme->setDateDeDeclaration(new \DateTime('now'));
+        $probleme->setReference(456654456);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $personne->setMail($request->request->all()["redirect_probleme"]["mail"]);
-            $personne->setCreatedAt(new \DateTime('now'));
             $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($personne);
+            $entityManager->persist($probleme);
+            $problemeService->CreateNewIntervenirNonAuthentificated($probleme,$request->request->all()["redirect_probleme"]["mail"]);
             $entityManager->flush();
             return $this->redirectToRoute('probleme_index');
         }
