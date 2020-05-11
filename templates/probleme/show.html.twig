@@ -3,6 +3,7 @@
 {% block title %}Probleme{% endblock %}
 
 {% block body %}
+
     <h1>Probleme</h1>
 
     <table class="table">
@@ -31,6 +32,8 @@
                 <th>Reference</th>
                 <td>{{ probleme.reference }}</td>
             </tr>
+
+
             {% for image in images %}
             <tr>
                 <th>Image</th>

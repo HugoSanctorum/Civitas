@@ -3,6 +3,7 @@
 
 namespace App\Services\Probleme;
 
+use App\Entity\Image;
 use App\Entity\Intervenir;
 use App\Entity\HistoriqueStatut;
 use App\Entity\Personne;
@@ -12,11 +13,13 @@ use App\Services\Mailer\MailerService;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 
-class ProblemeService
+class ProblemeService extends AbstractController
 {
     private $entityManager;
     private $statutRepository;
@@ -82,34 +85,33 @@ class ProblemeService
 
     }
 
-    public function UploadImageNewProbleme(ArrayCollection $imageToProblemes)
+    public function UploadImagesNewProbleme($tabImageToProblemes,$probleme)
     {
-        foreach ($imageToProblemes as $imageToProbleme) {
-            if ($imageToProbleme) {
-                $originalFilename = pathinfo($imageToProbleme->getClientOriginalName(), PATHINFO_FILENAME);
+        foreach ($tabImageToProblemes as $tabImageToProbleme) {
+            $i=1;
+            if ($tabImageToProbleme) {
+                $originalFilename = pathinfo($tabImageToProbleme->getClientOriginalName(), PATHINFO_FILENAME);
                 $safeFilename = transliterator_transliterate(
                     'Any-Latin; Latin-ASCII; [^A-Za-z0-9_] remove; Lower()',
                     $originalFilename);
                 $newFilename = $safeFilename . '-' . uniqid() . '.' .
-                    $imageToProbleme->guessExtension();
+                    $tabImageToProbleme->guessExtension();
                 // Move the file to the directory where brochures are stored
                 try {
-                    $imageToProbleme->move(
+                    $tabImageToProbleme->move(
                         $this->getParameter('probleme_directory'),
                         $newFilename
                     );
                 } catch (FileException $e) {
                     $this->addFlash('danger',
                         'Error on fileUpload :' . $e->getMessage());
-                    return $this->redirectToRoute('home');
                 }
-
-                if ($imageArray[$i] != null) {
+                    $imageArray[$i] = new Image();
                     $imageArray[$i]->setProbleme($probleme);
                     $imageArray[$i]->setURL($newFilename);
-                    $entityManager->persist($imageArray[$i]);
+                    $this->entityManager->persist($imageArray[$i]);
+                    $this->entityManager->flush();
                 }
             }
         }
-    }
 }

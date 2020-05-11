@@ -38,9 +38,11 @@ class ProblemeController extends AbstractController
 
     public function __construct(
         TokenStorageInterface $tokenStorageInterface
-    ){
+    )
+    {
         $this->personne = $tokenStorageInterface->getToken()->getUser();
     }
+
     /**
      * @Route("/", name="probleme_index", methods={"GET"})
      */
@@ -57,10 +59,9 @@ class ProblemeController extends AbstractController
     public function new(
         Request $request,
         GeocoderService $geocoderService,
-        SessionInterface $session,ProblemeService $problemeService
+        SessionInterface $session, ProblemeService $problemeService
     ): Response
     {
-        $entityManager = $this->getDoctrine()->getManager();
         $probleme = new Probleme();
 
         $form = $this->createForm(ProblemeType::class, $probleme);
@@ -73,53 +74,25 @@ class ProblemeController extends AbstractController
         $lng && $lat ? $adresse = $geocoderService->getAdressFromCoordinate($lat, $lng) : $adresse = null;
 
         if ($form->isSubmitted() && $form->isValid()) {
-            if($this->personne != "anon.") {
-                $problemeService->CreateNewProblemeAuthentificated($probleme,$this->personne);
-            }else{
-                $session->set('titre',$probleme->getTitre());
-                $session->set('description',$probleme->getDescription());
-                $session->set('localisation',$probleme->getLocalisation());
-                $session->set('commune',$probleme->getCommune());
-                $session->set('categorie',$probleme->getCategorie());
-                $session->set('priorite',$probleme->getPriorite());
-                return $this->redirectToRoute('probleme_redirect',[
+            if ($this->personne != "anon.") {
+                $problemeService->CreateNewProblemeAuthentificated($probleme, $this->personne);
+            } else {
+                $session->set('titre', $probleme->getTitre());
+                $session->set('description', $probleme->getDescription());
+                $session->set('localisation', $probleme->getLocalisation());
+                $session->set('commune', $probleme->getCommune());
+                $session->set('categorie', $probleme->getCategorie());
+                $session->set('priorite', $probleme->getPriorite());
+                return $this->redirectToRoute('probleme_redirect', [
                     'titre' => $probleme->getTitre(),
                 ]);
             }
-
+            $tabImageToProblemes = [];
             for ($i = 1; $i <= 4; $i++) {
-                $imageArray[$i] = new Image();
                 $imageToProbleme = $form['Image' . $i]->getData();
-                if ($imageToProbleme) {
-                    $originalFilename = pathinfo($imageToProbleme->getClientOriginalName(), PATHINFO_FILENAME);
-                    $safeFilename = transliterator_transliterate(
-                        'Any-Latin; Latin-ASCII; [^A-Za-z0-9_] remove; Lower()',
-                        $originalFilename);
-                    $newFilename = $safeFilename . '-' . uniqid() . '.' .
-                        $imageToProbleme->guessExtension();
-                    // Move the file to the directory where brochures are stored
-                    try {
-                        $imageToProbleme->move(
-                            $this->getParameter('probleme_directory'),
-                            $newFilename
-                        );
-                    } catch (FileException $e) {
-                        $this->addFlash('danger',
-                            'Error on fileUpload :' . $e->getMessage());
-                        return $this->redirectToRoute('home');
-                    }
-
-                    if ($imageArray[$i] != null) {
-                        $imageArray[$i]->setProbleme($probleme);
-                        $imageArray[$i]->setURL($newFilename);
-                        $entityManager->persist($imageArray[$i]);
-                    }
-                }
+                array_push($tabImageToProblemes, $imageToProbleme);
             }
-
-
-
-            return $this->redirectToRoute('probleme_index');
+            $problemeService->UploadImagesNewProbleme($tabImageToProblemes, $probleme);
         }
         return $this->render('probleme/new.html.twig', [
             'probleme' => $probleme,
@@ -133,7 +106,6 @@ class ProblemeController extends AbstractController
      */
     public function show(Probleme $probleme,ImageRepository $imageRepository): Response
     {
-
         return $this->render('probleme/show.html.twig', [
             'probleme' => $probleme,
             'images' => $imageRepository->findbyProbleme($probleme)
@@ -205,6 +177,12 @@ class ProblemeController extends AbstractController
             $entityManager->persist($probleme);
             $problemeService->CreateNewIntervenirNonAuthentificated($probleme,$request->request->all()["redirect_probleme"]["mail"]);
             $entityManager->flush();
+            $tabImageToProblemes = [];
+            for ($i = 1; $i <= 4; $i++) {
+                $imageToProbleme = $form['Image' . $i]->getData();
+                array_push($tabImageToProblemes, $imageToProbleme);
+            }
+            $problemeService->UploadImagesNewProbleme($tabImageToProblemes, $probleme);
             return $this->redirectToRoute('probleme_index');
         }
         return $this->render('probleme/redirect.html.twig',[
