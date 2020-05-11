@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% use 'commune/base.html.twig' %}
 
 {% block title %}New Commune{% endblock %}
 
@@ -7,5 +8,5 @@
 
     {{ include('commune/_form.html.twig') }}
 
-    <a href="{{ path('commune_index') }}">back to list</a>
 {% endblock %}
+{% block moreScript %} {{ parent() }} {% endblock %}

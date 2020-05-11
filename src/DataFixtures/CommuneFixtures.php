@@ -18,13 +18,15 @@ class CommuneFixtures extends Fixture implements DependentFixtureInterface
 
     public function load(ObjectManager $manager)
     {
-        $commune = $this->geoquery->populate("Lens", "62300");
+        $commune = new Commune();
+        $this->geoquery->populate($commune, "Lens", "62300");
         $this->addReference($commune->getNom(), $commune);
         $commune->addService($this->getReference("Comptabilité"));
         $manager->persist($commune);
         $manager->flush();
 
-        $commune2 = $this->geoquery->populate("Lille", "59800");
+        $commune2 = new Commune();
+        $this->geoquery->populate($commune2, "Lille", "59800");
         $this->addReference($commune2->getNom(), $commune2);
         $commune2->addService($this->getReference("Comptabilité"));
         $manager->persist($commune2);

@@ -26,6 +26,7 @@ class HomeController extends AbstractController
     	$user = $tokenStorageInterface->getToken()->getUser();
         $problemes = [];
         $infos_problemes = [];
+        $contour = [];
 
     	if(is_string($user)) $centre = '17 Place Jean Jaurès, 62300 Lens, France';
     	else{

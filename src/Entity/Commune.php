@@ -31,7 +31,7 @@ class Commune
     /**
      * @ORM\Column(type="array")
      */
-    private $codePostal;
+    private $codesPostaux;
 
     /**
      * @ORM\Column(type="integer")
@@ -104,14 +104,14 @@ class Commune
         return $this;
     }
 
-    public function getCodePostal(): ?array
+    public function getCodesPostaux(): ?array
     {
-        return $this->codePostal;
+        return $this->codesPostaux;
     }
 
-    public function setCodePostal(array $codePostal): self
+    public function setCodesPostaux(array $codesPostaux): self
     {
-        $this->codePostal = $codePostal;
+        $this->codesPostaux = $codesPostaux;
 
         return $this;
     }

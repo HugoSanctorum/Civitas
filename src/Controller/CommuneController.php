@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
 use App\Services\Personne\PermissionChecker;
+use App\Services\Geoquery\Geoquery;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
@@ -48,7 +49,7 @@ class CommuneController extends AbstractController
     /**
      * @Route("/new", name="commune_new", methods={"GET","POST"})
      */
-    public function new(Request $request): Response
+    public function new(Request $request, Geoquery $geoquery): Response
     {
         if(!$this->permissionChecker->isUserGranted(["POST_COMMUNE"])){
             return new RedirectResponse("/");
@@ -59,6 +60,9 @@ class CommuneController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $array = $request->request->all()["commune"];
+            $geoquery->populate($commune, $array["nom"], $array["code"]);
+
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($commune);
             $entityManager->flush();

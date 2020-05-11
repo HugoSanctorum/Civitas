@@ -1,0 +1,23 @@
+{% block moreScript %}
+	<script type="text/javascript">
+		(function() {
+		  var placesAutocomplete = places({
+		    appId: 'pl6WHRUX0BCF',
+		    apiKey: 'd1036e535180c27b6723484a26b33de1',
+		    container: document.querySelector('#commune_nom'),
+		    templates: {
+		      value: function(suggestion) {
+		        return suggestion.name;
+		      }
+		    }
+		  }).configure({
+		  	countries: ['fr'],
+		    type: 'city',
+		    aroundLatLngViaIP: false,
+		  });
+		  placesAutocomplete.on('change', function resultSelected(e) {
+		    document.querySelector('#commune_code').value = e.suggestion.postcode || '';
+		  });
+		})();
+	</script>
+{% endblock %}
