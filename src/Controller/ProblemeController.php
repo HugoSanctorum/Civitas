@@ -23,6 +23,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -71,11 +72,14 @@ class ProblemeController extends AbstractController
         $lng = $request->query->get('lng');
         $lat = $request->query->get('lat');
 
-        $lng && $lat ? $adresse = $geocoderService->getAdressFromCoordinate($lat, $lng) : $adresse = null;
-
         if ($form->isSubmitted() && $form->isValid()) {
+
+            $loc = $session->get("adresse");
+            if($loc) $probleme->setLocalisation($loc);
+            
             if ($this->personne != "anon.") {
                 $problemeService->CreateNewProblemeAuthentificated($probleme, $this->personne);
+                return new RedirectResponse("/probleme");
             } else {
                 $session->set('titre', $probleme->getTitre());
                 $session->set('description', $probleme->getDescription());
@@ -94,7 +98,13 @@ class ProblemeController extends AbstractController
             }
             $problemeService->UploadImagesNewProbleme($tabImageToProblemes, $probleme);
         }
-        return $this->render('probleme/new.html.twig', [
+
+        $lng && $lat ? $adresse = $geocoderService->getAdressFromCoordinate($lat, $lng) : $adresse = null;
+        if($adresse)$session->set('adresse', $adresse);
+
+        $adresse ? $render = "probleme/modalnew.html.twig" : $render = "probleme/new.html.twig";
+
+        return $this->render($render, [
             'probleme' => $probleme,
             'form' => $form->createView(),
             'adresse' => $adresse 

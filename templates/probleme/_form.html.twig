@@ -1,28 +1,35 @@
 {{ form_start(form) }}
     <div class="form-group">
-    	{{ form_row(form.titre) }}
+    	{{ form_row(form.titre, {'attr': {'class': 'form-control'}}) }}
     </div>
     <div class="form-group">
-    	{{ form_row(form.description) }}
+    	{{ form_row(form.description, {'attr': {'class': 'form-control'}}) }}
     </div>
     <div class="form-group">
-    	{{ form_row(form.localisation, {'value': adresse}) }}
+    	{{ form_row(form.localisation, {'value': adresse, 'attr': {'class': 'form-control'}}) }}
     </div>
     <div class="form-group">
-    	{{ form_row(form.Commune) }}
+    	{{ form_row(form.Commune, {'attr': {'class': 'form-control'}}) }}
     </div>
     <div class="form-group">
-    	{{ form_row(form.Categorie) }}
+    	{{ form_row(form.Categorie, {'attr': {'class': 'form-control'}}) }}
     </div>
     <div class="form-group">
-    	{{ form_row(form.Priorite) }}
+    	{{ form_row(form.Priorite, {'attr': {'class': 'form-control'}}) }}
     </div>
     <div class="form-group">
-    	{{ form_row(form.Image1) }}
-    	{{ form_row(form.Image2) }}
-    	{{ form_row(form.Image3) }}
-    	{{ form_row(form.Image4) }}
+    	{{ form_row(form.Image1, {'attr': {'class': 'form-control'}}) }}
+    	{{ form_row(form.Image2, {'attr': {'class': 'form-control'}}) }}
+    	{{ form_row(form.Image3, {'attr': {'class': 'form-control'}}) }}
+    	{{ form_row(form.Image4, {'attr': {'class': 'form-control'}}) }}
     </div>
 
-    <button class="btn">{{ button_label|default('Save') }}</button>
+    <div class="row">
+        <div class="col">
+            <a class="btn btn-primary btn-lg btn-block" href="{{ path('commune_index') }}">back to list</a>
+        </div>
+        <div class="col">
+            <button class="btn btn-success btn-lg btn-block">{{ button_label|default('Save') }}</button>
+        </div>
+    </div>
 {{ form_end(form) }}

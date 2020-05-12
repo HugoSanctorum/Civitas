@@ -23,10 +23,6 @@
 
         let contour = JSON.parse(document.getElementById("mapid").dataset.contour);
 
-        /*for(let tab of contour[0]){
-            tab.reverse();
-        }*/
-
         let feature = {
             "type": "Feature",
             "geometry": {
@@ -62,8 +58,8 @@
 
 		map.on('click', function(e){
 			if(addmarker) addmarker.remove(map);
-			addmarker = L.marker(e.latlng, {icon: questionmarker}).addTo(map);			    
-			addmarker.bindPopup('<b>Ajouter un nouveau <a href="/probleme/new?lat=' + e.latlng.lat + '&lng=' + e.latlng.lng + '">problème</a> ici ?').openPopup();
+			addmarker = L.marker(e.latlng, {icon: questionmarker}).addTo(map);
+			addmarker.bindPopup('<b>Ajouter un nouveau <a href="/probleme/new?lat=' + e.latlng.lat + '&lng=' + e.latlng.lng + '" data-toggle="modal" data-target="#modal">problème</a> ici ?').openPopup();
 		});
 	</script>
 {% endblock %}

@@ -1,0 +1,26 @@
+{{ form_start(form, {'attr': {'id': 'probleme_form', 'action': path('probleme_new')}}) }}
+    <div class="form-group">
+        {{ form_row(form.titre, {'attr': {'class': 'form-control'}}) }}
+    </div>
+    <div class="form-group">
+        {{ form_row(form.description, {'attr': {'class': 'form-control'}}) }}
+    </div>
+    <div class="form-group">
+        {{ form_row(form.localisation, {'value': adresse, 'attr': {'class': 'form-control', 'disabled': 'true'}}) }}
+    </div>
+    <div class="form-group">
+        {{ form_row(form.Commune, {'attr': {'class': 'form-control'}}) }}
+    </div>
+    <div class="form-group">
+        {{ form_row(form.Categorie, {'attr': {'class': 'form-control'}}) }}
+    </div>
+    <div class="form-group">
+        {{ form_row(form.Priorite, {'attr': {'class': 'form-control'}}) }}
+    </div>
+    <div class="form-group">
+        {{ form_widget(form.Image1, {'attr': {'class': 'form-control', 'hidden': 'true'}}) }}
+        {{ form_widget(form.Image2, {'attr': {'class': 'form-control', 'hidden': 'true'}}) }}
+        {{ form_widget(form.Image3, {'attr': {'class': 'form-control', 'hidden': 'true'}}) }}
+        {{ form_widget(form.Image4, {'attr': {'class': 'form-control', 'hidden': 'true'}}) }}
+    </div>
+{{ form_end(form) }}
