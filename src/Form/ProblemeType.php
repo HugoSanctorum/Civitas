@@ -8,6 +8,7 @@ use App\Entity\Image;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -32,8 +33,8 @@ class ProblemeType extends AbstractType
             ->add('description')
             ->add('date_de_declaration')
             ->add('localisation')
+            ->add('nomVille', HiddenType::class, ["mapped" => false])
             ->add('reference')
-            ->add('Commune')
             ->add('Categorie')
             ->add('Priorite');
         $builder->addEventListener(
@@ -101,7 +102,8 @@ class ProblemeType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => Probleme::class
+            'data_class' => Probleme::class,
+            'allow_extra_fields' => true
         ]);
     }
 }
