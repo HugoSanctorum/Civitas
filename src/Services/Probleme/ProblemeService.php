@@ -17,6 +17,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
+use Symfony\Component\Filesystem\Filesystem;
 
 
 class ProblemeService extends AbstractController
@@ -34,7 +36,7 @@ class ProblemeService extends AbstractController
         $this->personne = $tokenStorageInterface->getToken()->getUser();
     }
 
-    public function CreateNewProblemeAuthentificated($probleme,$personne)
+    public function CreateNewProblemeMailExisting($probleme, $personne)
     {
         $this->entityManager->persist($probleme);
 
@@ -49,10 +51,11 @@ class ProblemeService extends AbstractController
         $this->entityManager->persist($intervenir);
         $this->entityManager->flush();
 
-        $this->mailerService->sendMailToSignaleurNewProbleme($this->personne,$probleme);
+        $this->mailerService->sendMailToSignaleurNewProbleme($personne, $probleme);
     }
 
-    public function CreateNewIntervenirNonAuthentificated($probleme,$mail){
+    public function CreateNewIntervenirNonAuthentificated($probleme, $mail)
+    {
 
         $intervenir = new Intervenir();
         $personne = new Personne();
@@ -68,12 +71,12 @@ class ProblemeService extends AbstractController
 
         $this->entityManager->persist($intervenir);
         $this->entityManager->persist($personne);
-        $this->entityManager->flush();
-        $this->mailerService->sendMailToSignaleurNewProbleme($personne,$probleme);
+        $this->mailerService->sendMailToSignaleurNewProbleme($personne, $probleme);
 
     }
 
-    public function CreateNewHistoriqueStatut($probleme){
+    public function CreateNewHistoriqueStatut($probleme)
+    {
         $statut = $this->statutRepository->findOneBy(['nom' => 'Nouveau']);
         $historiqueStatut = new HistoriqueStatut();
 
@@ -85,10 +88,10 @@ class ProblemeService extends AbstractController
 
     }
 
-    public function UploadImagesNewProbleme($tabImageToProblemes,$probleme)
+    public function UploadImagesNewProbleme($tabImageToProblemes, $probleme)
     {
         foreach ($tabImageToProblemes as $tabImageToProbleme) {
-            $i=1;
+            $i = 1;
             if ($tabImageToProbleme) {
                 $originalFilename = pathinfo($tabImageToProbleme->getClientOriginalName(), PATHINFO_FILENAME);
                 $safeFilename = transliterator_transliterate(
@@ -106,12 +109,55 @@ class ProblemeService extends AbstractController
                     $this->addFlash('danger',
                         'Error on fileUpload :' . $e->getMessage());
                 }
-                    $imageArray[$i] = new Image();
-                    $imageArray[$i]->setProbleme($probleme);
-                    $imageArray[$i]->setURL($newFilename);
-                    $this->entityManager->persist($imageArray[$i]);
-                    $this->entityManager->flush();
-                }
+                $imageArray[$i] = new Image();
+                $imageArray[$i]->setProbleme($probleme);
+                $imageArray[$i]->setURL($newFilename);
+                $this->entityManager->persist($imageArray[$i]);
+                $this->entityManager->flush();
             }
         }
+    }
+
+    public function GetUrlFromThosesImages($tabImages)
+    {
+        $url=[];
+        foreach ($tabImages as $tabImage) {
+            if ($tabImage) {
+                $originalFilename = pathinfo($tabImage->getClientOriginalName(), PATHINFO_FILENAME);
+                $safeFilename = transliterator_transliterate(
+                    'Any-Latin; Latin-ASCII; [^A-Za-z0-9_] remove; Lower()',
+                    $originalFilename);
+                $newFilename = $safeFilename . '-' . uniqid() . '.' .
+                    $tabImage->guessExtension();
+                // Move the file to the directory where brochures are stored
+                try {
+                    $tabImage->move(
+                        $this->getParameter('probleme_directory'),
+                        $newFilename
+                    );
+                } catch (FileException $e) {
+                    $this->addFlash('danger',
+                        'Error on fileUpload :' . $e->getMessage());
+                }
+                array_push($url,$newFilename);
+            }
+        }
+        return $url;
+    }
+    public function PersistUrlWithProbleme($tabUrl, $probleme){
+        foreach($tabUrl as $Url){
+            $image= new Image();
+            $image->setProbleme($probleme);
+            $image->setURL($Url);
+            $this->entityManager->persist($image);
+            $this->entityManager->flush();
+        }
+    }
+    public function DeleteThosesImages($tabImage){
+        $path = $this->getParameter('kernel.public');
+        foreach ($tabImage as $image){
+            $filesystem = new Filesystem();
+            $filesystem->remove([null,$path,$image]);
+        }
+    }
 }
