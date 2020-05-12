@@ -60,7 +60,9 @@ class ProblemeController extends AbstractController
     public function new(
         Request $request,
         GeocoderService $geocoderService,
-        SessionInterface $session, ProblemeService $problemeService
+        SessionInterface $session,
+        ProblemeService $problemeService,
+        CommuneRepository $communeRepository
     ): Response
     {
         $probleme = new Probleme();
@@ -73,10 +75,25 @@ class ProblemeController extends AbstractController
         $lat = $request->query->get('lat');
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             $loc = $session->get("adresse");
-            if($loc) $probleme->setLocalisation($loc);
-            
+            if($loc){
+                $probleme->setLocalisation($loc);
+                $session->remove("adresse");
+            }
+
+            $nom_ville = $request->request->all()["probleme"]["nomVille"];
+
+            if(!$nom_ville) $nom_ville = $geocoderService->getNomCommuneFromAdress($loc);
+
+            $commune = $communeRepository->findCommuneByName($nom_ville);
+
+            if(empty($commune)){
+                return $this->render("erreurs/communeNotFound.html.twig", [
+                    'commune' => $nom_ville
+                ]);
+            }
+            else $probleme->setCommune($commune[0]);
+                
             if ($this->personne != "anon.") {
                 $problemeService->CreateNewProblemeAuthentificated($probleme, $this->personne);
                 return new RedirectResponse("/probleme");

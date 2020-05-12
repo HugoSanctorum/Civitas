@@ -41,12 +41,18 @@ class GeocoderService{
     	return $result->first()->getFormattedAddress();
     }
 
-    function getCommuneFromAdress(string $adress) : ?Commune
+    function getNomCommuneFromAdress(string $adress) : ?string
     {
         $result = $this->geocoder->geocodeQuery(GeocodeQuery::create($adress));
         $nom_commune = $result->first()->getLocality();
-        $query = $this->communeRepository->findCommuneByName($nom_commune);
-        if(empty($query)) return null;
-        else return $query[0];
+        if($nom_commune) return $nom_commune;
+        else return null;
+    }
+
+    function getEntityCommuneFromName(string $nom) : ?Commune
+    {
+        $query = $this->communeRepository->findCommuneByName($nom);
+        if(!empty($query)) return $query[0];
+        else return null;
     }
 }
