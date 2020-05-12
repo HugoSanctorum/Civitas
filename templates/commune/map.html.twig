@@ -1,0 +1,63 @@
+{% block map %}
+    <script type="text/javascript">
+    	let questionmarker = L.AwesomeMarkers.icon({
+            prefix: 'fa',
+            icon: "question",
+            markerColor: "orange"
+        });
+
+        let addmarker = "";
+
+        let map = L.map('mapid');
+        L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+            maxZoom: 18,
+            id: 'mapbox/streets-v11',
+            tileSize: 512,
+            zoomOffset: -1,
+            accessToken: 'pk.eyJ1IjoiYW5hY29tYiIsImEiOiJjazltdG82d2EwMnp5M21scGc1cWdtOGM3In0.WbSl0RvM9KcZkU3C4EDrug'
+        }).addTo(map);
+        
+        let centre = JSON.parse(document.getElementById("mapid").dataset.centre).reverse();
+		map.setView(centre, 13);
+
+        let contour = JSON.parse(document.getElementById("mapid").dataset.contour);
+
+        let feature = {
+            "type": "Feature",
+            "geometry": {
+                "type": "Polygon",
+                "coordinates": contour
+            }
+        };
+
+        let featureStyle = {
+            "color": "#000",
+            "weight": 0.8,
+            "opacity": 0.8,
+            "fillOpacity": 0.1
+        };
+
+        L.geoJSON(feature, {
+            style: featureStyle      
+        }).addTo(map);
+
+        let problemes = JSON.parse(document.getElementById("mapid").dataset.problemes);
+
+        for(probleme of problemes){
+            let markerstyle = L.AwesomeMarkers.icon({
+                prefix: 'fa',
+                icon: probleme.marker_icone ? probleme.marker_icone : "times-circle",
+                markerColor: probleme.marker_color
+            });
+            let marker = L.marker(probleme.coordonnees, {icon: markerstyle}).addTo(map);
+            marker.bindPopup('<b>' + probleme.titre + '</b></br><i>' + probleme.statut + '</i></br><a href="/probleme/'+ probleme.id +'">Voir le problème</a>');
+        }
+
+		map.locate({setView: true, maxZoom: 16});
+
+		map.on('click', function(e){
+			//a faire
+		});
+	</script>
+{% endblock %}

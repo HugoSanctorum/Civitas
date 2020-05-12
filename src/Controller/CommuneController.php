@@ -5,6 +5,8 @@ namespace App\Controller;
 use App\Entity\Commune;
 use App\Form\CommuneType;
 use App\Repository\CommuneRepository;
+use App\Repository\HistoriqueStatutRepository;
+use App\Repository\StatutRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,6 +15,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 use App\Services\Personne\PermissionChecker;
 use App\Services\Geoquery\Geoquery;
+use App\Services\Geocoder\GeocoderService;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
@@ -77,7 +80,7 @@ class CommuneController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="commune_show", methods={"GET"})
+     * @Route("/{id}", name="commune_show", methods={"GET"}, requirements={"id"="\d+"})
      */
     public function show(Commune $commune): Response
     {
@@ -94,7 +97,7 @@ class CommuneController extends AbstractController
     }
 
     /**
-     * @Route("/{id}/edit", name="commune_edit", methods={"GET","POST"})
+     * @Route("/{id}/edit", name="commune_edit", methods={"GET","POST"}, requirements={"id"="\d+"})
      */
     public function edit(Request $request, Commune $commune): Response
     {
@@ -114,7 +117,7 @@ class CommuneController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="commune_delete", methods={"DELETE"})
+     * @Route("/{id}", name="commune_delete", methods={"DELETE"}, requirements={"id"="\d+"})
      */
     public function delete(Request $request, Commune $commune): Response
     {
@@ -125,5 +128,42 @@ class CommuneController extends AbstractController
         }
 
         return $this->redirectToRoute('commune_index');
+    }
+
+    /**
+     * @Route("/manage", name="commune_manage", methods={"GET"})
+     */
+    public function manage(
+        CommuneRepository $communeRepository,
+        HistoriqueStatutRepository $historiqueStatutRepository,
+        StatutRepository $statutRepository,
+        GeocoderService $geocoderService
+    ): Response
+    {
+        if(!$this->permissionChecker->isUserGranted(["GET_OTHER_PROBLEME"])){
+            return new RedirectResponse("/");
+        }
+        $commune = $this->user->getCommune();
+        $problemes = $commune->getProblemes();
+        $infos_problemes = [];
+
+        foreach ($problemes as $probleme) {
+            $hs = $historiqueStatutRepository->findLatestHistoriqueStatutForOneProblem($probleme);
+            $statut = $statutRepository->findStatutById($hs[0]['statut_id'])->getNom();
+            array_push($infos_problemes, [
+                "id" => $probleme->getId(),
+                "titre" => $probleme->getTitre(),
+                "statut" => $statut,
+                "marker_color" => $probleme->getCategorie()->getCouleur(),
+                "marker_icone" => $probleme->getCategorie()->getIcone(),
+                "coordonnees" => $geocoderService->getCoordinateFromAdress($probleme->getLocalisation())
+            ]);
+        }
+
+        return $this->render('commune/manage.html.twig', [
+            'commune' => $commune,
+            'problemes' => $infos_problemes,
+            'statuts' => $statutRepository->findAll()
+        ]);
     }
 }

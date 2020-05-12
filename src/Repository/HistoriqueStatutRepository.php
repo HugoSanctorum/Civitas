@@ -65,6 +65,27 @@ class HistoriqueStatutRepository extends ServiceEntityRepository
         return $stmt->fetchAll();
     }
 
+    public function findLatestHistoriqueStatutForOneProblem(Probleme $probleme)
+    {
+        $conn = $this->getEntityManager()->getConnection();
+
+        $sql = '
+            SELECT *
+            FROM historique_statut
+            WHERE probleme_id = :probleme
+                AND date = 
+                (
+                    SELECT MAX(date)
+                    FROM historique_statut
+                    WHERE probleme_id = :probleme
+                )
+            ';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute(['probleme' => $probleme->getId()]);
+
+        return $stmt->fetchAll();
+    }
+
     public function findLatestHistoriqueStatutByProblem()
     {
         $conn = $this->getEntityManager()->getConnection();

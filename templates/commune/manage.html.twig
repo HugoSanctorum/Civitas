@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+{% use 'commune/map.html.twig' %}
+
+{% block title %}Commune index{% endblock %}
+
+{% block body %}
+
+{% if is_granted('ROLE_USER') %}
+    <div id="mapid" class="fill" data-centre="{{ commune.centre|json_encode|e('html_attr') }}" data-contour="{{ commune.contour|json_encode|e('html_attr') }}" data-problemes="{{ problemes|json_encode|e('html_attr') }}"></div>
+{% else %}
+    <div class="fill">
+        <div class="container">
+            <a href="/login" type="button" style="margin-top:25%;" class="btn btn-success btn-lg btn-block">Se connecter <i class="fa fa-user"></i></a>
+        </div>
+    </div>
+{% endif %}
+
+{% endblock %}
+
+{% block map %} {{ parent() }} {% endblock %}
