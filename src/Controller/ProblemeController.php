@@ -12,6 +12,7 @@ use App\Form\RedirectProblemeType;
 use App\Repository\CategorieRepository;
 use App\Repository\CommuneRepository;
 use App\Repository\ImageRepository;
+use App\Repository\PersonneRepository;
 use App\Repository\PrioriteRepository;
 use App\Repository\ProblemeRepository;
 use App\Repository\StatutRepository;
@@ -76,6 +77,13 @@ class ProblemeController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $loc = $session->get("adresse");
+
+            $tabImageToProblemes = [];
+            for ($i = 1; $i <= 4; $i++) {
+                $imageToProbleme = $form['Image' . $i]->getData();
+                array_push($tabImageToProblemes, $imageToProbleme);
+            }
+
             if($loc){
                 $probleme->setLocalisation($loc);
                 $session->remove("adresse");
@@ -94,9 +102,11 @@ class ProblemeController extends AbstractController
             }
             else $probleme->setCommune($commune[0]);
                 
+
             if ($this->personne != "anon.") {
-                $problemeService->CreateNewProblemeAuthentificated($probleme, $this->personne);
-                return new RedirectResponse("/probleme");
+                $problemeService->CreateNewProblemeMailExisting($probleme, $this->personne);
+                $problemeService->UploadImagesNewProbleme($tabImageToProblemes, $probleme);
+
             } else {
                 $session->set('titre', $probleme->getTitre());
                 $session->set('description', $probleme->getDescription());
@@ -104,16 +114,13 @@ class ProblemeController extends AbstractController
                 $session->set('commune', $probleme->getCommune());
                 $session->set('categorie', $probleme->getCategorie());
                 $session->set('priorite', $probleme->getPriorite());
+                $session->set('urlImages',$problemeService->GetUrlFromThosesImages($tabImageToProblemes));
                 return $this->redirectToRoute('probleme_redirect', [
                     'titre' => $probleme->getTitre(),
                 ]);
             }
-            $tabImageToProblemes = [];
-            for ($i = 1; $i <= 4; $i++) {
-                $imageToProbleme = $form['Image' . $i]->getData();
-                array_push($tabImageToProblemes, $imageToProbleme);
-            }
-            $problemeService->UploadImagesNewProbleme($tabImageToProblemes, $probleme);
+
+            return new RedirectResponse("/probleme");
         }
 
         $lng && $lat ? $adresse = $geocoderService->getAdressFromCoordinate($lat, $lng) : $adresse = null;
@@ -177,7 +184,7 @@ class ProblemeController extends AbstractController
     /**
      * @Route("/redirect/{titre}", name="probleme_redirect", methods={"GET","POST"})
      */
-    public function redirectUserWhenAnonyme(ProblemeService $problemeService,Request $request,  SessionInterface $session,CommuneRepository $communeRepository,CategorieRepository $categorieRepository, PrioriteRepository $prioriteRepository): Response
+    public function redirectUserWhenAnonyme(PersonneRepository $personneRepository,ProblemeService $problemeService,Request $request,  SessionInterface $session,CommuneRepository $communeRepository,CategorieRepository $categorieRepository, PrioriteRepository $prioriteRepository): Response
     {
 
 
@@ -188,6 +195,7 @@ class ProblemeController extends AbstractController
         $probleme->setTitre($session->get('titre'));
         $probleme->setDescription($session->get('description'));
         $probleme->setLocalisation($session->get('localisation'));
+        $tabUrl = $session->get('urlImages');
 
         $commune = $communeRepository->findOneBy(['id'=> $session->get('commune')->getId()]);
         $categorie =$categorieRepository->findOneBy(['id' =>$session->get('categorie')->getId()]);
@@ -202,15 +210,19 @@ class ProblemeController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($probleme);
-            $problemeService->CreateNewIntervenirNonAuthentificated($probleme,$request->request->all()["redirect_probleme"]["mail"]);
-            $entityManager->flush();
-            $tabImageToProblemes = [];
-            for ($i = 1; $i <= 4; $i++) {
-                $imageToProbleme = $form['Image' . $i]->getData();
-                array_push($tabImageToProblemes, $imageToProbleme);
+            $mail = $request->request->all()["redirect_probleme"]["mail"];
+            $isExisting = $personneRepository->findOneBy(['mail'=>$mail]);
+            if($isExisting){
+                $problemeService->CreateNewProblemeMailExisting($probleme,$isExisting);
+            }else{
+                $problemeService->CreateNewIntervenirNonAuthentificated($probleme,$mail);
+                $problemeService->PersistUrlWithProbleme($tabUrl, $probleme);
             }
-            $problemeService->UploadImagesNewProbleme($tabImageToProblemes, $probleme);
+            $entityManager->flush();
+
             return $this->redirectToRoute('probleme_index');
+        }else{
+/*             $problemeService->DeleteThosesImages($tabUrl);*/
         }
         return $this->render('probleme/redirect.html.twig',[
             'form' => $form->createView()
