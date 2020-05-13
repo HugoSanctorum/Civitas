@@ -10,6 +10,9 @@ parameters:
     avatar_directory: '%kernel.project_dir%/public/images/users/avatar'
     probleme_path: '/probleme'
     probleme_directory: '%kernel.project_dir%/public/probleme'
+    document_path: '/document'
+    document_directory: '%kernel.project_dir%/public/document'
+
 
 
 services:
