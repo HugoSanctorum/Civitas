@@ -7,7 +7,9 @@ use App\Entity\Image;
 use App\Entity\Intervenir;
 use App\Entity\HistoriqueStatut;
 use App\Entity\Personne;
+use App\Entity\Probleme;
 use App\Repository\HistoriqueStatutRepository;
+use App\Repository\ProblemeRepository;
 use App\Repository\StatutRepository;
 use App\Services\Mailer\MailerService;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -19,6 +21,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Validator\Constraints\Date;
 
 
 class ProblemeService extends AbstractController
@@ -27,13 +30,15 @@ class ProblemeService extends AbstractController
     private $statutRepository;
     private $mailerService;
     private $personne;
+    private $problemeRepository;
 
-    public function __construct(EntityManagerInterface $entityManager, StatutRepository $statutRepository, MailerService $mailerService, TokenStorageInterface $tokenStorageInterface)
+    public function __construct(ProblemeRepository $problemeRepository,EntityManagerInterface $entityManager, StatutRepository $statutRepository, MailerService $mailerService, TokenStorageInterface $tokenStorageInterface)
     {
         $this->entityManager = $entityManager;
         $this->statutRepository = $statutRepository;
         $this->mailerService = $mailerService;
         $this->personne = $tokenStorageInterface->getToken()->getUser();
+        $this->problemeRepository = $problemeRepository;
     }
 
     public function CreateNewProblemeMailExisting($probleme, $personne)
@@ -153,11 +158,21 @@ class ProblemeService extends AbstractController
             $this->entityManager->flush();
         }
     }
-    public function DeleteThosesImages($tabImage){
+    public function DeleteThosesImages($tabImage)
+    {
         $path = $this->getParameter('kernel.public');
-        foreach ($tabImage as $image){
+        foreach ($tabImage as $image) {
             $filesystem = new Filesystem();
-            $filesystem->remove([null,$path,$image]);
+            $filesystem->remove([null, $path, $image]);
         }
+    }
+
+    public function SetReference(Probleme $probleme){
+        $date = $probleme->getDateDeDeclaration();
+        $anneMois = $date->format('Ymd');
+        $string = $this->problemeRepository->findMaxId();
+        $id =((int)$string[1]);
+        $cell = 26;
+        $probleme->setReference($anneMois.($id+$cell));
     }
 }

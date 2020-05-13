@@ -51,7 +51,6 @@ class ProblemeType extends AbstractType
         $form->remove('reference');
         $form->remove('date_de_declaration');
         $entity->setDateDeDeclaration(new \DateTime('now'));
-        $entity->setReference(rand(1,2000));
         $form->add('Image1', FileType::class, [
             'label' => 'Image',
             'mapped' => false,

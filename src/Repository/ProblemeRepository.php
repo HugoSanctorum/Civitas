@@ -77,4 +77,11 @@ class ProblemeRepository extends ServiceEntityRepository
 
     }
 
+    public function findMaxId(){
+        return $this->createQueryBuilder('p')
+            ->select('MAX(p.id)')
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
 }

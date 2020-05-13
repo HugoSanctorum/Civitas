@@ -104,6 +104,7 @@ class ProblemeController extends AbstractController
                 
 
             if ($this->personne != "anon.") {
+                $problemeService->SetReference($probleme);
                 $problemeService->CreateNewProblemeMailExisting($probleme, $this->personne);
                 $problemeService->UploadImagesNewProbleme($tabImageToProblemes, $probleme);
 
@@ -205,7 +206,7 @@ class ProblemeController extends AbstractController
         $probleme->setCategorie($categorie);
         $probleme->setPriorite($priorite);
         $probleme->setDateDeDeclaration(new \DateTime('now'));
-        $probleme->setReference(456654456);
+        $problemeService->SetReference($probleme);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager = $this->getDoctrine()->getManager();
