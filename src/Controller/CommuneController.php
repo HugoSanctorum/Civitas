@@ -6,6 +6,7 @@ use App\Entity\Commune;
 use App\Form\CommuneType;
 use App\Repository\CommuneRepository;
 use App\Repository\HistoriqueStatutRepository;
+use App\Repository\CategorieRepository;
 use App\Repository\StatutRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -137,6 +138,7 @@ class CommuneController extends AbstractController
         CommuneRepository $communeRepository,
         HistoriqueStatutRepository $historiqueStatutRepository,
         StatutRepository $statutRepository,
+        CategorieRepository $categorieRepository,
         GeocoderService $geocoderService
     ): Response
     {
@@ -146,7 +148,7 @@ class CommuneController extends AbstractController
         $commune = $this->user->getCommune();
         $problemes = $commune->getProblemes();
         $infos_problemes = [];
-        $statuts = [];
+        $categories = [];
 
         foreach ($problemes as $probleme) {
             $hs = $historiqueStatutRepository->findLatestHistoriqueStatutForOneProblem($probleme);
@@ -154,6 +156,7 @@ class CommuneController extends AbstractController
             array_push($infos_problemes, [
                 "id" => $probleme->getId(),
                 "titre" => $probleme->getTitre(),
+                "categorie" => $probleme->getCategorie()->getNom(),
                 "statut" => $statut->getNom(),
                 "marker_color" => $statut->getCouleur(),
                 "marker_icone" => $statut->getIcone(),
@@ -161,14 +164,14 @@ class CommuneController extends AbstractController
             ]);
         }
 
-        foreach($statutRepository->findAll() as $statut){
-            array_push($statuts, $statut->getNom());
+        foreach($categorieRepository->findAll() as $categorie){
+            array_push($categories, $categorie->getNom());
         }
 
         return $this->render('commune/manage.html.twig', [
             'commune' => $commune,
             'problemes' => $infos_problemes,
-            'statuts' => $statuts
+            'categories' => $categories
         ]);
     }
 }

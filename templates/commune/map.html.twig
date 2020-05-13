@@ -1,3 +1,14 @@
+{% block moreStyle %}
+    <style type="text/css">
+        .leaflet-control-layers-selector{
+            margin-right:4%;
+            transform: scale(1.2);
+            -ms-transform: scale(1.2);
+            -webkit-transform: scale(1.2);
+            padding: 10px;
+        }
+    </style>
+{% endblock %}
 {% block map %}
     <script type="text/javascript">
     	let questionmarker = L.AwesomeMarkers.icon({
@@ -23,7 +34,7 @@
 
         let contour = JSON.parse(document.getElementById("mapid").dataset.contour);
 
-        let statuts = JSON.parse(document.getElementById("mapid").dataset.statuts);
+        let categories = JSON.parse(document.getElementById("mapid").dataset.categories);
 
         let feature = {
             "type": "Feature",
@@ -48,10 +59,10 @@
 
         let layers = new Map();
 
-        for(let statut of statuts){
+        for(let categorie of categories){
             let list = [];
             for(let probleme of problemes){
-                if(probleme.statut === statut){
+                if(probleme.categorie === categorie){
                     let markerstyle = L.AwesomeMarkers.icon({
                         prefix: 'fa',
                         icon: probleme.marker_icone ? probleme.marker_icone : "times-circle",
@@ -63,7 +74,7 @@
                     list.push(marker);                    
                 }
             }
-            if(list.length!=0) layers.set(statut, L.layerGroup(list));
+            if(list.length!=0) layers.set(categorie, L.layerGroup(list).addTo(map));
         }
 
         let overlays = {};
@@ -73,7 +84,7 @@
             overlays[newkey] = value;
         });
 
-        L.control.layers(null, overlays, {
+        let control = new L.Control.Layers(null, overlays, {
             collapsed:false
         }).addTo(map);
 
@@ -83,4 +94,9 @@
 			//a faire
 		});
 	</script>
+    <script type="text/javascript">
+        $( document ).ready(function() {
+            $(".leaflet-control-layers-list").prepend("<h3 class='text-primary'>Categorie</h3>");
+        });
+    </script>
 {% endblock %}

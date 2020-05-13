@@ -6,7 +6,7 @@
 {% block body %}
 
 {% if is_granted('ROLE_USER') %}
-    <div id="mapid" class="fill" data-centre="{{ commune.centre|json_encode|e('html_attr') }}" data-contour="{{ commune.contour|json_encode|e('html_attr') }}" data-problemes="{{ problemes|json_encode|e('html_attr') }}" data-statuts="{{ statuts|json_encode|e('html_attr') }}"></div>
+    <div id="mapid" class="fill" data-centre="{{ commune.centre|json_encode|e('html_attr') }}" data-contour="{{ commune.contour|json_encode|e('html_attr') }}" data-problemes="{{ problemes|json_encode|e('html_attr') }}" data-categories="{{ categories|json_encode|e('html_attr') }}"></div>
 {% else %}
     <div class="fill">
         <div class="container">
