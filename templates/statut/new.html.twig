@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+{% use 'statut/base.html.twig' %}
+
+{% block title %}New Statut{% endblock %}
+
+{% block moreStyle %} {{ parent() }} {% endblock %}
+
+{% block body %}
+    <h1>Create new Statut</h1>
+
+    {{ include('statut/_form.html.twig') }}
+
+    <a href="{{ path('statut_index') }}">back to list</a>
+{% endblock %}
+{% block moreScript %} {{ parent() }} {% endblock %}

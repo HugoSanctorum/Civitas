@@ -1,0 +1,73 @@
+{% block moreStyle %}
+	<style type="text/css">
+		.huebee__container {
+	  		background: white;
+	  	}
+		.huebee__cursor {
+		 	width: 30px;
+		  	height: 30px;
+		  	padding: 1px;
+		  	border: 3px solid black;
+		}
+	</style>
+{% endblock %}
+{% block moreScript %}
+	<script type="text/javascript">
+	    $( document ).ready(function() {
+	        $('.icp-dd').iconpicker();
+	        var elem = $('.colorpicker')[0];
+			var hueb = new Huebee( elem, {
+			  	customColors: [ '#d63e2a', '#f0932f', '#72af26', '#38aadd', '#d252b9', '#a13336', '#0067a3', '#728224', '#5b396b', '#436978' ],
+				shades: 0,
+				hues: 5,
+				staticOpen: true
+			});
+			hueb.on( 'change', function( color, hue, sat, lum ) {
+				let couleur = "";
+				switch (color) {
+					case '#d63e2a':
+						couleur = "red";
+						break;
+					case '#a13336':
+						couleur = "darkred";
+						break;
+					case '#f0932f':
+						couleur = "orange";
+						break;
+					case '#72af26':
+						couleur = "green";
+						break;
+					case '#728224':
+						couleur = "darkgreen";
+						break;
+					case '#38aadd':
+						couleur = "blue";
+						break;
+					case '#d252b9':
+						couleur = "purple";
+						break;
+					case '#5b396b':
+						couleur = "darkpurple";
+						break;
+					case '#436978':
+						couleur = "cadetblue";
+						break;
+					case '#0067a3':
+						couleur = "darkblue";
+						break;
+					default:
+						couleur = "";
+
+				}
+				$('#statut_couleur').val(couleur);
+			});
+	    });
+
+	    $('.icp').on('iconpickerSelected', function (e) {
+	    	$icone = document.getElementById('statut_icone');
+	    	let str = e.iconpickerInstance.options.fullClassFormatter(e.iconpickerValue);
+	    	let newstr = str.substring(7);
+	        $icone.value = newstr;
+	    });
+    </script>
+{% endblock %}

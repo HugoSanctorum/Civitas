@@ -28,6 +28,16 @@ class Statut
      */
     private $HistoriqueStatut;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $couleur;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $icone;
+
     public function __construct()
     {
         $this->HistoriqueStatut = new ArrayCollection();
@@ -84,6 +94,30 @@ class Statut
     public function __toString()
     {
         return $this->getNom();
+    }
+
+    public function getCouleur(): ?string
+    {
+        return $this->couleur;
+    }
+
+    public function setCouleur(?string $couleur): self
+    {
+        $this->couleur = $couleur;
+
+        return $this;
+    }
+
+    public function getIcone(): ?string
+    {
+        return $this->icone;
+    }
+
+    public function setIcone(?string $icone): self
+    {
+        $this->icone = $icone;
+
+        return $this;
     }
 
 }

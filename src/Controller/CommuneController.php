@@ -150,13 +150,13 @@ class CommuneController extends AbstractController
 
         foreach ($problemes as $probleme) {
             $hs = $historiqueStatutRepository->findLatestHistoriqueStatutForOneProblem($probleme);
-            $statut = $statutRepository->findStatutById($hs[0]['statut_id'])->getNom();
+            $statut = $statutRepository->findStatutById($hs[0]['statut_id']);
             array_push($infos_problemes, [
                 "id" => $probleme->getId(),
                 "titre" => $probleme->getTitre(),
-                "statut" => $statut,
-                "marker_color" => $probleme->getCategorie()->getCouleur(),
-                "marker_icone" => $probleme->getCategorie()->getIcone(),
+                "statut" => $statut->getNom(),
+                "marker_color" => $statut->getCouleur(),
+                "marker_icone" => $statut->getIcone(),
                 "coordonnees" => $geocoderService->getCoordinateFromAdress($probleme->getLocalisation())
             ]);
         }
