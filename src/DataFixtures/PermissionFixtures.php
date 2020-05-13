@@ -106,7 +106,15 @@ class PermissionFixtures extends Fixture
         	"UPDATE_SELF_CATEGORIE",
         	"UPDATE_OTHER_CATEGORIE",
         	"DELETE_SELF_CATEGORIE",
-        	"DELETE_OTHER_CATEGORIE"
+        	"DELETE_OTHER_CATEGORIE",
+
+            "GET_SELF_COMPTE_RENDU",
+            "GET_OTHER_COMPTE_RENDU",
+            "POST_COMPTE_RENDU",
+            "UPDATE_SELF_COMPTE_RENDU",
+            "UPDATE_OTHER_COMPTE_RENDU",
+            "DELETE_SELF_COMPTE_RENDU",
+            "DELETE_OTHER_COMPTE_RENDU"
         ];
 
         foreach ($permissions as $permission) {

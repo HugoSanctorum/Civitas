@@ -84,4 +84,26 @@ class ProblemeRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
+    public function findAllUnResolvedProblemeByPersonne($personne){
+        $historiqueStatuts = $this->historiqueStatutRepository->findLatestHistoriqueStatutByProblem();
+        $idHistoriqueStatut = [];
+        foreach ($historiqueStatuts as $historiqueStatut){
+            array_push($idHistoriqueStatut,$historiqueStatut['id']);
+        }
+        return $this->createQueryBuilder('p')
+            ->Join('p.HistoriqueStatuts','h')
+            ->join('h.Statut','s')
+            ->join('p.Intervenirs','i')
+            ->where("s.nom != 'Résolu'")
+            ->andWhere('h.id IN (:historiqueStatut)')
+            ->andWhere('i.Personne = :personne')
+            ->andWhere("i.description = 'Technicien'")
+            ->setParameter('personne', $personne)
+            ->setParameter('historiqueStatut', $idHistoriqueStatut)
+            ->orderBy('p.titre')
+            ->getQuery()
+            ->getResult();
+
+    }
+
 }
