@@ -1,0 +1,6 @@
+{% include 'email/style.html.twig' %}
+{% block body %}
+    Bonjour {{ personne.nom }} {{ personne.prenom }}, pour activer votre compte, veuillez cliquer sur ce lien.
+
+    <p><a href="{{ absolute_url(path('activation', {'token': token})) }}">Activer mon compte</a></p>
+{% endblock %}

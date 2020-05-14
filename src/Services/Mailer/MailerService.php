@@ -61,4 +61,19 @@ class MailerService extends AbstractController
             );
         $this->mailer->send($message);
     }
+
+    public function sendMailActivatedAccount(Personne $personne, String $token){
+        $message= (new \Swift_Message('Nouveau compte'))
+            ->setFrom('civitasnotification@gmail.com')
+            ->setTo($personne->getMail())
+            ->addPart(
+                $this->renderView('email/activatedAccount.html.twig',
+                    [
+                    "personne" => $personne,
+                    "token" => $token
+                    ]),
+                'text/html'
+            );
+        $this->mailer->send($message);
+    }
 }

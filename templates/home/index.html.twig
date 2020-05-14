@@ -10,6 +10,18 @@
 
 {% block body %}
 
+    {% for message in app.flashes('fail') %}
+        <div class="alert alert-danger">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
+    {% endfor %}
+
 {% if is_granted('ROLE_USER') %}
     <div id="mapid" class="fill" data-centre="{{ centre|json_encode|e('html_attr') }}" data-contour="{{ contour|json_encode|e('html_attr') }}" data-problemes="{{ problemes|json_encode|e('html_attr') }}"></div>
     {{ modal }}
@@ -21,7 +33,10 @@
     </div>
 {% endif %}
 
+
+
 {% endblock %}
 
 {% block map %} {{ parent() }} {% endblock %}
 {% block moreScript %} {{ parent() }} {% endblock %}
+
