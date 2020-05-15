@@ -3,3 +3,6 @@
 
     Merci {{ personne.nom }} {{ personne.prenom }} vous venez de signaler le probleme "{{ probleme }}".
 {% endblock %}
+{% block footer %}
+{% include 'email/unsubscribeMail.html.twig' %}
+{% endblock %}

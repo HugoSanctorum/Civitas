@@ -42,7 +42,7 @@
 		          {{ app.user }}
 		        </a>
 		        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-		          <a class="dropdown-item" href="/personne/{{app.user.id}}">Profil</a>
+		          <a class="dropdown-item" href={{ path('personne_profile') }}>Profil</a>
 		          <a class="dropdown-item" href="/logout">Déconnexion</a>
 		        </div>
 		    </span>

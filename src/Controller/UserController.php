@@ -75,4 +75,22 @@ class UserController extends AbstractController
             return $this->redirectToRoute('home_index');
         }
     }
+
+    /**
+     * @Route("unsubscribe/{subscribeToken}", name="unsubscribe")
+     */
+    public function Unsubscribe($subscribeToken){
+        $personne = $this->personneRepository->findOneBy(['subscribeToken' => $subscribeToken]);
+        if($personne === null) {
+            $this->addFlash('fail', 'l\'url saisie est invalide.');
+            return $this->redirectToRoute('home_index');
+        }else{
+            $this->addFlash("success",'vous êtes bien désabonné des mails.');
+            $personne->setSubscribeToken(null);
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($personne);
+            $em->flush();
+            return $this->redirectToRoute('home_index');
+        }
+    }
 }
