@@ -74,7 +74,7 @@ class CommuneController extends AbstractController
             return $this->redirectToRoute('commune_index');
         }
 
-        return $this->render('commune/new.html.twig', [
+        return $this->render('commune/editPassword.html.twig', [
             'commune' => $commune,
             'form' => $form->createView(),
         ]);

@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Personne;
 use App\Form\PersonneType;
 use App\Form\ProfileType;
+use App\Form\PasswdType;
 use App\Repository\PersonneRepository;
 use App\Services\Mailer\MailerService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -142,6 +143,38 @@ class PersonneController extends AbstractController
 
         return $this->render('personne/new.html.twig', [
             'personne' => $this->personne,
+            'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * @Route("/ModifierMotDePasse", name="personne_editPassword", methods={"GET","POST"})
+     */
+    public function editPassword(Request $request): Response
+    {
+        $form = $this->createForm(PasswdType::class);
+        $form->handleRequest($request);
+
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $oldPassword = $request->request->all()["passwd"]["oldPassword"];
+            $newPassword = $request->request->all()["passwd"]["newPassword"];
+            $newEncoded = $this->encoder->encodePassword($this->personne, $newPassword);
+
+            if($this->encoder->isPasswordValid($this->personne,$oldPassword)){
+                $this->personne->setPassword($newEncoded);
+                $this->addFlash('success','Votre mot de passe a bien été modifié :)');
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($this->personne);
+                $em->flush();
+                return $this->redirectToRoute('home_index');
+            }else{
+                $this->addFlash('fail','Mot de passe incorrect');
+                return $this->redirectToRoute('personne_editPassword');
+            }
+
+        }
+        return $this->render('password/editPassword.html.twig', [
             'form' => $form->createView(),
         ]);
     }

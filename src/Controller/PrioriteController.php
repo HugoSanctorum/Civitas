@@ -42,7 +42,7 @@ class PrioriteController extends AbstractController
             return $this->redirectToRoute('priorite_index');
         }
 
-        return $this->render('priorite/new.html.twig', [
+        return $this->render('priorite/editPassword.html.twig', [
             'priorite' => $priorite,
             'form' => $form->createView(),
         ]);

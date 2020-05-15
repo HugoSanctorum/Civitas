@@ -22,6 +22,7 @@
         </div>
     {% endfor %}
 
+
 {% if is_granted('ROLE_USER') %}
     <div id="mapid" class="fill" data-centre="{{ centre|json_encode|e('html_attr') }}" data-contour="{{ contour|json_encode|e('html_attr') }}" data-problemes="{{ problemes|json_encode|e('html_attr') }}"></div>
     {{ modal }}

@@ -42,7 +42,7 @@ class ImageController extends AbstractController
             return $this->redirectToRoute('image_index');
         }
 
-        return $this->render('image/new.html.twig', [
+        return $this->render('image/editPassword.html.twig', [
             'image' => $image,
             'form' => $form->createView(),
         ]);

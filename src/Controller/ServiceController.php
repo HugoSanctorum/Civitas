@@ -42,7 +42,7 @@ class ServiceController extends AbstractController
             return $this->redirectToRoute('service_index');
         }
 
-        return $this->render('service/new.html.twig', [
+        return $this->render('service/editPassword.html.twig', [
             'service' => $service,
             'form' => $form->createView(),
         ]);

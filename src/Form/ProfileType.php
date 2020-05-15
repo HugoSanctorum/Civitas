@@ -6,6 +6,7 @@ use App\Entity\Personne;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\DataMapper\CheckboxListMapper;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -21,9 +22,7 @@ class ProfileType extends AbstractType
             ->add('prenom')
             ->add('mail')
             ->add('username',TextType::class,[
-                'label' => 'Pseudo'])
-
-        ;
+                'label' => 'Pseudo']);
         $builder->addEventListener(
             FormEvents::PRE_SET_DATA,
             [$this, 'onPreSetData']
@@ -49,12 +48,14 @@ class ProfileType extends AbstractType
                 'data' => true
             ]);
         }
+
     }
 
         public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
             'data_class' => Personne::class,
+            'allow_extra_fields' => true
         ]);
     }
 }

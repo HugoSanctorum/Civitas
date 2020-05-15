@@ -42,7 +42,7 @@ class HistoriqueStatutController extends AbstractController
             return $this->redirectToRoute('historique_statut_index');
         }
 
-        return $this->render('historique_statut/new.html.twig', [
+        return $this->render('historique_statut/editPassword.html.twig', [
             'historique_statut' => $historiqueStatut,
             'form' => $form->createView(),
         ]);
