@@ -85,9 +85,14 @@ class Personne implements UserInterface,ArrayAccess
     private $username;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="string", length=255, nullable=true, unique=true)
      */
     private $activatedToken;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true, unique=true)
+     */
+    private $subscribeToken;
 
 
     public function __construct()
@@ -467,6 +472,18 @@ class Personne implements UserInterface,ArrayAccess
     public function setActivatedToken(?string $activatedToken): self
     {
         $this->activatedToken = $activatedToken;
+
+        return $this;
+    }
+
+    public function getSubscribeToken(): ?string
+    {
+        return $this->subscribeToken;
+    }
+
+    public function setSubscribeToken(?string $subscribeToken): self
+    {
+        $this->subscribeToken = $subscribeToken;
 
         return $this;
     }

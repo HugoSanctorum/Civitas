@@ -42,7 +42,7 @@ class RoleController extends AbstractController
             return $this->redirectToRoute('role_index');
         }
 
-        return $this->render('role/new.html.twig', [
+        return $this->render('role/editPassword.html.twig', [
             'role' => $role,
             'form' => $form->createView(),
         ]);

@@ -3,3 +3,6 @@
 
     Bonjour {{ signaleur }}, le probleme "{{ probleme }}" vient d'être affecté à un technicien.
 {% endblock %}
+{% block footer %}
+{% include 'email/unsubscribeMail.html.twig' %}
+{% endblock %}
