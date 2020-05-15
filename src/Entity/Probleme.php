@@ -29,11 +29,6 @@ class Probleme
     private $description;
 
     /**
-     * @ORM\Column(type="datetime")
-     */
-    private $date_de_declaration;
-
-    /**
      * @ORM\Column(type="string")
      */
     private $localisation;
@@ -112,18 +107,6 @@ class Probleme
     public function setDescription(string $description): self
     {
         $this->description = $description;
-
-        return $this;
-    }
-
-    public function getDateDeDeclaration(): ?\DateTimeInterface
-    {
-        return $this->date_de_declaration;
-    }
-
-    public function setDateDeDeclaration(\DateTimeInterface $date_de_declaration): self
-    {
-        $this->date_de_declaration = $date_de_declaration;
 
         return $this;
     }

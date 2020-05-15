@@ -164,6 +164,7 @@ class ProblemeController extends AbstractController
 
         return $this->render('probleme/edit.html.twig', [
             'probleme' => $probleme,
+            'adresse' => $probleme->getLocalisation(),
             'form' => $form->createView(),
         ]);
     }

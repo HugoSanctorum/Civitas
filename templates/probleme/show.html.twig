@@ -1,51 +1,152 @@
 {% extends 'base.html.twig' %}
+{% import "macros.html.twig" as macros %}
 
 {% block title %}Probleme{% endblock %}
 
 {% block body %}
+    <style type="text/css">
+        .historique{
+            padding-top: 8px;
+            padding-bottom: 8px;
+            padding-left: 1%;
+            padding-right: 1%;
+            -webkit-box-shadow: inset 0px 0px 4px 1px rgba(44,62,80,1);
+            -moz-box-shadow: inset 0px 0px 4px 1px rgba(44,62,80,1);
+            box-shadow: inset 0px 0px 4px 1px rgba(44,62,80,1);
+            border-radius: 6px;
+        }
+        .date_hs{
+            font-size: 10px;
+        }
+        .reference_num{
+            font-size: 60%;
+        }
+        .zoom-gallery img{
+            width:20%;
+        }
+        .section{
+            margin-top: 5%;
+        }
+    </style>
 
-    <h1>Probleme</h1>
+    <div class="jumbotron jumbotron-fluid">
+        <div class="container">
+            <h1 class="display-4">
+                {{ probleme.titre|capitalize }}
+                <span class="reference_num">
+                    (<a class="text-success" href="/probleme/{{probleme.id}}">{{probleme.reference}}</a>)
+                </span>
+            </h1>
+            <p class="lead">{{ macros.style_categorie(probleme.categorie, probleme.categorie.couleur, probleme.categorie.icone) }}</p>
+            <p>{{ probleme.description }}</p>
+        </div>
+    </div>
+    <div class="container">
+        {% set resolved = false %}
+        {% for hs in probleme.HistoriqueStatuts %}
+            {% if loop.last and hs.statut == "Résolu" %}
+                {% set resolved = true %}
+            {% endif %}
+        {% endfor %}
+        {{ macros.alert_priorite_probleme(probleme.priorite.poids, probleme.priorite.nom, resolved, probleme.id) }}
+        {% if images is empty %}    
+            <div class="alert alert-secondary alert-dismissible fade show" role="alert">
+                Aucune image pour ce problème.
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% endif %}  
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ probleme.id }}</td>
-            </tr>
-            <tr>
-                <th>Titre</th>
-                <td>{{ probleme.titre }}</td>
-            </tr>
-            <tr>
-                <th>Description</th>
-                <td>{{ probleme.description }}</td>
-            </tr>
-            <tr>
-                <th>Date_de_declaration</th>
-                <td>{{ probleme.dateDeDeclaration ? probleme.dateDeDeclaration|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-            <tr>
-                <th>Localisation</th>
-                <td>{{ probleme.localisation }}</td>
-            </tr>
-            <tr>
-                <th>Reference</th>
-                <td>{{ probleme.reference }}</td>
-            </tr>
-
-
-            {% for image in images %}
-            <tr>
-                <th>Image</th>
-                <img src="{{ asset('/probleme/'~image.url) }}">
-            </tr>
+        <div class="row section">
+            <div class="col"> 
+                <h4 class="text-primary">Liste des statuts du problème</h4>
+            </div>
+            <div class="col text-right">
+                <h4 class="text-primary ">
+                    <a href="/historiqueStatut/new"><i class="fa fa-plus-circle text-primary"></a></i>
+                </h4>
+            </div>
+        </div>
+        <div class="historique border border-primary">
+            {% for hs in probleme.HistoriqueStatuts %}
+                <div>
+                    {% if loop.last %}
+                        {% set style_latest, decoration = "badge-success", "font-weight-bold" %}
+                    {% else %}
+                        {% set style_latest, decoration = "badge-secondary", "font-weight-normal" %}
+                    {% endif %}
+                    <span class="badge {{style_latest}} date_hs">
+                        {{ hs.date ? hs.date|date('d-m-Y H\\hi') : '' }}
+                    </span>
+                    <i class="fa fa-arrow-right text-primary"></i>
+                    {{ macros.style_statut(hs.statut, hs.statut.couleur, hs.statut.icone, decoration) }} 
+                </div>
             {% endfor %}
-        </tbody>
-    </table>
+        </div>
+        <div class="row section">
+            <div class="col"> 
+                <h4 class="text-primary">Liste des interventions en cours</h4>
+            </div>
+            <div class="col text-right">
+                <h4 class="text-primary ">
+                    <a href="/intervenir/new"><i class="fa fa-plus-circle text-primary"></a></i>
+                </h4>
+            </div>
+        </div>
+        <div class="historique border border-primary">
+            {% for inter in probleme.Intervenirs %}
+                <div>
+                    <span class="badge badge-secondary date_hs">
+                        {{ inter.createdAt ? inter.createdAt|date('d-m-Y H\\hi') : '' }}
+                    </span>
+                    <i class="fa fa-arrow-right text-primary"></i> 
+                </div>
+            {% endfor %}
+        </div>
+        {% if images is not empty %}    
+            <h4 class="text-primary section">Liste des images</h4>
+            <div class="zoom-gallery">
+                {% for image in images %}
+                    <a href="{{ asset('/probleme/'~image.url) }}">
+                        <img class="img-thumbnail" src="{{ asset('/probleme/'~image.url) }}">
+                    </a>
+                {% endfor %}
+            </div>
+        {% endif %}  
 
-    <a href="{{ path('probleme_index') }}">back to list</a>
+        <div class="row section">
+            <div class="col">
+                <a class="btn btn-secondary btn-lg btn-block" href="{{ path('probleme_index') }}"><i class="fa fa-arrow-left"></i> retour</a>
+            </div>
+            <div class="col">
+                <a class="btn btn-primary btn-lg btn-block" href="{{ path('probleme_edit', {'id': probleme.id}) }}"><i class="fa fa-edit"></i> éditer</a>
+            </div>
+        </div>
 
-    <a href="{{ path('probleme_edit', {'id': probleme.id}) }}">edit</a>
+        {{ include('probleme/_delete_form.html.twig') }}
 
-    {{ include('probleme/_delete_form.html.twig') }}
+    </div>
+{% endblock %}
+{% block moreScript %}
+    <script type="text/javascript">
+        $('.zoom-gallery').magnificPopup({
+            delegate: 'a', 
+            type: 'image',
+            mainClass: 'mfp-with-zoom',
+            closeOnContentClick: false,
+            closeBtnInside: false,
+            gallery:{
+                enabled:true
+            },
+            zoom: {
+                enabled: true,
+                duration: 300,
+                easing: 'ease-in-out',
+                opener: function(openerElement) {
+                    return openerElement.is('img') ? openerElement : openerElement.find('img');
+                }
+            }
+        });
+    </script>
 {% endblock %}

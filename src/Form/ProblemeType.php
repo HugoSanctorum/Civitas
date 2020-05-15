@@ -31,7 +31,6 @@ class ProblemeType extends AbstractType
         $builder
             ->add('titre')
             ->add('description')
-            ->add('date_de_declaration')
             ->add('localisation')
             ->add('nomVille', HiddenType::class, ["mapped" => false])
             ->add('reference')
@@ -49,8 +48,6 @@ class ProblemeType extends AbstractType
         $entity = $event->getData();
 
         $form->remove('reference');
-        $form->remove('date_de_declaration');
-        $entity->setDateDeDeclaration(new \DateTime('now'));
         $form->add('Image1', FileType::class, [
             'label' => 'Image',
             'mapped' => false,

@@ -1,0 +1,89 @@
+{% macro style_statut(statut, color, icone, decoration) %}
+    <span class="{{decoration}}" style=
+    {% if color is same as("red") %}
+        "color:#d63e2a;" > <i class="fa fa-{{icone}}"></i> {{statut}}
+    {% elseif color is same as("darkred") %}
+        "color:#a13336;" > <i class="fa fa-{{icone}}"></i> {{statut}}
+    {% elseif color is same as("orange") %}
+        "color:#f0932f;" > <i class="fa fa-{{icone}}"></i> {{statut}}
+    {% elseif color is same as("green") %}
+        "color:#72af26;" > <i class="fa fa-{{icone}}"></i> {{statut}}
+    {% elseif color is same as("darkgreen") %}
+        "color:#728224;" > <i class="fa fa-{{icone}}"></i> {{statut}}
+    {% elseif color is same as("blue") %}
+        "color:#38aadd;" > <i class="fa fa-{{icone}}"></i> {{statut}}
+    {% elseif color is same as("purple") %}
+        "color:#d252b9;" > <i class="fa fa-{{icone}}"></i> {{statut}}
+    {% elseif color is same as("darkpurple") %}
+        "color:#5b396b;" > <i class="fa fa-{{icone}}"></i> {{statut}}
+    {% elseif color is same as("cadetblue") %}
+        "color:#436978;" > <i class="fa fa-{{icone}}"></i> {{statut}}
+    {% elseif color is same as("darkblue") %}
+        "color:#0067a3;" > <i class="fa fa-{{icone}}"></i> {{statut}}
+    {% else %}
+        ""> {{statut}}
+    {% endif %}
+    </span>
+{% endmacro %}
+
+{% macro style_categorie(categorie, color, icone) %}
+    <span class="badge badge-pill badge-light" style=
+    {% if color is same as("red") %}
+        "color:#d63e2a;" > <i class="fa fa-{{icone}}"></i> {{categorie}}
+    {% elseif color is same as("darkred") %}
+        "color:#a13336;" > <i class="fa fa-{{icone}}"></i> {{categorie}}
+    {% elseif color is same as("orange") %}
+        "color:#f0932f;" > <i class="fa fa-{{icone}}"></i> {{categorie}}
+    {% elseif color is same as("green") %}
+        "color:#72af26;" > <i class="fa fa-{{icone}}"></i> {{categorie}}
+    {% elseif color is same as("darkgreen") %}
+        "color:#728224;" > <i class="fa fa-{{icone}}"></i> {{categorie}}
+    {% elseif color is same as("blue") %}
+        "color:#38aadd;" > <i class="fa fa-{{icone}}"></i> {{categorie}}
+    {% elseif color is same as("purple") %}
+        "color:#d252b9;" > <i class="fa fa-{{icone}}"></i> {{categorie}}
+    {% elseif color is same as("darkpurple") %}
+        "color:#5b396b;" > <i class="fa fa-{{icone}}"></i> {{categorie}}
+    {% elseif color is same as("cadetblue") %}
+        "color:#436978;" > <i class="fa fa-{{icone}}"></i> {{categorie}}
+    {% elseif color is same as("darkblue") %}
+        "color:#0067a3;" > <i class="fa fa-{{icone}}"></i> {{categorie}}
+    {% else %}
+        ""> <i class="fa fa-folder-open"></i> {{categorie}}
+    {% endif %}
+    </span>
+{% endmacro %}
+
+{% macro alert_priorite_probleme(poids, nom, resolved, id) %}
+    {% if resolved %}
+        <div class="alert alert-success">
+            <h4 class="alert-heading"><i class="fa fa-check-circle"></i> RÉSOLU</h4>
+            <p class="mb-0">Ce problème est <span class="font-weight-bold">résolu</span>. Il peut être archivé.</p>
+        </div>
+    {% elseif poids < 64 %}
+        <div class="alert alert-info alert-dismissible">
+            <h4 class="alert-heading"><i class="fa fa-info-circle"></i> {{nom|upper}}</h4>
+            <p class="mb-0">Ce problème est classé comme <span class="font-weight-bold">{{nom}}</span>. Il requiert malgrès tout votre attention.</p>
+            <a href="/probleme/{{id}}/edit" class="close">
+                <span aria-hidden="true"><i class="fa fa-edit"></i></span>
+            </a>
+        </div>
+    {% elseif poids >= 64 and poids < 128 %}
+        <div class="alert alert-warning alert-dismissible">
+            <h4 class="alert-heading"><i class="fa fa-exclamation-triangle"></i> {{nom|upper}}</h4>
+            <p class="mb-0">Ce problème est classé comme <span class="font-weight-bold">{{nom}}</span>. Il nécessite d'être réglé rapidement.</p>
+            <a href="/probleme/{{id}}/edit" class="close">
+                <span aria-hidden="true"><i class="fa fa-edit"></i></span>
+            </a>
+        </div>
+    {% else %}
+        <div class="alert alert-danger alert-dismissible">
+            <h4 class="alert-heading"><i class="fa fa-exclamation-triangle"></i> {{nom|upper}}</h4>
+            <p class="mb-0">Ce problème est classé comme <span class="font-weight-bold">{{nom}}</span>. Il nécessite un traitement prioritaire.</p>
+            <a href="/probleme/{{id}}/edit" class="close">
+                <span aria-hidden="true"><i class="fa fa-edit"></i></span>
+            </a>
+        </div>
+    {% endif %}
+{% endmacro %}
+  

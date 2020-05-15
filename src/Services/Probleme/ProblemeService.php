@@ -168,11 +168,11 @@ class ProblemeService extends AbstractController
     }
 
     public function SetReference(Probleme $probleme){
-        $date = $probleme->getDateDeDeclaration();
-        $anneMois = $date->format('Ymd');
+        $date = new \DateTime();
+        $anneeMois = $date->format('Ymd');
         $string = $this->problemeRepository->findMaxId();
         $id =((int)$string[1]);
         $cell = 26;
-        $probleme->setReference($anneMois.($id+$cell));
+        $probleme->setReference($anneeMois.($id+$cell));
     }
 }
