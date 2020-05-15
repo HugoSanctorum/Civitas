@@ -68,10 +68,12 @@ class UserAuthenticator extends AbstractFormLoginAuthenticator
 
         $user = $this->entityManager->getRepository(Personne::class)->findOneBy(['mail' => $credentials['mail']]);
 
+
         if (!$user) {
             // fail authentication with a custom error
             throw new CustomUserMessageAuthenticationException('Mail could not be found.');
         }
+
 
         return $user;
     }
@@ -80,14 +82,21 @@ class UserAuthenticator extends AbstractFormLoginAuthenticator
     {
         // Check the user's password or other credentials and return true or false
         // If there are no credentials to check, you can just return true
+        if($this->passwordEncoder->isPasswordValid($user, $credentials['password'])){
+            if($user->getActivatedToken() != null){
+                throw  new CustomUserMessageAuthenticationException('Ce compte n\'est pas activé, veuillez vérifier vos mails.');
+            }
+        }
         return $this->passwordEncoder->isPasswordValid($user, $credentials['password']);
     }
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
+
         if ($targetPath = $this->getTargetPath($request->getSession(), $providerKey)) {
             return new RedirectResponse($targetPath);
         }
+
         return new RedirectResponse($this->urlGenerator->generate('home_index'));
     }
 

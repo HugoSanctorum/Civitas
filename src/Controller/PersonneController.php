@@ -5,15 +5,15 @@ namespace App\Controller;
 use App\Entity\Personne;
 use App\Form\PersonneType;
 use App\Repository\PersonneRepository;
+use App\Services\Mailer\MailerService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
 
-/**
- * @Route("/personne")
- */
+
 class PersonneController extends AbstractController
 {
 
@@ -24,7 +24,7 @@ class PersonneController extends AbstractController
         $this->encoder = $encoder;
     }
     /**
-     * @Route("/", name="personne_index", methods={"GET"})
+     * @Route("personne/", name="personne_index", methods={"GET"})
      */
     public function index(PersonneRepository $personneRepository): Response
     {
@@ -34,9 +34,9 @@ class PersonneController extends AbstractController
     }
 
     /**
-     * @Route("/new", name="personne_new", methods={"GET","POST"})
+     * @Route("/senregistrer", name="personne_new", methods={"GET","POST"})
      */
-    public function new(Request $request): Response
+    public function new(MailerService $mailerService,Request $request, TokenGeneratorInterface $tokenGenerator): Response
     {
         $personne = new Personne();
         $form = $this->createForm(PersonneType::class, $personne);
@@ -48,9 +48,12 @@ class PersonneController extends AbstractController
             $personne->setUsername($nom.'_'.$prenom);
             $plainPassword = $request->request->all()['personne']['password'];
             $encoded = $this->encoder->encodePassword($personne, $plainPassword);
+            $token = $tokenGenerator->generateToken();
+            $personne->setActivatedToken($token);
             $personne->setPassword($encoded);
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($personne);
+            $mailerService->sendMailActivatedAccount($personne,$token);
             $entityManager->flush();
 
             return $this->redirectToRoute('personne_index');
@@ -63,7 +66,7 @@ class PersonneController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="personne_show", methods={"GET"})
+     * @Route("personne/{id}", name="personne_show", methods={"GET"}, requirements={"id"="\d+"})
      */
     public function show(Personne $personne): Response
     {
@@ -73,7 +76,7 @@ class PersonneController extends AbstractController
     }
 
     /**
-     * @Route("/{id}/edit", name="personne_edit", methods={"GET","POST"})
+     * @Route("personne/{id}/edit", name="personne_edit", methods={"GET","POST"}, requirements={"id"="\d+"})
      */
     public function edit(Request $request, Personne $personne): Response
     {
@@ -93,7 +96,7 @@ class PersonneController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="personne_delete", methods={"DELETE"})
+     * @Route("personne/{id}", name="personne_delete", methods={"DELETE"}, requirements={"id"="\d+"})
      */
     public function delete(Request $request, Personne $personne): Response
     {

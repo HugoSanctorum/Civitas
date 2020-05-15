@@ -84,6 +84,11 @@ class Personne implements UserInterface,ArrayAccess
      */
     private $username;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $activatedToken;
+
 
     public function __construct()
     {
@@ -452,5 +457,17 @@ class Personne implements UserInterface,ArrayAccess
     public function offsetUnset($offset)
     {
         // TODO: Implement offsetUnset() method.
+    }
+
+    public function getActivatedToken(): ?string
+    {
+        return $this->activatedToken;
+    }
+
+    public function setActivatedToken(?string $activatedToken): self
+    {
+        $this->activatedToken = $activatedToken;
+
+        return $this;
     }
 }
