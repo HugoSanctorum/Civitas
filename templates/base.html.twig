@@ -1,6 +1,6 @@
-{% use 'navbar.html.twig' %}
-{% use 'css_import.html.twig' %}
-{% use 'js_import.html.twig' %}
+{% use 'assets/navbar.html.twig' %}
+{% use 'assets/css_import.html.twig' %}
+{% use 'assets/js_import.html.twig' %}
 
 <!DOCTYPE html>
 <html>
@@ -21,6 +21,7 @@
         {% endblock %}
         {% block importjs %}{{ parent() }}{% endblock %}
         {% block map %}{% endblock %}
+        {% block autoSearch %}{% endblock %}
         {% block moreScript %}{% endblock %}
     </body>
 </html>

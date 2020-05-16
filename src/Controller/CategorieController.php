@@ -42,7 +42,7 @@ class CategorieController extends AbstractController
             return $this->redirectToRoute('categorie_index');
         }
 
-        return $this->render('categorie/editPassword.html.twig', [
+        return $this->render('categorie/new.html.twig', [
             'categorie' => $categorie,
             'form' => $form->createView(),
         ]);

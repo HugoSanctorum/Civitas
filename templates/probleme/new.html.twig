@@ -1,12 +1,12 @@
 {% extends 'base.html.twig' %}
-{% use 'probleme/base.html.twig' %}
+{% use 'probleme/assets/base.html.twig' %}
 
 {% block title %}New Probleme{% endblock %}
 
 {% block body %}
     <h1>Create new Probleme</h1>
 
-    {{ include('probleme/_form.html.twig') }}
+    {{ include('probleme/forms/_form.html.twig') }}
 
 {% endblock %}
-{% block moreScript %} {{ parent() }} {% endblock %}
+{% block autoSearch %} {{ parent() }} {% endblock %}

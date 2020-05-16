@@ -57,7 +57,7 @@ class ManageRoleController extends AbstractController
             return $this->redirectToRoute('role_index');
         }
 
-        return $this->render('manageRole/editPassword.html.twig', [
+        return $this->render('manageRole/new.html.twig', [
             'personne' => 1,
             'form' => $form->createView(),
         ]);

@@ -57,7 +57,7 @@ class CompteRenduController extends AbstractController
             return $this->redirectToRoute('compte_rendu_index');
         }
 
-        return $this->render('compte_rendu/editPassword.html.twig', [
+        return $this->render('compte_rendu/new.html.twig', [
             'compte_rendu' => $compteRendu,
             'form' => $form->createView(),
         ]);

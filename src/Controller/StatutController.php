@@ -42,7 +42,7 @@ class StatutController extends AbstractController
             return $this->redirectToRoute('statut_index');
         }
 
-        return $this->render('statut/editPassword.html.twig', [
+        return $this->render('statut/new.html.twig', [
             'statut' => $statut,
             'form' => $form->createView(),
         ]);

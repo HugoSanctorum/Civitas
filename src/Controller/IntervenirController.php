@@ -85,7 +85,7 @@ class IntervenirController extends AbstractController
             return $this->redirectToRoute('intervenir_index');
         }
 
-        return $this->render('intervenir/editPassword.html.twig', [
+        return $this->render('intervenir/new.html.twig', [
             'intervenir' => $intervenir,
             'form' => $form->createView(),
         ]);

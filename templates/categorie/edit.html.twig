@@ -1,18 +1,36 @@
 {% extends 'base.html.twig' %}
-{% use 'categorie/base.html.twig' %}
+{% use 'categorie/assets/base.html.twig' %}
+{% set modal_delete %}
+    {% include 'categorie/assets/modal_delete.html.twig' %} 
+{% endset %}
 
-{% block title %}Edit Categorie{% endblock %}
+{% block title %}Éditer Categorie{% endblock %}
 
 {% block moreStyle %} {{ parent() }} {% endblock %}
 
 {% block body %}
-    <h1>Edit Categorie</h1>
 
-    {{ include('categorie/_form.html.twig', {'button_label': 'Update'}) }}
+    <div class="jumbotron jumbotron-fluid">
+		<div class="container">
+			<div class="row">
+                <div class="col">
+					<h1 class="display-4">Édition "{{categorie}}"</h1>
+                </div>
+                <div class="col text-right p-3">
+                    <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#modal">
+                        <i class="fa fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+		</div>
+	</div>
+	<div class="container">
+    	{{ include('categorie/forms/_form.html.twig', {'button_label': 'Update'}) }}
+    	{{ include('categorie/forms/_delete_form.html.twig') }}
+	</div>
 
-    <a href="{{ path('categorie_index') }}">back to list</a>
+	{{modal_delete}}
 
-    {{ include('categorie/_delete_form.html.twig') }}
 {% endblock %}
 
 {% block moreScript %} {{ parent() }} {% endblock %}

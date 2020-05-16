@@ -1,0 +1,4 @@
+<form id="commune_delete" method="post" action="{{ path('commune_delete', {'id': commune.id}) }}">
+    <input type="hidden" name="_method" value="DELETE">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ commune.id) }}">
+</form>

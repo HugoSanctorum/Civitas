@@ -1,42 +1,30 @@
 {% extends 'base.html.twig' %}
-{% import "macros.html.twig" as macros %}
+{% use 'probleme/assets/base.html.twig' %}
+{% import "assets/macros.html.twig" as macros %}
+{% set modal_delete %}
+    {% include 'probleme/assets/modal_delete.html.twig' %} 
+{% endset %}
 
 {% block title %}Probleme{% endblock %}
 
 {% block body %}
-    <style type="text/css">
-        .historique{
-            padding-top: 8px;
-            padding-bottom: 8px;
-            padding-left: 1%;
-            padding-right: 1%;
-            -webkit-box-shadow: inset 0px 0px 4px 1px rgba(44,62,80,1);
-            -moz-box-shadow: inset 0px 0px 4px 1px rgba(44,62,80,1);
-            box-shadow: inset 0px 0px 4px 1px rgba(44,62,80,1);
-            border-radius: 6px;
-        }
-        .date_hs{
-            font-size: 10px;
-        }
-        .reference_num{
-            font-size: 60%;
-        }
-        .zoom-gallery img{
-            width:20%;
-        }
-        .section{
-            margin-top: 5%;
-        }
-    </style>
-
     <div class="jumbotron jumbotron-fluid">
         <div class="container">
-            <h1 class="display-4">
-                {{ probleme.titre|capitalize }}
-                <span class="reference_num">
-                    (<a class="text-success" href="/probleme/{{probleme.id}}">{{probleme.reference}}</a>)
-                </span>
-            </h1>
+            <div class="row">
+                <div class="col">
+                    <h1 class="display-4">
+                        {{ probleme.titre|capitalize }}
+                        <span class="reference_num">
+                            (<a class="text-success" href="/probleme/{{probleme.id}}">{{probleme.reference}}</a>)
+                        </span>
+                    </h1>
+                </div>
+                <div class="col text-right p-3">
+                    <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#modal">
+                        <i class="fa fa-trash"></i>
+                    </button>
+                </div>
+            </div>
             <p class="lead">{{ macros.style_categorie(probleme.categorie, probleme.categorie.couleur, probleme.categorie.icone) }}</p>
             <p>{{ probleme.description }}</p>
         </div>
@@ -124,29 +112,7 @@
             </div>
         </div>
 
-        {{ include('probleme/_delete_form.html.twig') }}
+        {{modal_delete}}       
 
     </div>
-{% endblock %}
-{% block moreScript %}
-    <script type="text/javascript">
-        $('.zoom-gallery').magnificPopup({
-            delegate: 'a', 
-            type: 'image',
-            mainClass: 'mfp-with-zoom',
-            closeOnContentClick: false,
-            closeBtnInside: false,
-            gallery:{
-                enabled:true
-            },
-            zoom: {
-                enabled: true,
-                duration: 300,
-                easing: 'ease-in-out',
-                opener: function(openerElement) {
-                    return openerElement.is('img') ? openerElement : openerElement.find('img');
-                }
-            }
-        });
-    </script>
 {% endblock %}

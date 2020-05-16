@@ -1,13 +1,31 @@
 {% extends 'base.html.twig' %}
+{% use 'commune/assets/base.html.twig' %}
+{% set modal_delete %}
+    {% include 'commune/assets/modal_delete.html.twig' %} 
+{% endset %}
 
 {% block title %}Edit Commune{% endblock %}
 
 {% block body %}
-    <h1>Edit Commune</h1>
+    
+    <div class="jumbotron jumbotron-fluid">
+		<div class="container">
+			<div class="row">
+                <div class="col">
+					<h1 class="display-4">Édition "{{commune}}"</h1>
+                </div>
+                <div class="col text-right p-3">
+                    <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#modal">
+                        <i class="fa fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+		</div>
+	</div>
+	<div class="container">
+    	{{ include('commune/forms/_form.html.twig', {'button_label': 'Update'}) }}
+    </div>
 
-    {{ include('commune/_form.html.twig', {'button_label': 'Update'}) }}
-
-    <a href="{{ path('commune_index') }}">back to list</a>
-
-    {{ include('commune/_delete_form.html.twig') }}
+    {{modal_delete}}
+    
 {% endblock %}

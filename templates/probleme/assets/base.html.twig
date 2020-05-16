@@ -1,0 +1,73 @@
+{% block moreStyle %}
+	<style type="text/css">
+        .historique{
+            padding-top: 8px;
+            padding-bottom: 8px;
+            padding-left: 1%;
+            padding-right: 1%;
+            -webkit-box-shadow: inset 0px 0px 4px 1px rgba(44,62,80,1);
+            -moz-box-shadow: inset 0px 0px 4px 1px rgba(44,62,80,1);
+            box-shadow: inset 0px 0px 4px 1px rgba(44,62,80,1);
+            border-radius: 6px;
+        }
+        .date_hs{
+            font-size: 10px;
+        }
+        .reference_num{
+            font-size: 60%;
+        }
+        .zoom-gallery img{
+            width:20%;
+        }
+        .section{
+            margin-top: 5%;
+        }
+    </style>
+{% endblock %}
+
+{% block moreScript %}
+	<script type="text/javascript">
+        $('.zoom-gallery').magnificPopup({
+            delegate: 'a', 
+            type: 'image',
+            mainClass: 'mfp-with-zoom',
+            closeOnContentClick: false,
+            closeBtnInside: false,
+            gallery:{
+                enabled:true
+            },
+            zoom: {
+                enabled: true,
+                duration: 300,
+                easing: 'ease-in-out',
+                opener: function(openerElement) {
+                    return openerElement.is('img') ? openerElement : openerElement.find('img');
+                }
+            }
+        });
+    </script>
+{% endblock %}
+
+{% block autoSearch %}
+	<script type="text/javascript">
+		(function() {
+		  var placesAutocomplete = places({
+		    appId: 'pl6WHRUX0BCF',
+		    apiKey: 'd1036e535180c27b6723484a26b33de1',
+		    container: document.querySelector('#probleme_localisation'),
+		    templates: {
+		      value: function(suggestion) {
+		        return suggestion.name;
+		      }
+		    }
+		  }).configure({
+		  	countries: ['fr'],
+		    type: 'address',
+		    aroundLatLngViaIP: false,
+		  });
+		  placesAutocomplete.on('change', function resultSelected(e) {
+		    document.querySelector('#probleme_nomVille').value = e.suggestion.city || '';
+		  });
+		})();
+	</script>
+{% endblock %}

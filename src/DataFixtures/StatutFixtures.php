@@ -45,6 +45,14 @@ class StatutFixtures extends Fixture
         $this->addReference($statutResolu->getNom(),$statutResolu);
         $manager->persist($statutResolu);
 
+        $statutResolu = new Statut();
+        $statutResolu->setNom("Archivé");
+        $statutResolu->setCouleur("cadetblue");
+        $statutResolu->setIcone("archive");
+        $this->addReference($statutResolu->getNom(),$statutResolu);
+        $manager->persist($statutResolu);
+
+
         $manager->flush();
     }
 }

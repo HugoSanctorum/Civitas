@@ -127,7 +127,7 @@ class ProblemeController extends AbstractController
         $lng && $lat ? $adresse = $geocoderService->getAdressFromCoordinate($lat, $lng) : $adresse = null;
         if($adresse)$session->set('adresse', $adresse);
 
-        $adresse ? $render = "probleme/modalnew.html.twig" : $render = "probleme/editPassword.html.twig";
+        $adresse ? $render = "probleme/modalnew.html.twig" : $render = "probleme/new.html.twig";
 
         return $this->render($render, [
             'probleme' => $probleme,

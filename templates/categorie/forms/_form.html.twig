@@ -1,11 +1,13 @@
 {{ form_start(form) }}
     <div class="form-group">
-    	{{ form_row(form.nom) }}
+    	{{ form_row(form.nom, {'attr': {'class': 'form-control'}}) }}
     </div>
     <div class="form-group">
+        {{ form_label(form.couleur)}}
     	{{ form_row(form.couleur)}}
     	<input type="hidden" class="colorpicker">
     </div>
+    {{ form_label(form.icone)}}
     <div class="form-group">
     	<div class="btn-group">
             <button data-selected="graduation-cap" type="button"
@@ -18,5 +20,12 @@
         </div>
     </div>
     {{ form_row(form.icone) }}
-    <button class="btn btn-primary">{{ button_label|default('Save') }}</button>
+    <div class="row">
+        <div class="col">
+            <a class="btn btn-primary btn-lg btn-block" href="{{ path('categorie_index') }}">back to list</a>
+        </div>
+        <div class="col">
+            <button class="btn btn-success btn-lg btn-block">{{ button_label|default('Save') }}</button>
+        </div>
+    </div>
 {{ form_end(form) }}

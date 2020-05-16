@@ -1,17 +1,21 @@
 {% extends 'base.html.twig' %}
-{% use 'categorie/base.html.twig' %}
+{% use 'categorie/assets/base.html.twig' %}
 
-{% block title %}New Categorie{% endblock %}
+{% block title %}Nouvelle catégorie{% endblock %}
 
 {% block moreStyle %} {{ parent() }} {% endblock %}
 
 {% block body %}
-	
-    <h1>Create new Categorie</h1>
 
-    {{ include('categorie/_form.html.twig') }}
+	<div class="jumbotron jumbotron-fluid">
+		<div class="container">
+			<h1 class="display-4">Créer une nouvelle catégorie</h1>
+		</div>
+	</div>
+	<div class="container">
+    	{{ include('categorie/forms/_form.html.twig') }}
+    </div>
 
-    <a href="{{ path('categorie_index') }}">back to list</a>
 {% endblock %}
 
 {% block moreScript %} {{ parent() }} {% endblock %}
