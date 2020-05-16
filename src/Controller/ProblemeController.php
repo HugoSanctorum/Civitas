@@ -127,7 +127,7 @@ class ProblemeController extends AbstractController
         $lng && $lat ? $adresse = $geocoderService->getAdressFromCoordinate($lat, $lng) : $adresse = null;
         if($adresse)$session->set('adresse', $adresse);
 
-        $adresse ? $render = "probleme/modalnew.html.twig" : $render = "probleme/new.html.twig";
+        $adresse ? $render = "probleme/new.modal.html.twig" : $render = "probleme/new.html.twig";
 
         return $this->render($render, [
             'probleme' => $probleme,
@@ -156,13 +156,16 @@ class ProblemeController extends AbstractController
         $form = $this->createForm(ProblemeType::class, $probleme);
         $form->handleRequest($request);
 
+        if($request->query->get('statut')) $render = 'probleme/edit.modal.html.twig';
+        else $render = 'probleme/edit.html.twig';
+
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('probleme_index');
+            return $this->redirectToRoute('probleme_show', ['id' => $probleme->getId()]);
         }
 
-        return $this->render('probleme/edit.html.twig', [
+        return $this->render($render, [
             'probleme' => $probleme,
             'adresse' => $probleme->getLocalisation(),
             'form' => $form->createView(),

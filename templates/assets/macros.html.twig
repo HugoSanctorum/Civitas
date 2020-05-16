@@ -64,7 +64,7 @@
         <div class="alert alert-info alert-dismissible">
             <h4 class="alert-heading"><i class="fa fa-info-circle"></i> {{nom|upper}}</h4>
             <p class="mb-0">Ce problème est classé comme <span class="font-weight-bold">{{nom}}</span>. Il requiert malgrès tout votre attention.</p>
-            <a href="/probleme/{{id}}/edit" class="close">
+            <a href="/probleme/{{id}}/edit?statut=true" data-toggle="modal" data-target="#modal_statut" class="close">
                 <span aria-hidden="true"><i class="fa fa-edit"></i></span>
             </a>
         </div>
@@ -72,7 +72,7 @@
         <div class="alert alert-warning alert-dismissible">
             <h4 class="alert-heading"><i class="fa fa-exclamation-triangle"></i> {{nom|upper}}</h4>
             <p class="mb-0">Ce problème est classé comme <span class="font-weight-bold">{{nom}}</span>. Il nécessite d'être réglé rapidement.</p>
-            <a href="/probleme/{{id}}/edit" class="close">
+            <a href="/probleme/{{id}}/edit?statut=true" data-toggle="modal" data-target="#modal_statut" class="close">
                 <span aria-hidden="true"><i class="fa fa-edit"></i></span>
             </a>
         </div>
@@ -80,10 +80,9 @@
         <div class="alert alert-danger alert-dismissible">
             <h4 class="alert-heading"><i class="fa fa-exclamation-triangle"></i> {{nom|upper}}</h4>
             <p class="mb-0">Ce problème est classé comme <span class="font-weight-bold">{{nom}}</span>. Il nécessite un traitement prioritaire.</p>
-            <a href="/probleme/{{id}}/edit" class="close">
+            <a href="/probleme/{{id}}/edit?statut=true" data-toggle="modal" data-target="#modal_statut" class="close">
                 <span aria-hidden="true"><i class="fa fa-edit"></i></span>
             </a>
         </div>
     {% endif %}
 {% endmacro %}
-  

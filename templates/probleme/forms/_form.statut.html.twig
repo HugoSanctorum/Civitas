@@ -1,0 +1,25 @@
+{{ form_start(form, {'action':path('probleme_edit', {'id': probleme.id}), 'method': 'POST', 'attr': {'id': 'statut_form'}}) }}
+    <div class="form-group">
+        {{ form_widget(form.titre, {'attr': {'class': 'form-control', 'hidden': 'true'}}) }}
+    </div>
+    <div class="form-group">
+        {{ form_widget(form.description, {'attr': {'class': 'form-control', 'hidden': 'true'}}) }}
+    </div>
+    <div class="form-group">
+        {{ form_widget(form.localisation, {'attr': {'class': 'form-control', 'hidden': 'true'}}) }}
+    </div>
+    <div class="form-group">
+        {{ form_widget(form.Categorie, {'attr': {'class': 'form-control', 'hidden': 'true'}}) }}
+    </div>
+    <div class="form-group">
+        {{ form_row(form.Priorite, {'attr': {'class': 'form-control selectpicker show-tick'}}) }}
+    </div>
+    <div class="form-group">
+        {{ form_widget(form.Image1, {'attr': {'class': 'form-control', 'hidden': 'true'}}) }}
+        {{ form_widget(form.Image2, {'attr': {'class': 'form-control', 'hidden': 'true'}}) }}
+        {{ form_widget(form.Image3, {'attr': {'class': 'form-control', 'hidden': 'true'}}) }}
+        {{ form_widget(form.Image4, {'attr': {'class': 'form-control', 'hidden': 'true'}}) }}
+    </div>
+    <button class="btn">{{ button_label|default('Save') }}</button>
+
+{{ form_end(form) }}

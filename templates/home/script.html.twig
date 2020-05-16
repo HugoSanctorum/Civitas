@@ -3,7 +3,6 @@
 		$(document).ready(function() {
 			$('#modal').on('show.bs.modal', function (e) {
 		        let url = e.relatedTarget.href;
-		        console.log(url);
 		        $.get(url, function (data) {
 		            $('.modal-body').html(data);
 		        });

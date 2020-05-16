@@ -11,3 +11,14 @@ body {
 .fill {
 	flex-grow : 1;
 }
+
+a.active:hover {
+	color:white!important;
+}
+
+.dropdown-menu > li > a:hover:not(.active),
+.dropdown-menu > li > a:focus:not(.active) {
+	text-decoration: none;
+	background-color: #f2f2f2;
+	color:black;
+}

@@ -1,8 +1,12 @@
 {% extends 'base.html.twig' %}
 {% use 'probleme/assets/base.html.twig' %}
 {% import "assets/macros.html.twig" as macros %}
+
 {% set modal_delete %}
     {% include 'probleme/assets/modal_delete.html.twig' %} 
+{% endset %}
+{% set modal_statut %}
+    {% include 'probleme/assets/modal_statut.html.twig' %} 
 {% endset %}
 
 {% block title %}Probleme{% endblock %}
@@ -20,7 +24,7 @@
                     </h1>
                 </div>
                 <div class="col text-right p-3">
-                    <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#modal">
+                    <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#modal_delete">
                         <i class="fa fa-trash"></i>
                     </button>
                 </div>
@@ -112,7 +116,12 @@
             </div>
         </div>
 
-        {{modal_delete}}       
+        {{modal_delete}}
+        {{modal_statut}}
 
     </div>
+{% endblock %}
+{% block autoSearch %}{% endblock %}
+{% block moreScript %}
+    {{ include('probleme/assets/modal_statut_js.html.twig') }}
 {% endblock %}
