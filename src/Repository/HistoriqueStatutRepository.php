@@ -38,7 +38,7 @@ class HistoriqueStatutRepository extends ServiceEntityRepository
     */
 
     
-    public function findLatestHistoriqueStatutForOneProblemExcludingNewAndResolved(Probleme $probleme)
+    public function findLatestHistoriqueStatutForOneProblemExcludingNewResolvedAndArchived(Probleme $probleme)
     {
         $conn = $this->getEntityManager()->getConnection();
 
@@ -56,7 +56,7 @@ class HistoriqueStatutRepository extends ServiceEntityRepository
                 (
                     SELECT id
                     FROM statut
-                    WHERE nom = "Nouveau" OR nom = "Résolu"
+                    WHERE nom = "Nouveau" OR nom = "Résolu" OR nom = "Archivé"
                 )
             ';
         $stmt = $conn->prepare($sql);
@@ -65,7 +65,7 @@ class HistoriqueStatutRepository extends ServiceEntityRepository
         return $stmt->fetchAll();
     }
 
-    public function findLatestHistoriqueStatutForOneProblem(Probleme $probleme)
+    public function findLatestHistoriqueStatutForOneProblemExcludingArchived(Probleme $probleme)
     {
         $conn = $this->getEntityManager()->getConnection();
 
@@ -78,6 +78,12 @@ class HistoriqueStatutRepository extends ServiceEntityRepository
                     SELECT MAX(date)
                     FROM historique_statut
                     WHERE probleme_id = :probleme
+                )
+                AND statut_id NOT IN 
+                (
+                    SELECT id
+                    FROM statut
+                    WHERE nom = "Archivé"
                 )
             ';
         $stmt = $conn->prepare($sql);

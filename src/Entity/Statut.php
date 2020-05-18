@@ -38,6 +38,11 @@ class Statut
      */
     private $icone;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $Description;
+
     public function __construct()
     {
         $this->HistoriqueStatut = new ArrayCollection();
@@ -116,6 +121,18 @@ class Statut
     public function setIcone(?string $icone): self
     {
         $this->icone = $icone;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->Description;
+    }
+
+    public function setDescription(?string $Description): self
+    {
+        $this->Description = $Description;
 
         return $this;
     }

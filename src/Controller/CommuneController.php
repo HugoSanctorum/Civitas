@@ -151,7 +151,7 @@ class CommuneController extends AbstractController
         $categories = [];
 
         foreach ($problemes as $probleme) {
-            $hs = $historiqueStatutRepository->findLatestHistoriqueStatutForOneProblem($probleme);
+            $hs = $historiqueStatutRepository->findLatestHistoriqueStatutForOneProblemExcludingArchived($probleme);
             $statut = $statutRepository->findStatutById($hs[0]['statut_id']);
             array_push($infos_problemes, [
                 "id" => $probleme->getId(),

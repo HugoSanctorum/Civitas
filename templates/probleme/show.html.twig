@@ -123,5 +123,6 @@
 {% endblock %}
 {% block autoSearch %}{% endblock %}
 {% block moreScript %}
+    {{ parent() }}
     {{ include('probleme/assets/modal_statut_js.html.twig') }}
 {% endblock %}

@@ -37,7 +37,7 @@ class HomeController extends AbstractController
     	}
 
         foreach ($problemes as $probleme) {
-            $latest = $historiqueStatutRepository->findLatestHistoriqueStatutForOneProblemExcludingNewAndResolved($probleme);
+            $latest = $historiqueStatutRepository->findLatestHistoriqueStatutForOneProblemExcludingNewResolvedAndArchived($probleme);
             if($latest){
                 $coordonnees_problemes = $geocoderService->getCoordinateFromAdress($probleme->getLocalisation());
                 array_push($infos_problemes, [

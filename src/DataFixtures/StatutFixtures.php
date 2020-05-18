@@ -12,6 +12,7 @@ class StatutFixtures extends Fixture
     {
         $statutNew = new Statut();
         $statutNew->setNom("Nouveau");
+        $statutNew->setDescription("Le problème a été soumis à votre commune mais n'a pas encore été approuvé");
         $statutNew->setCouleur("red");
         $statutNew->setIcone("folder-plus");
         $this->addReference($statutNew->getNom(),$statutNew);
@@ -19,6 +20,7 @@ class StatutFixtures extends Fixture
 
         $statutOuvert = new Statut();
         $statutOuvert->setNom("Ouvert");
+        $statutOuvert->setDescription("Le problème a été approuvé par la commune mais aucun technicien ne travaille dessus actuellement");
         $statutOuvert->setCouleur("orange");
         $statutOuvert->setIcone("folder-open");
         $this->addReference($statutOuvert->getNom(),$statutOuvert);
@@ -26,6 +28,7 @@ class StatutFixtures extends Fixture
 
         $statutAffecte = new Statut();
         $statutAffecte->setNom("Affecté");
+        $statutAffecte->setDescription("Un technicien a été affecté au problème. Il s'en chargera bientôt !");
         $statutAffecte->setCouleur("blue");
         $statutAffecte->setIcone("hard-hat");
         $this->addReference($statutAffecte->getNom(),$statutAffecte);
@@ -33,6 +36,7 @@ class StatutFixtures extends Fixture
 
         $statutTraitement = new Statut();
         $statutTraitement->setNom("En cours de traitement");
+        $statutTraitement->setDescription("Le technicien travaille actuellement sur le problème");
         $statutTraitement->setCouleur("darkpurple");
         $statutTraitement->setIcone("wrench");
         $this->addReference($statutTraitement->getNom(),$statutTraitement);
@@ -40,6 +44,7 @@ class StatutFixtures extends Fixture
 
         $statutResolu = new Statut();
         $statutResolu->setNom("Résolu");
+        $statutResolu->setDescription("Le problème a été réglé !");
         $statutResolu->setCouleur("green");
         $statutResolu->setIcone("check-circle");
         $this->addReference($statutResolu->getNom(),$statutResolu);
