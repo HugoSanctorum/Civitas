@@ -32,6 +32,7 @@ class CompteRenduType extends AbstractType
         $builder
             ->add('Probleme')
             ->add('urlDocument')
+            ->add('In')
         ;
         $builder->addEventListener(
             FormEvents::PRE_SET_DATA,

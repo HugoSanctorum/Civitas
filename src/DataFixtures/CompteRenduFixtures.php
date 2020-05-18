@@ -15,6 +15,7 @@ class CompteRenduFixtures extends Fixture implements DependentFixtureInterface
         $compteRendu->setUrlDocument('/compteRendu/compterendu.png');
         $compteRendu->setPersonne($this->getReference("hugo_duporge@ens.univ-artois.fr"));
         $compteRendu->setProbleme($this->getReference("123456789"));
+        $compteRendu->setIntervenir($this->getReference('intervention'));
         $manager->persist($compteRendu);
         $manager->flush();
     }
@@ -29,7 +30,8 @@ class CompteRenduFixtures extends Fixture implements DependentFixtureInterface
     {
         return array(
             ProblemeFixtures::class,
-            PersonneFixtures::class
+            PersonneFixtures::class,
+            IntervenirFixtures::class,
         );
     }
     public function getOrder(){

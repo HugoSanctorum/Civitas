@@ -1,3 +1,5 @@
 {% block footer %}
+    {% if subscribedToken is defined %}
     <p><a href="{{ absolute_url(path('unsubscribe', {'subscribeToken': subscribeToken})) }}"> Me désabonner </a></p>
+    {% endif %}
 {% endblock %}

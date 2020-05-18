@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -38,6 +40,21 @@ class Intervenir
      * @ORM\JoinColumn(nullable=false)
      */
     private $TypeIntervention;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\CompteRendu", mappedBy="Intervenir")
+     */
+    private $CompteRendus;
+
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $description;
+
+    public function __construct()
+    {
+        $this->CompteRendus = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -92,6 +109,49 @@ class Intervenir
     public function setTypeIntervention(?TypeIntervention $TypeIntervention): self
     {
         $this->TypeIntervention = $TypeIntervention;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|CompteRendu[]
+     */
+    public function getCompteRendus(): Collection
+    {
+        return $this->CompteRendus;
+    }
+
+    public function addCompteRendus(CompteRendu $compteRendus): self
+    {
+        if (!$this->CompteRendus->contains($compteRendus)) {
+            $this->CompteRendus[] = $compteRendus;
+            $compteRendus->setIntervenir($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCompteRendus(CompteRendu $compteRendus): self
+    {
+        if ($this->CompteRendus->contains($compteRendus)) {
+            $this->CompteRendus->removeElement($compteRendus);
+            // set the owning side to null (unless already changed)
+            if ($compteRendus->getIntervenir() === $this) {
+                $compteRendus->setIntervenir(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): self
+    {
+        $this->description = $description;
 
         return $this;
     }

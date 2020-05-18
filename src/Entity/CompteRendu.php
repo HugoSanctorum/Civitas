@@ -33,6 +33,12 @@ class CompteRendu
      */
     private $Probleme;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Intervenir", inversedBy="CompteRendus")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $Intervenir;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -77,6 +83,18 @@ class CompteRendu
     public function __toString()
     {
         return $this->getUrlDocument();
+    }
+
+    public function getIntervenir(): ?Intervenir
+    {
+        return $this->Intervenir;
+    }
+
+    public function setIntervenir(?Intervenir $Intervenir): self
+    {
+        $this->Intervenir = $Intervenir;
+
+        return $this;
     }
 
 
