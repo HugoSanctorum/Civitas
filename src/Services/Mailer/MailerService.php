@@ -81,5 +81,31 @@ class MailerService extends AbstractController
             );
         $this->mailer->send($message);
     }
-
+    public function sendMailResetPassword(Personne $personne, String $token){
+        $message= (new \Swift_Message('Réinitialisation du mot de passe'))
+            ->setFrom('civitasnotification@gmail.com')
+            ->setTo($personne->getMail())
+            ->addPart(
+                $this->renderView('email/resetPassword.html.twig',
+                    [
+                        "personne" => $personne,
+                        "resetPasswordToken" => $token
+                    ]),
+                'text/html'
+            );
+        $this->mailer->send($message);
+    }
+    public function sendMailPasswordChanged(Personne $personne){
+        $message= (new \Swift_Message('Confirmation du changement de mot de passe'))
+            ->setFrom('civitasnotification@gmail.com')
+            ->setTo($personne->getMail())
+            ->addPart(
+                $this->renderView('email/changedPassword.html.twig',
+                    [
+                        "personne" => $personne,
+                    ]),
+                'text/html'
+            );
+        $this->mailer->send($message);
+    }
 }
