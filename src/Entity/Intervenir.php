@@ -34,9 +34,10 @@ class Intervenir
     private $Probleme;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\ManyToOne(targetEntity="App\Entity\TypeIntervention", inversedBy="Interventions")
+     * @ORM\JoinColumn(nullable=false)
      */
-    private $description;
+    private $TypeIntervention;
 
     public function getId(): ?int
     {
@@ -83,14 +84,14 @@ class Intervenir
         return $this->getPersonne();
     }
 
-    public function getDescription(): ?string
+    public function getTypeIntervention(): ?TypeIntervention
     {
-        return $this->description;
+        return $this->TypeIntervention;
     }
 
-    public function setDescription(string $description): self
+    public function setTypeIntervention(?TypeIntervention $TypeIntervention): self
     {
-        $this->description = $description;
+        $this->TypeIntervention = $TypeIntervention;
 
         return $this;
     }

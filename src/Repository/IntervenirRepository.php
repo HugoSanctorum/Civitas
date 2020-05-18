@@ -50,7 +50,8 @@ class IntervenirRepository extends ServiceEntityRepository
     public function findSignaleurByProbleme($probleme){
         return $this->createQueryBuilder('i')
             ->where('i.Probleme = :probleme')
-            ->andWhere("i.description = 'Signaleur'")
+            ->join('i.TypeIntervention', 'ti')
+            ->andWhere("ti.nom = 'Signaleur'")
             ->setParameter('probleme', $probleme)
             ->getQuery()
             ->getOneOrNullResult();
@@ -59,7 +60,8 @@ class IntervenirRepository extends ServiceEntityRepository
     public function findTechnicienByProbleme($probleme){
         return $this->createQueryBuilder('i')
             ->where('i.Probleme = :probleme')
-            ->andWhere("i.description = 'Technicien'")
+            ->join('i.TypeIntervention', 'ti')
+            ->andWhere("ti.nom = 'Technicien'")
             ->setParameter('probleme', $probleme)
             ->getQuery()
             ->getResult();

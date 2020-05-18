@@ -11,6 +11,7 @@ use App\Entity\Probleme;
 use App\Repository\HistoriqueStatutRepository;
 use App\Repository\ProblemeRepository;
 use App\Repository\StatutRepository;
+use App\Repository\TypeInterventionRepository;
 use App\Services\Mailer\MailerService;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
@@ -26,19 +27,28 @@ use Symfony\Component\Validator\Constraints\Date;
 
 class ProblemeService extends AbstractController
 {
-    private $entityManager;
+    private $problemeRepository;
+    private $typeInterventionRepository;
     private $statutRepository;
+    private $entityManager;
     private $mailerService;
     private $personne;
-    private $problemeRepository;
 
-    public function __construct(ProblemeRepository $problemeRepository,EntityManagerInterface $entityManager, StatutRepository $statutRepository, MailerService $mailerService, TokenStorageInterface $tokenStorageInterface)
+    public function __construct(
+        ProblemeRepository $problemeRepository,
+        TypeInterventionRepository $typeInterventionRepository,
+        StatutRepository $statutRepository,
+        EntityManagerInterface $entityManager,
+        MailerService $mailerService,
+        TokenStorageInterface $tokenStorageInterface
+    )
     {
-        $this->entityManager = $entityManager;
+        $this->problemeRepository = $problemeRepository;
+        $this->typeInterventionRepository = $typeInterventionRepository;
         $this->statutRepository = $statutRepository;
+        $this->entityManager = $entityManager;
         $this->mailerService = $mailerService;
         $this->personne = $tokenStorageInterface->getToken()->getUser();
-        $this->problemeRepository = $problemeRepository;
     }
 
     public function CreateNewProblemeMailExisting($probleme, $personne)
@@ -50,7 +60,7 @@ class ProblemeService extends AbstractController
         $intervenir->setProbleme($probleme);
         $intervenir->setPersonne($personne);
         $intervenir->setCreatedAt(new \DateTime('now'));
-        $intervenir->setDescription('Signaleur');
+        $intervenir->setTypeIntervention($this->typeInterventionRepository->findOneBy(['nom' => 'Signaleur']));
 
         $this->CreateNewHistoriqueStatut($probleme);
         $this->entityManager->persist($intervenir);
@@ -71,7 +81,7 @@ class ProblemeService extends AbstractController
         $intervenir->setProbleme($probleme);
         $intervenir->setPersonne($personne);
         $intervenir->setCreatedAt(new \DateTime('now'));
-        $intervenir->setDescription('Signaleur');
+        $intervenir->setTypeIntervention($this->typeInterventionRepository->findOneBy(['nom' => 'Signaleur']));
         $this->CreateNewHistoriqueStatut($probleme);
 
         $this->entityManager->persist($intervenir);

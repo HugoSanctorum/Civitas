@@ -1,4 +1,5 @@
 {{ form_start(form, {'action':path('probleme_edit', {'id': probleme.id}), 'method': 'POST', 'attr': {'id': 'statut_form'}}) }}
+
     <div class="form-group">
         {{ form_widget(form.titre, {'attr': {'class': 'form-control', 'hidden': 'true'}}) }}
     </div>
@@ -20,6 +21,9 @@
         {{ form_widget(form.Image3, {'attr': {'class': 'form-control', 'hidden': 'true'}}) }}
         {{ form_widget(form.Image4, {'attr': {'class': 'form-control', 'hidden': 'true'}}) }}
     </div>
-    <button class="btn">{{ button_label|default('Save') }}</button>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+        <input class="btn btn-success" type="submit" value="Valider"/>
+    </div>
 
 {{ form_end(form) }}

@@ -33,7 +33,12 @@ class CompteRenduController extends AbstractController
     /**
      * @Route("/new", name="compte_rendu_new", methods={"GET","POST"})
      */
-    public function new(StatutRepository $statutRepository,Request $request, DocumentService $documentService,ProblemeRepository $problemeRepository): Response
+    public function new(
+        StatutRepository $statutRepository,
+        Request $request,
+        DocumentService $documentService,
+        ProblemeRepository $problemeRepository
+    ): Response
     {
         $compteRendu = new CompteRendu();
         $historiqueStatut = new HistoriqueStatut();
@@ -44,12 +49,12 @@ class CompteRenduController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $document = $form->get('urlDocument')->getData();
             $problemeid = $request->request->all()['compte_rendu']['Probleme'];
-            $probleme = $problemeRepository->findOneBy(['id'=>$problemeid]);
+            $probleme = $problemeRepository->findOneBy(['id' => $problemeid]);
             $historiqueStatut->setProbleme($probleme);
             $historiqueStatut->setStatut($statut);
             $historiqueStatut->setDate(new \DateTime('now'));
             $historiqueStatut->setDescription('En cours de traitement'); // description temporaire.
-            $documentService->PersistCompteRendu($compteRendu,$probleme,$document);
+            $documentService->PersistCompteRendu($compteRendu, $probleme, $document);
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($historiqueStatut);
             $entityManager->flush();
