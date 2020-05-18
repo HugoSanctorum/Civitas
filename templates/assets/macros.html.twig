@@ -1,25 +1,25 @@
-{% macro style_statut(statut, color, icone, decoration) %}
+{% macro style_statut(statut, color, icone, description, decoration) %}
     <span class="{{decoration}}" style=
     {% if color is same as("red") %}
-        "color:#d63e2a;" > <i class="fa fa-{{icone}}"></i> {{statut}}
+        "color:#d63e2a;" > <i class="fa fa-{{icone}}"></i> {{statut}} <span class="text-secondary">({{description}})</span>
     {% elseif color is same as("darkred") %}
-        "color:#a13336;" > <i class="fa fa-{{icone}}"></i> {{statut}}
+        "color:#a13336;" > <i class="fa fa-{{icone}}"></i> {{statut}} <span class="text-secondary">({{description}})</span>
     {% elseif color is same as("orange") %}
-        "color:#f0932f;" > <i class="fa fa-{{icone}}"></i> {{statut}}
+        "color:#f0932f;" > <i class="fa fa-{{icone}}"></i> {{statut}} <span class="text-secondary">({{description}})</span>
     {% elseif color is same as("green") %}
-        "color:#72af26;" > <i class="fa fa-{{icone}}"></i> {{statut}}
+        "color:#72af26;" > <i class="fa fa-{{icone}}"></i> {{statut}} <span class="text-secondary">({{description}})</span>
     {% elseif color is same as("darkgreen") %}
-        "color:#728224;" > <i class="fa fa-{{icone}}"></i> {{statut}}
+        "color:#728224;" > <i class="fa fa-{{icone}}"></i> {{statut}} <span class="text-secondary">({{description}})</span>
     {% elseif color is same as("blue") %}
-        "color:#38aadd;" > <i class="fa fa-{{icone}}"></i> {{statut}}
+        "color:#38aadd;" > <i class="fa fa-{{icone}}"></i> {{statut}} <span class="text-secondary">({{description}})</span>
     {% elseif color is same as("purple") %}
-        "color:#d252b9;" > <i class="fa fa-{{icone}}"></i> {{statut}}
+        "color:#d252b9;" > <i class="fa fa-{{icone}}"></i> {{statut}} <span class="text-secondary">({{description}})</span>
     {% elseif color is same as("darkpurple") %}
-        "color:#5b396b;" > <i class="fa fa-{{icone}}"></i> {{statut}}
+        "color:#5b396b;" > <i class="fa fa-{{icone}}"></i> {{statut}} <span class="text-secondary">({{description}})</span>
     {% elseif color is same as("cadetblue") %}
-        "color:#436978;" > <i class="fa fa-{{icone}}"></i> {{statut}}
+        "color:#436978;" > <i class="fa fa-{{icone}}"></i> {{statut}} <span class="text-secondary">({{description}})</span>
     {% elseif color is same as("darkblue") %}
-        "color:#0067a3;" > <i class="fa fa-{{icone}}"></i> {{statut}}
+        "color:#0067a3;" > <i class="fa fa-{{icone}}"></i> {{statut}} <span class="text-secondary">({{description}})</span>
     {% else %}
         ""> {{statut}}
     {% endif %}

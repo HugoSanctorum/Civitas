@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\HistoriqueStatut;
 use App\Entity\Intervenir;
+use App\Entity\Probleme;
 use App\Form\IntervenirType;
 use App\Repository\HistoriqueStatutRepository;
 use App\Repository\IntervenirRepository;
@@ -30,8 +31,13 @@ class IntervenirController extends AbstractController
     private $intervenirRepository;
     private $personneRepository;
 
-    public function __construct(TokenStorageInterface $tokenStorage, AuthorizationCheckerInterface $authorizationChecker,
-                                StatutRepository $statutRepository, ProblemeRepository $problemeRepository, PersonneRepository $personneRepository,IntervenirRepository $intervenirRepository)
+    public function __construct(TokenStorageInterface $tokenStorage,
+        AuthorizationCheckerInterface $authorizationChecker,
+        StatutRepository $statutRepository,
+        ProblemeRepository $problemeRepository,
+        PersonneRepository $personneRepository,
+        IntervenirRepository $intervenirRepository
+    )
     {
         $this->tokenStorage = $tokenStorage; // le token utilisateur
         $this->authorizationChecker = $authorizationChecker; // le service de controle d'utilisateur
@@ -51,16 +57,19 @@ class IntervenirController extends AbstractController
     }
 
     /**
-     * @Route("/new", name="intervenir_new", methods={"GET","POST"})
+     * @Route("/new/{id}", name="intervenir_new", methods={"GET","POST"}, defaults={"id": null})
      */
-    public function new(MailerService $mailerService,Request $request): Response
+    public function new(
+        MailerService $mailerService,
+        Request $request,
+        Probleme $probleme = null
+    ): Response
     {
-
 
         $intervenir = new Intervenir();
         $statut = $this->statutRepository->findOneBy(['nom' => 'Affecté']);
         $historiqueStatut = new HistoriqueStatut();
-        $form = $this->createForm(IntervenirType::class, $intervenir);
+        $form = $this->createForm(IntervenirType::class, $intervenir, ["Probleme" => $probleme]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -68,7 +77,7 @@ class IntervenirController extends AbstractController
             $entityManager->persist($intervenir);
             $technicien = $this->personneRepository->findOneBy(['id' =>$request->request->all()['intervenir']['Personne']]);
 
-            $probleme = $this->problemeRepository->findOneBy(['id' =>$request->request->all()['intervenir']['Probleme']]);
+            if(!$probleme) $probleme = $this->problemeRepository->findOneBy(['id' =>$request->request->all()['intervenir']['Probleme']]);
             $historiqueStatut->setProbleme($probleme);
             $historiqueStatut->setStatut($statut);
             $historiqueStatut->setDate(new \DateTime('now'));

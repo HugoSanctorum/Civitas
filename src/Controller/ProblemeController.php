@@ -2,11 +2,12 @@
 
 namespace App\Controller;
 
+use App\Entity\Probleme;
+use App\Entity\Statut;
 use App\Entity\HistoriqueStatut;
 use App\Entity\Image;
 use App\Entity\Intervenir;
 use App\Entity\Personne;
-use App\Entity\Probleme;
 use App\Form\ProblemeType;
 use App\Form\RedirectProblemeType;
 use App\Repository\CategorieRepository;
@@ -29,6 +30,7 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Validator\Constraints\Date;
+use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * @Route("/probleme")
@@ -139,7 +141,10 @@ class ProblemeController extends AbstractController
     /**
      * @Route("/{id}", name="probleme_show", methods={"GET"})
      */
-    public function show(Probleme $probleme,ImageRepository $imageRepository): Response
+    public function show(
+        Probleme $probleme,
+        ImageRepository $imageRepository
+    ): Response
     {
         return $this->render('probleme/show.html.twig', [
             'probleme' => $probleme,
@@ -151,7 +156,10 @@ class ProblemeController extends AbstractController
     /**
      * @Route("/{id}/edit", name="probleme_edit", methods={"GET","POST"})
      */
-    public function edit(Request $request, Probleme $probleme): Response
+    public function edit(
+        Request $request,
+        Probleme $probleme
+    ): Response
     {
         $form = $this->createForm(ProblemeType::class, $probleme);
         $form->handleRequest($request);
@@ -175,7 +183,10 @@ class ProblemeController extends AbstractController
     /**
      * @Route("/{id}", name="probleme_delete", methods={"DELETE"})
      */
-    public function delete(Request $request, Probleme $probleme): Response
+    public function delete(
+        Request $request,
+        Probleme $probleme
+    ): Response
     {
         if ($this->isCsrfTokenValid('delete'.$probleme->getId(), $request->request->get('_token'))) {
             $entityManager = $this->getDoctrine()->getManager();
@@ -189,7 +200,15 @@ class ProblemeController extends AbstractController
     /**
      * @Route("/redirect/{titre}", name="probleme_redirect", methods={"GET","POST"})
      */
-    public function redirectUserWhenAnonyme(PersonneRepository $personneRepository,ProblemeService $problemeService,Request $request,  SessionInterface $session,CommuneRepository $communeRepository,CategorieRepository $categorieRepository, PrioriteRepository $prioriteRepository): Response
+    public function redirectUserWhenAnonyme(
+        Request $request,
+        PersonneRepository $personneRepository,
+        ProblemeService $problemeService,
+        SessionInterface $session,
+        CommuneRepository $communeRepository,
+        CategorieRepository $categorieRepository,
+        PrioriteRepository $prioriteRepository
+    ): Response
     {
 
 
@@ -233,5 +252,31 @@ class ProblemeController extends AbstractController
             'form' => $form->createView()
         ]);
 
+    }
+    /**
+     *@Route("/validate/{id}/{statut}", name="probleme_validate", methods={"GET","POST"}, requirements={"id"="\d+", "statut"="\d+"})
+     */
+    public function validateProblem(
+        Probleme $probleme,
+        Statut $statut,
+        StatutRepository $statutRepository
+    ) : Response
+    {
+        if($probleme->getHistoriqueStatuts()->last()->getStatut()->getNom() != "Nouveau"){
+            return $this->redirectToRoute('probleme_show', ["id" => $probleme->getId()]);
+        }
+
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $hs = new HistoriqueStatut();
+        $hs->setProbleme($probleme);
+        $hs->setStatut($statutRepository->findOneBy(["nom" => "Ouvert"]));
+        $hs->setDate(new \DateTime());
+
+        $entityManager->persist($hs);
+        $entityManager->flush();
+
+
+        return $this->redirectToRoute('probleme_show', ["id" => $probleme->getId()]);
     }
 }

@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\HistoriqueStatut;
+use App\Entity\Probleme;
+use App\Entity\Statut;
 use App\Form\HistoriqueStatutType;
 use App\Repository\HistoriqueStatutRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -28,10 +30,17 @@ class HistoriqueStatutController extends AbstractController
     /**
      * @Route("/new", name="historique_statut_new", methods={"GET","POST"})
      */
-    public function new(Request $request): Response
+    public function new(
+        Request $request,
+        Probleme $probleme,
+        Statut $statut
+    ): Response
     {
         $historiqueStatut = new HistoriqueStatut();
-        $form = $this->createForm(HistoriqueStatutType::class, $historiqueStatut);
+        $form = $this->createForm(HistoriqueStatutType::class, $historiqueStatut, [
+            "Probleme" => $probleme,
+            "Statut" => $statut
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

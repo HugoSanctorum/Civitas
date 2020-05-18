@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\HistoriqueStatut;
 use App\Entity\Probleme;
+use App\Entity\Statut;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -21,27 +22,25 @@ class HistoriqueStatutType extends AbstractType
             ->add('description')
             ->add('Statut')
             ->add('Probleme')
+            ->addEventListener(
+                FormEvents::PRE_SET_DATA,
+                [$this, 'onPreSetData']
+            )
         ;
-        $builder->addEventListener(
-            FormEvents::PRE_SET_DATA,
-            [$this, 'onPreSetData']
-        );
     }
     public function onPreSetData(FormEvent $event)
     {
         $form = $event->getForm(); //récupération du formulaire
         $entity = $event->getData();
 
-
         $form->remove('date');
         $entity->setDate(new \DateTime('now'));
-
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => HistoriqueStatut::class
+            'data_class' => HistoriqueStatut::class,
         ]);
     }
 }

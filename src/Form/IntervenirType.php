@@ -20,6 +20,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class IntervenirType extends AbstractType{
 
+    private $Probleme;
+
     private $historiqueStatutRepository;
     private $problemeStatutRepository;
     private $personneRepository;
@@ -41,6 +43,8 @@ class IntervenirType extends AbstractType{
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $this->Probleme = $options["Probleme"];
+
         $builder
             ->add('Personne', EntityType::class,[
                 "class" => Personne::class,
@@ -68,11 +72,20 @@ class IntervenirType extends AbstractType{
         $form->remove('createAt');
         $entity->setCreatedAt(New \DateTime('now'));
         $entity->setTypeIntervention($this->typeInterventionRepository->findOneBy(['nom' => 'Technicien']));
+
+        if($this->Probleme !== null){
+           if($this->Probleme instanceof Probleme){
+               $entity->setProbleme($this->Probleme);
+               $form->remove('Probleme');
+           }
+        }
+
     }
         public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
             'data_class' => Intervenir::class,
+            'Probleme' => null,
         ]);
     }
 }

@@ -15,7 +15,7 @@
     <div class="jumbotron jumbotron-fluid">
         <div class="container">
             <div class="row">
-                <div class="col">
+                <div class="col-11">
                     <h1 class="display-4">
                         {{ probleme.titre|capitalize }}
                         <span class="reference_num">
@@ -23,7 +23,7 @@
                         </span>
                     </h1>
                 </div>
-                <div class="col text-right p-3">
+                <div class="col-1 text-right p-3">
                     <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#modal_delete">
                         <i class="fa fa-trash"></i>
                     </button>
@@ -35,77 +35,139 @@
     </div>
     <div class="container">
         {% set resolved = false %}
+        {% set nouveau = false %}
+        {% set idNouveau = 0 %}
         {% for hs in probleme.HistoriqueStatuts %}
-            {% if loop.last and hs.statut == "Résolu" %}
+            {% if loop.last and hs.statut == "Nouveau" %}
+                {% set nouveau = true %}
+                {% set idNouveau = hs.statut.id %}
+            {% elseif loop.last and hs.statut == "Résolu" %}
                 {% set resolved = true %}
             {% endif %}
         {% endfor %}
-        {{ macros.alert_priorite_probleme(probleme.priorite.poids, probleme.priorite.nom, resolved, probleme.id) }}
-        {% if images is empty %}    
-            <div class="alert alert-secondary alert-dismissible fade show" role="alert">
-                Aucune image pour ce problème.
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-        {% endif %}  
+        {% set intervention = false %}
+        {% for inter in probleme.Intervenirs %}
+            {% if inter.TypeIntervention == "Technicien" %}
+                {% set intervention = true %}
+            {% endif %}
+        {% endfor %}
+        
+        {% if not nouveau %}
 
-        <div class="row section">
-            <div class="col"> 
-                <h4 class="text-primary">Liste des statuts du problème</h4>
-            </div>
-            <div class="col text-right">
-                <h4 class="text-primary ">
-                    <a href="/historiqueStatut/new"><i class="fa fa-plus-circle text-primary"></a></i>
-                </h4>
-            </div>
-        </div>
-        <div class="historique border border-primary">
-            {% for hs in probleme.HistoriqueStatuts %}
-                <div>
-                    {% if loop.last %}
-                        {% set style_latest, decoration = "badge-success", "font-weight-bold" %}
-                    {% else %}
-                        {% set style_latest, decoration = "badge-secondary", "font-weight-normal" %}
-                    {% endif %}
-                    <span class="badge {{style_latest}} date_hs">
-                        {{ hs.date ? hs.date|date('d-m-Y H\\hi') : '' }}
-                    </span>
-                    <i class="fa fa-arrow-right text-primary"></i>
-                    {{ macros.style_statut(hs.statut, hs.statut.couleur, hs.statut.icone, decoration) }} 
+            {{ macros.alert_priorite_probleme(probleme.priorite.poids, probleme.priorite.nom, resolved, probleme.id) }}
+            {% if images is empty %}    
+                <div class="alert alert-secondary alert-dismissible fade show" role="alert">
+                    Aucune image pour ce problème.
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
-            {% endfor %}
-        </div>
-        <div class="row section">
-            <div class="col"> 
-                <h4 class="text-primary">Liste des interventions en cours</h4>
-            </div>
-            <div class="col text-right">
-                <h4 class="text-primary ">
-                    <a href="/intervenir/new"><i class="fa fa-plus-circle text-primary"></a></i>
-                </h4>
-            </div>
-        </div>
-        <div class="historique border border-primary">
-            {% for inter in probleme.Intervenirs %}
-                <div>
-                    <span class="badge badge-secondary date_hs">
-                        {{ inter.createdAt ? inter.createdAt|date('d-m-Y H\\hi') : '' }}
-                    </span>
-                    <i class="fa fa-arrow-right text-primary"></i> 
-                </div>
-            {% endfor %}
-        </div>
-        {% if images is not empty %}    
-            <h4 class="text-primary section">Liste des images</h4>
-            <div class="zoom-gallery">
-                {% for image in images %}
-                    <a href="{{ asset('/probleme/'~image.url) }}">
-                        <img class="img-thumbnail" src="{{ asset('/probleme/'~image.url) }}">
+            {% endif %}  
+            {% if not intervention %}
+                <div class="alert alert-secondary alert-dismissible fade show" role="alert">
+                    Aucune intervention de technicien en cours pour ce problème.
+                    <a href={{ path('intervenir_new', {'id': probleme.id}) }} class="nounderline close">
+                        <span aria-hidden="true">&plus;</span>
                     </a>
+                </div>
+            {% endif %}  
+
+            <div class="row section">
+                <div class="col"> 
+                    <h4 class="text-primary">
+                            <span class="text-info">
+                                <i class="fa fa-stream"></i>
+                            </span>
+                        Liste des statuts du problème
+                    </h4>
+                </div>
+                <div class="col text-right">
+                    <h4 class="text-primary ">
+                        <a href="/historiqueStatut/new"><i class="fa fa-plus-circle text-primary"></i></a>
+                    </h4>
+                </div>
+            </div>
+            <div class="historique border border-primary">
+                {% for hs in probleme.HistoriqueStatuts %}
+                    <div>
+                        {% if loop.last %}
+                            {% set style_latest, decoration = "badge-success", "font-weight-bold" %}
+                        {% else %}
+                            {% set style_latest, decoration = "badge-secondary", "font-weight-normal" %}
+                        {% endif %}
+                        <span class="badge {{style_latest}} date_hs">
+                            {{ hs.date ? hs.date|date('d-m-Y H\\hi') : '' }}
+                        </span>
+                        <i class="fa fa-arrow-right text-primary"></i>
+                        {{ macros.style_statut(hs.statut, hs.statut.couleur, hs.statut.icone, hs.statut.description, decoration) }} 
+                    </div>
                 {% endfor %}
             </div>
-        {% endif %}  
+            {% if intervention %}
+                <div class="row section">
+                    <div class="col"> 
+                        <h4 class="text-primary">
+                            <span class="text-warning">
+                                <i class="fa fa-hard-hat"></i>
+                            </span>
+                            Liste des interventions
+                        </h4>
+                    </div>
+                    <div class="col text-right">
+                        <h4 class="text-primary ">
+                            <a href={{ path('intervenir_new', {'id': probleme.id}) }}><i class="fa fa-plus-circle text-primary"></a></i>
+                        </h4>
+                    </div>
+                </div>
+                <div class="historique border border-primary">
+                    {% for inter in probleme.Intervenirs %}
+                        {% if inter.TypeIntervention == "Technicien" %}
+                            <div>
+                                <span class="badge badge-secondary date_hs">
+                                    {{ inter.createdAt ? inter.createdAt|date('d-m-Y H\\hi') : '' }}
+                                </span>
+                                <i class="fa fa-arrow-right text-primary"></i>
+                                {{ inter.Personne.username }} + <a href="">lien du compte rendu si existe</a>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            {% endif %}
+            {% if images is not empty %}    
+                <h4 class="text-primary section">Liste des images</h4>
+                <div class="zoom-gallery">
+                    {% for image in images %}
+                        <a href="{{ asset('/probleme/'~image.url) }}">
+                            <img class="img-thumbnail" src="{{ asset('/probleme/'~image.url) }}">
+                        </a>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% else %}
+
+        <div class="alert alert-dismissible alert-warning">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <h4 class="alert-heading"><i class="fa fa-exclamation-triangle"></i> Nouveau problème</h4>
+            <p class="mb-0">Ce problème n'a pas encore été validé.</p>
+        </div>
+
+        <div class="card border-primary mb-3 section">
+            <div class="card-header">Validation du problème</div>
+            <div class="card-body">
+                <h4 class="card-title">Voulez vous valider ce problème ?</h4>
+                <p class="card-text font-weight-light"><i class="fa fa-exclamation-triangle"></i> Si vous le validez, il sera visible par les utilisateurs.</p>
+                <div class="row">
+                    <div class="col">
+                        <button class="btn btn-outline-danger btn-block" data-toggle="modal" data-target="#modal_delete">Supprimer</button>
+                    </div>
+                    <div class="col">
+                        <a class="btn btn-outline-success btn-block" href={{ path('probleme_validate', {'id': probleme.id, 'statut': idNouveau}) }}>Valider</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% endif %}
 
         <div class="row section">
             <div class="col">
