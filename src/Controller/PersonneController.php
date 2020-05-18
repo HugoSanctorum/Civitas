@@ -16,6 +16,8 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
 
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+
 
 class PersonneController extends AbstractController
 {
@@ -149,6 +151,7 @@ class PersonneController extends AbstractController
 
     /**
      * @Route("/ModifierMotDePasse", name="personne_editPassword", methods={"GET","POST"})
+     * @IsGranted("ROLE_USER")
      */
     public function editPassword(Request $request): Response
     {

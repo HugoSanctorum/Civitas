@@ -94,6 +94,11 @@ class Personne implements UserInterface,ArrayAccess
      */
     private $subscribeToken;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $resetPasswordToken;
+
 
     public function __construct()
     {
@@ -484,6 +489,18 @@ class Personne implements UserInterface,ArrayAccess
     public function setSubscribeToken(?string $subscribeToken): self
     {
         $this->subscribeToken = $subscribeToken;
+
+        return $this;
+    }
+
+    public function getResetPasswordToken(): ?string
+    {
+        return $this->resetPasswordToken;
+    }
+
+    public function setResetPasswordToken(?string $resetPasswordToken): self
+    {
+        $this->resetPasswordToken = $resetPasswordToken;
 
         return $this;
     }

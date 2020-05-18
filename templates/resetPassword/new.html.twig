@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Reset password{% endblock %}
+
+{% block body %}
+    <h1>Réinitaliser votre mot de passe</h1>
+
+    {{ include('resetPassword/_form.html.twig') }}
+
+    {% for message in app.flashes('fail') %}
+        <div class="alert alert-danger">
+            {{ message }}
+        </div>
+
+    {% endfor %}
+{% endblock %}
