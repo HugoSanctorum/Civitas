@@ -11,14 +11,14 @@ class CompteRenduFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager)
     {
-
-
-        $compteRendu = new CompteRendu();
-        $compteRendu->setUrlDocument('/compteRendu/compterendu.png');
-        $compteRendu->setPersonne($this->getReference("hugo_duporge@ens.univ-artois.fr"));
-        $compteRendu->setProbleme($this->getReference("123456789"));
-        $compteRendu->setIntervenir($this->getReference('intervention'));
-        $manager->persist($compteRendu);
+        for($i = 0; $i < 4; $i++){
+            $compteRendu = new CompteRendu();
+            $compteRendu->setUrlDocument('https://picsum.photos/1280');
+            $compteRendu->setPersonne($this->getReference("personne_".random_int(0, 9)));
+            $compteRendu->setProbleme($this->getReference("probleme_".random_int(0, 99)));
+            $compteRendu->setIntervenir($this->getReference('intervention_'.$i));
+            $manager->persist($compteRendu);
+        }
         $manager->flush();
     }
 
@@ -32,11 +32,7 @@ class CompteRenduFixtures extends Fixture implements DependentFixtureInterface
     {
         return array(
             ProblemeFixtures::class,
-            PersonneFixtures::class,
-            IntervenirFixtures::class,
+            PersonneFixtures::class
         );
-    }
-    public function getOrder(){
-        return 15;
     }
 }

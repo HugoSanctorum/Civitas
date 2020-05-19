@@ -28,17 +28,17 @@ class ProblemeFixtures extends Fixture implements DependentFixtureInterface
 
         $rues = [];
 
-        foreach($prefixes as $prefixe){
-            foreach($communes as $commune){
+        foreach($communes as $commune){
+            foreach($prefixes as $prefixe){
                 $request =  json_decode(file_get_contents("https://api-adresse.data.gouv.fr/search/?q=".$prefixe."&citycode=".$commune->getCodeInsee()."&type=street&limit=20"));
-                foreach($request->features as $key => $value){
-                    if($key == 'properties'){
-                        array_push($rues, $value->properties->name);
-                    }
+                foreach($request->features as $value){
+                    array_push($rues, [
+                        "ville" => $value->properties->city,
+                        "rue" => $value->properties->label
+                    ]);
                 }
             }
         }
-        dd($rues);
         $categories = [
             $this->getReference("Dégradation"),
             $this->getReference("Incendie"),
@@ -60,9 +60,12 @@ class ProblemeFixtures extends Fixture implements DependentFixtureInterface
             $probleme->setPriorite($priorites[array_rand($priorites)]);
             $probleme->setTitre($faker->sentence($nbWords = 3, $variableNbWords = true));
             $probleme->setDescription($faker->sentence($nbWords = 12, $variableNbWords = true));
-            $probleme->setLocalisation($rues(array_rand($rues)));
+            do {
+                $tab = $rues[array_rand($rues)];
+            }while($probleme->getCommune()->getNom() != $tab["ville"]);
+            $probleme->setLocalisation($tab['rue']);
             $probleme->setReference('probleme_'.$i);
-            $this->addReference($probleme->getReference(),$probleme);
+            $this->addReference($probleme->getReference(), $probleme);
             $manager->persist($probleme);
         }
 
