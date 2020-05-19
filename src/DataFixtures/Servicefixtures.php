@@ -11,10 +11,14 @@ class Servicefixtures extends Fixture
 {
     public function load(ObjectManager $manager)
     {
-        $service = new Service();
-        $service->setNom("Comptabilité");
-        $this->addReference($service->getNom(),$service);
-        $manager->persist($service);
+        $services = ["Comptabilité", "Logistique", "Administratif", "Voierie", "Assainissement"];
+
+        foreach ($services as $service){
+            $entity = new Service();
+            $entity->setNom($service);
+            $this->addReference($entity->getNom(), $entity);
+            $manager->persist($entity);
+        }
         $manager->flush();
     }
     public function getOrder(){

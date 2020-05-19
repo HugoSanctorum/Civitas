@@ -11,13 +11,13 @@ class HistoriqueActionFixtures extends Fixture implements DependentFixtureInterf
 {
     public function load(ObjectManager $manager)
     {
-        $historiqueAction = new HistoriqueAction();
+      /*  $historiqueAction = new HistoriqueAction();
         $historiqueAction->setPersonne($this->getReference("hugo_duporge@ens.univ-artois.fr"));
         $historiqueAction->setRole($this->getReference("ROLE_ADMIN"));
         $historiqueAction->setPermission($this->getReference("GET_OTHER_PROBLEME"));
         $historiqueAction->setCreatedAt(new \DateTime('now'));
         $manager->persist($historiqueAction);
-        $manager->flush();
+        $manager->flush();*/
     }
 
     /**
@@ -31,8 +31,7 @@ class HistoriqueActionFixtures extends Fixture implements DependentFixtureInterf
         return array(
             PersonneFixtures::class,
             RoleFixtures::class,
-            PermissionFixtures::class,
-
+            PermissionFixtures::class
         );
     }
 }

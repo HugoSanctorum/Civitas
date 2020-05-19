@@ -11,10 +11,12 @@ class ImageFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager)
     {
-        $image = new Image();
-        $image->setProbleme($this->getReference("123456789"));
-        $image->setURL("/images/test.png");
-        $manager->persist($image);
+        for($i = 0; $i < 25 ; $i++){
+            $image = new Image();
+            $image->setProbleme($this->getReference("probleme_".random_int(0, 99)));
+            $image->setURL("https://picsum.photos/1280");
+            $manager->persist($image);
+        }
         $manager->flush();
     }
 

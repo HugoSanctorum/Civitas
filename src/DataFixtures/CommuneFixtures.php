@@ -18,18 +18,41 @@ class CommuneFixtures extends Fixture implements DependentFixtureInterface
 
     public function load(ObjectManager $manager)
     {
-        $commune = new Commune();
-        $this->geoquery->populate($commune, "Lens", "62300");
-        $this->addReference($commune->getNom(), $commune);
-        $commune->addService($this->getReference("Comptabilité"));
-        $manager->persist($commune);
-        $manager->flush();
+        $communes = [
+                [
+                    "nom" => "Lens",
+                    "code" => "62300",
+                    "Service" => "Comptabilité"
+                ],
+                [
+                    "nom" => "Lille",
+                    "code" => "59800",
+                    "Service" => "Logistique"
+                ],
+                [
+                    "nom" => "Bruay-la-Buissiere",
+                    "code" => "62700",
+                    "Service" => "Administratif"
+                ],
+                [
+                    "nom" => "Bethune",
+                    "code" => "62400",
+                    "Service" => "Voierie"
+                ],
+                [
+                    "nom" => "Lievin",
+                    "code" => "62800",
+                    "Service" => "Assainissement"
+                ]
+        ];
 
-        $commune2 = new Commune();
-        $this->geoquery->populate($commune2, "Lille", "59800");
-        $this->addReference($commune2->getNom(), $commune2);
-        $commune2->addService($this->getReference("Comptabilité"));
-        $manager->persist($commune2);
+        foreach($communes as $commune){
+            $entity = new Commune();
+            $this->geoquery->populate($entity, $commune["nom"], $commune["code"]);
+            $this->addReference($entity->getNom(), $entity);
+            $entity->addService($this->getReference($commune["Service"]));
+            $manager->persist($entity);
+        }
         $manager->flush();
     }
 
