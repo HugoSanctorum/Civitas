@@ -67,7 +67,6 @@ class PersonneController extends AbstractController
             $entityManager->persist($personne);
             $mailerService->sendMailActivatedAccount($personne,$activatedToken);
             $entityManager->flush();
-
             return $this->redirectToRoute('personne_index');
         }
 

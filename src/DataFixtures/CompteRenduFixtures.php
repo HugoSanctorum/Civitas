@@ -11,6 +11,8 @@ class CompteRenduFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager)
     {
+
+
         $compteRendu = new CompteRendu();
         $compteRendu->setUrlDocument('/compteRendu/compterendu.png');
         $compteRendu->setPersonne($this->getReference("hugo_duporge@ens.univ-artois.fr"));

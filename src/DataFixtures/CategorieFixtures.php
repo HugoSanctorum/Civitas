@@ -10,10 +10,42 @@ class CategorieFixtures extends Fixture
 {
     public function load(ObjectManager $manager)
     {
-        $categorie = new Categorie();
-        $categorie->setNom("Dégradation");
-        $this->addReference($categorie->getNom(),$categorie);
-        $manager->persist($categorie);
+        $categories = array(
+            array(
+                "nom" => "Dégradation",
+                "couleur" => "red",
+                "icone" => "skull",
+            ),
+            array(
+                "nom" => "Incendie",
+                "couleur" => "darkred",
+                "icone" => "fire",
+            ),
+            array(
+                "nom" => "Innondation",
+                "couleur" => "blue",
+                "icone" => "water",
+            ),
+            array(
+                "nom" => "Accident de voiture",
+                "couleur" => "orange",
+                "icone" => "car-crash",
+            ),
+            array(
+                "nom" => "Vandalisme",
+                "couleur" => "purple",
+                "icone" => "angry",
+            )
+        );
+
+        foreach ($categories as $category){
+            $categorie = new Categorie();
+            $categorie->setNom($category["nom"]);
+            $categorie->setCouleur($category["couleur"]);
+            $categorie->seticone($category["icone"]);
+            $manager->persist($categorie);
+            $this->addReference($categorie->getNom(),$categorie);
+        }
         $manager->flush();
     }
 }

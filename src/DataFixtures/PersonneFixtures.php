@@ -6,6 +6,7 @@ use App\Entity\Personne;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
+use Faker;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class PersonneFixtures extends Fixture implements DependentFixtureInterface
@@ -20,6 +21,31 @@ class PersonneFixtures extends Fixture implements DependentFixtureInterface
 
     public function load(ObjectManager $manager)
     {
+        $communes = [
+            $this->getReference("Lens"),
+            $this->getReference("Lille"),
+            $this->getReference("Bruay-la-Buissière"),
+            $this->getReference("Béthune"),
+            $this->getReference("Liévin")
+        ];
+
+        $faker = Faker\Factory::create('fr_FR');
+
+        for($i = 0; $i < 10; $i++){
+            $personne = new Personne();
+            $personne->setPrenom($faker->firstName());
+            $personne->setNom($faker->lastName());
+            $personne->setMail($faker->freeEmail());
+            $personne->setUsername($personne->getNom().'_'.$personne->getPrenom());
+            $plainPassword = $personne->getPrenom();
+            $encoded = $this->encoder->encodePassword($personne, $plainPassword);
+            $personne->setPassword($encoded);
+            $this->addReference('personne_'.$i, $personne);
+            $personne->setCommune($communes[array_rand($communes)]);
+            $personne->setCreatedAt(new \DateTime('now'));
+            $manager->persist($personne);
+        }
+
         $personne = new Personne();
         $personne->setPrenom("Hugo");
         $personne->setNom("Duporge");
@@ -48,23 +74,6 @@ class PersonneFixtures extends Fixture implements DependentFixtureInterface
         $personne2->setCommune($this->getReference("Lille"));
         $personne2->setCreatedAt(new \DateTime('now'));
         $manager->persist($personne2);
-
-        for($i = 1; $i < 10; $i++){
-            $user = new Personne();
-            $user->setUsername('user'.$i);
-            $user->setPrenom('user'.$i);
-            $user->setNom('user'.$i);
-            $user->setMail($user->getPrenom().'@gmail.com');
-            $plainPassword = $user->getUsername();
-            $encoded = $this->encoder->encodePassword($user, $plainPassword);
-            $user->setPassword($encoded);
-            $user->setCreatedAt(new \DateTime('now'));
-            $this->addReference($user->getUsername(), $user);
-            $user->setCommune($this->getReference("Lens"));
-            $user->setCreatedAt(new \DateTime('now'));
-            $manager->persist($user);
-        }
-
 
         $manager->flush();
     }
