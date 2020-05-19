@@ -54,11 +54,18 @@
     </span>
 {% endmacro %}
 
-{% macro alert_priorite_probleme(poids, nom, resolved, id) %}
+{% macro alert_priorite_probleme(poids, nom, resolved, archived, id) %}
     {% if resolved %}
         <div class="alert alert-success">
             <h4 class="alert-heading"><i class="fa fa-check-circle"></i> RÉSOLU</h4>
             <p class="mb-0">Ce problème est <span class="font-weight-bold">résolu</span>. Il peut être archivé.</p>
+            <p class="mb-0 mt-3"><a href={{ path('probleme_archive', {'id': id}) }} class="btn btn-light btn-outline-primary text-primary text-right nounderline hover-light"><i class="fa fa-archive"></i> Archiver le problème</a></p>
+        </div>
+    {% elseif archived %}
+        <div class="alert alert-secondary">
+            <h4 class="alert-heading"><i class="fa fa-archive"></i> Archivé</h4>
+            <p class="mb-0">Ce problème est <span class="font-weight-bold">archivé</span>. Il ne fait plus parti des problèmes de la ville. Cependant il peut être restauré.</p>
+            <p class="mb-0 mt-3"><a href={{ path('probleme_restore', {'id': id}) }} class="btn btn-light btn-outline-dark text-dark text-right nounderline hover-light"><i class="fa fa-database"></i> Restaurer le problème</a></p>
         </div>
     {% elseif poids < 64 %}
         <div class="alert alert-info alert-dismissible">

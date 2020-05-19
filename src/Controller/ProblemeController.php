@@ -254,11 +254,10 @@ class ProblemeController extends AbstractController
 
     }
     /**
-     *@Route("/validate/{id}/{statut}", name="probleme_validate", methods={"GET","POST"}, requirements={"id"="\d+", "statut"="\d+"})
+     *@Route("/validate/{id}", name="probleme_validate", methods={"GET","POST"}, requirements={"id"="\d+"})
      */
     public function validateProblem(
         Probleme $probleme,
-        Statut $statut,
         StatutRepository $statutRepository
     ) : Response
     {
@@ -266,6 +265,57 @@ class ProblemeController extends AbstractController
             return $this->redirectToRoute('probleme_show', ["id" => $probleme->getId()]);
         }
 
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $hs = new HistoriqueStatut();
+        $hs->setProbleme($probleme);
+        $hs->setStatut($statutRepository->findOneBy(["nom" => "Ouvert"]));
+        $hs->setDate(new \DateTime());
+
+        $entityManager->persist($hs);
+        $entityManager->flush();
+
+
+        return $this->redirectToRoute('probleme_show', ["id" => $probleme->getId()]);
+    }
+
+    /**
+     *@Route("/archive/{id}", name="probleme_archive", methods={"GET","POST"}, requirements={"id"="\d+"})
+     */
+    public function archiveProblem(
+        Probleme $probleme,
+        StatutRepository $statutRepository
+    ) : Response
+    {
+        if($probleme->getHistoriqueStatuts()->last()->getStatut()->getNom() != "Résolu"){
+            return $this->redirectToRoute('probleme_show', ["id" => $probleme->getId()]);
+        }
+
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $hs = new HistoriqueStatut();
+        $hs->setProbleme($probleme);
+        $hs->setStatut($statutRepository->findOneBy(["nom" => "Archivé"]));
+        $hs->setDate(new \DateTime());
+
+        $entityManager->persist($hs);
+        $entityManager->flush();
+
+
+        return $this->redirectToRoute('probleme_show', ["id" => $probleme->getId()]);
+    }
+
+    /**
+     *@Route("/restore/{id}", name="probleme_restore", methods={"GET","POST"}, requirements={"id"="\d+"})
+     */
+    public function restoreProblem(
+        Probleme $probleme,
+        StatutRepository $statutRepository
+    ) : Response
+    {
+        if($probleme->getHistoriqueStatuts()->last()->getStatut()->getNom() != "Archivé"){
+            return $this->redirectToRoute('probleme_show', ["id" => $probleme->getId()]);
+        }
         $entityManager = $this->getDoctrine()->getManager();
 
         $hs = new HistoriqueStatut();

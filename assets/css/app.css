@@ -26,3 +26,7 @@ a.active:hover {
 .nounderline {
   text-decoration: none !important
 }
+
+a.hover-light:hover {
+	color:#ECF0F1!important;
+}

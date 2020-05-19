@@ -36,6 +36,7 @@
     <div class="container">
         {% set resolved = false %}
         {% set nouveau = false %}
+        {% set archived = false %}
         {% set idNouveau = 0 %}
         {% for hs in probleme.HistoriqueStatuts %}
             {% if loop.last and hs.statut == "Nouveau" %}
@@ -43,6 +44,8 @@
                 {% set idNouveau = hs.statut.id %}
             {% elseif loop.last and hs.statut == "Résolu" %}
                 {% set resolved = true %}
+            {% elseif loop.last and hs.statut == "Archivé" %}
+                {% set archived = true %}
             {% endif %}
         {% endfor %}
         {% set intervention = false %}
@@ -54,8 +57,8 @@
         
         {% if not nouveau %}
 
-            {{ macros.alert_priorite_probleme(probleme.priorite.poids, probleme.priorite.nom, resolved, probleme.id) }}
-            {% if images is empty %}    
+            {{ macros.alert_priorite_probleme(probleme.priorite.poids, probleme.priorite.nom, resolved, archived, probleme.id) }}
+            {% if images is empty and not archived %}    
                 <div class="alert alert-secondary alert-dismissible fade show" role="alert">
                     Aucune image pour ce problème.
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -63,7 +66,7 @@
                     </button>
                 </div>
             {% endif %}  
-            {% if not intervention %}
+            {% if not intervention and not archived %}
                 <div class="alert alert-secondary alert-dismissible fade show" role="alert">
                     Aucune intervention de technicien en cours pour ce problème.
                     <a href={{ path('intervenir_new', {'id': probleme.id}) }} class="nounderline close">
@@ -143,29 +146,30 @@
                     {% endfor %}
                 </div>
             {% endif %}
+
         {% else %}
 
-        <div class="alert alert-dismissible alert-warning">
-            <button type="button" class="close" data-dismiss="alert">&times;</button>
-            <h4 class="alert-heading"><i class="fa fa-exclamation-triangle"></i> Nouveau problème</h4>
-            <p class="mb-0">Ce problème n'a pas encore été validé.</p>
-        </div>
+            <div class="alert alert-dismissible alert-warning">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <h4 class="alert-heading"><i class="fa fa-exclamation-triangle"></i> Nouveau problème</h4>
+                <p class="mb-0">Ce problème n'a pas encore été validé.</p>
+            </div>
 
-        <div class="card border-primary mb-3 section">
-            <div class="card-header">Validation du problème</div>
-            <div class="card-body">
-                <h4 class="card-title">Voulez vous valider ce problème ?</h4>
-                <p class="card-text font-weight-light"><i class="fa fa-exclamation-triangle"></i> Si vous le validez, il sera visible par les utilisateurs.</p>
-                <div class="row">
-                    <div class="col">
-                        <button class="btn btn-outline-danger btn-block" data-toggle="modal" data-target="#modal_delete">Supprimer</button>
-                    </div>
-                    <div class="col">
-                        <a class="btn btn-outline-success btn-block" href={{ path('probleme_validate', {'id': probleme.id, 'statut': idNouveau}) }}>Valider</a>
+            <div class="card border-primary mb-3 section">
+                <div class="card-header">Validation du problème</div>
+                <div class="card-body">
+                    <h4 class="card-title">Voulez vous valider ce problème ?</h4>
+                    <p class="card-text font-weight-light"><i class="fa fa-exclamation-triangle"></i> Si vous le validez, il sera visible par les utilisateurs.</p>
+                    <div class="row">
+                        <div class="col">
+                            <button class="btn btn-outline-danger btn-block" data-toggle="modal" data-target="#modal_delete">Supprimer</button>
+                        </div>
+                        <div class="col">
+                            <a class="btn btn-outline-success btn-block" href={{ path('probleme_validate', {'id': probleme.id}) }}>Valider</a>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
         {% endif %}
 
