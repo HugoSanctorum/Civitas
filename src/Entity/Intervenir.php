@@ -155,4 +155,8 @@ class Intervenir
 
         return $this;
     }
+
+    public function getLabel(): string{
+        return $this->getDescription().'_'.date($this->getCreatedAt());
+    }
 }

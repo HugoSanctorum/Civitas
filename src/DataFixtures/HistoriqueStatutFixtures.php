@@ -27,8 +27,17 @@ class HistoriqueStatutFixtures extends Fixture implements DependentFixtureInterf
         $historiqueStatut->setStatut($this->getReference($statut));
         return $historiqueStatut;
     }
+    public function createIntervenirSignaleur(Probleme $probleme){
+        $inter = new Intervenir();
+        $inter->setProbleme($probleme);
+        $inter->setPersonne($this->getReference("personne_".random_int(0, 9)));
+        $inter->setTypeIntervention($this->getReference("Signaleur"));
+        $inter->setCreatedAt(new \DateTime());
+        $this->addReference('intervention_'.$this->cpt++, $inter);
+        return $inter;
+    }
 
-    public function createIntervenir(Probleme $probleme){
+    public function createIntervenirTechnicien(Probleme $probleme){
         $inter = new Intervenir();
         $inter->setProbleme($probleme);
         $inter->setPersonne($this->getReference("personne_".random_int(0, 9)));
@@ -66,18 +75,21 @@ class HistoriqueStatutFixtures extends Fixture implements DependentFixtureInterf
             } else if ($statut->getNom() == "Affecté") {
                 $manager->persist($this->createHistoriqueStatut("Ouvert", $probleme));
                 $manager->persist($this->createHistoriqueStatut("Affecté", $probleme));
-                $manager->persist($this->createIntervenir($probleme));
+                $manager->persist($this->createIntervenirTechnicien($probleme));
+                $manager->persist($this->createIntervenirSignaleur($probleme));
             } else if ($statut->getNom() == "En cours de traitement") {
                 $manager->persist($this->createHistoriqueStatut("Ouvert", $probleme));
                 $manager->persist($this->createHistoriqueStatut("Affecté", $probleme));
                 $manager->persist($this->createHistoriqueStatut("En cours de traitement", $probleme));
-                $manager->persist($this->createIntervenir($probleme));
+                $manager->persist($this->createIntervenirTechnicien($probleme));
+                $manager->persist($this->createIntervenirSignaleur($probleme));
             } else if ($statut->getNom() == "Résolu") {
                 $manager->persist($this->createHistoriqueStatut("Ouvert", $probleme));
                 $manager->persist($this->createHistoriqueStatut("Affecté", $probleme));
                 $manager->persist($this->createHistoriqueStatut("En cours de traitement", $probleme));
                 $manager->persist($this->createHistoriqueStatut("Résolu", $probleme));
-                $manager->persist($this->createIntervenir($probleme));
+                $manager->persist($this->createIntervenirTechnicien($probleme));
+                $manager->persist($this->createIntervenirSignaleur($probleme));
             }
         }
         $manager->persist($this->createHistoriqueStatut("Nouveau", $this->getReference('123456789')));

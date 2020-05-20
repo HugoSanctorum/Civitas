@@ -48,7 +48,7 @@ class ProblemeController extends AbstractController
     }
 
     /**
-     * @Route("/{page}", name="probleme_index", methods={"GET"}, defaults={"page": 1})
+     * @Route("/{page}", name="probleme_index", methods={"GET"}, defaults={"page": 1},requirements={"page"="\d+"})
      */
     public function index(
         Request $request,
@@ -72,13 +72,7 @@ class ProblemeController extends AbstractController
     /**
      * @Route("/new", name="probleme_new", methods={"GET","POST"})
      */
-    public function new(
-        Request $request,
-        GeocoderService $geocoderService,
-        SessionInterface $session,
-        ProblemeService $problemeService,
-        CommuneRepository $communeRepository
-    ): Response
+    public function new(Request $request, GeocoderService $geocoderService, SessionInterface $session, ProblemeService $problemeService, CommuneRepository $communeRepository): Response
     {
         $probleme = new Probleme();
 
@@ -170,16 +164,27 @@ class ProblemeController extends AbstractController
      */
     public function edit(
         Request $request,
-        Probleme $probleme
+        Probleme $probleme,
+        ImageRepository $imageRepository,
+        ProblemeService $problemeService
+
     ): Response
     {
+        $images = $imageRepository->findbyProbleme($probleme);
+
+
         $form = $this->createForm(ProblemeType::class, $probleme);
         $form->handleRequest($request);
-
+        $tabImageToProblemes = [];
+        for ($i = 1; $i <= 4; $i++) {
+            $imageToProbleme = $form['Image' . $i]->getData();
+            array_push($tabImageToProblemes, $imageToProbleme);
+        }
         if($request->query->get('statut')) $render = 'probleme/edit.modal.html.twig';
         else $render = 'probleme/edit.html.twig';
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $problemeService->UploadImagesNewProbleme($tabImageToProblemes, $probleme);
             $this->getDoctrine()->getManager()->flush();
 
             return $this->redirectToRoute('probleme_show', ['id' => $probleme->getId()]);
@@ -189,6 +194,7 @@ class ProblemeController extends AbstractController
             'probleme' => $probleme,
             'adresse' => $probleme->getLocalisation(),
             'form' => $form->createView(),
+            'images' =>$images
         ]);
     }
 
@@ -240,7 +246,6 @@ class ProblemeController extends AbstractController
         $probleme->setCommune($commune);
         $probleme->setCategorie($categorie);
         $probleme->setPriorite($priorite);
-        $probleme->setDateDeDeclaration(new \DateTime('now'));
         $problemeService->SetReference($probleme);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -260,8 +265,10 @@ class ProblemeController extends AbstractController
         }else{
 /*             $problemeService->DeleteThosesImages($tabUrl);*/
         }
-        return $this->render('probleme/redirect.html.twig',[
-            'form' => $form->createView()
+        $session->clear();
+        return $this->render('probleme/assets/redirect.html.twig',[
+            'form' => $form->createView(),
+            'images' => null,
         ]);
 
     }

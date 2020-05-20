@@ -69,7 +69,7 @@
             {% if not intervention and not archived %}
                 <div class="alert alert-secondary alert-dismissible fade show" role="alert">
                     Aucune intervention de technicien en cours pour ce problème.
-                    <a href={{ path('intervenir_new', {'id': probleme.id}) }} class="nounderline close">
+                    <a class="nounderline close" href={{ path('intervenir_new', {'id': probleme.id}) }}>
                         <span aria-hidden="true">&plus;</span>
                     </a>
                 </div>

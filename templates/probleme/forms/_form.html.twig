@@ -15,6 +15,18 @@
     	{{ form_row(form.Priorite, {'attr': {'class': 'form-control'}}) }}
     </div>
     <div class="form-group">
+        {% if images is defined %}
+            <h4 class="text-primary section">Liste des images</h4>
+            <div class="zoom-gallery">
+                {% for image in images %}
+                    <a href="{{ asset('/probleme/'~image.url) }}">
+                        <img class="img-thumbnail" src="{{ asset('/probleme/'~image.url) }}">
+                    </a>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+    <div class="form-group">
     	{{ form_row(form.Image1, {'attr': {'class': 'form-control'}}) }}
     	{{ form_row(form.Image2, {'attr': {'class': 'form-control'}}) }}
     	{{ form_row(form.Image3, {'attr': {'class': 'form-control'}}) }}

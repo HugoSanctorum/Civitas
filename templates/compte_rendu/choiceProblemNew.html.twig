@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New CompteRendu{% endblock %}
+
+{% block body %}
+    {% for message in app.flashes('fail') %}
+        <div class="alert alert-danger">
+            {{ message }}
+        </div>
+    {% endfor %}
+    <h1>Creer un nouveau compte rendu</h1>
+
+    {{ include('compte_rendu/_choiceProbleme.html.twig') }}
+
+    <a href="{{ path('compte_rendu_index') }}">back to list</a>
+{% endblock %}

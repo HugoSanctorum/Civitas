@@ -2,9 +2,13 @@
 
 namespace App\Form;
 
+use App\Entity\Categorie;
 use App\Entity\Personne;
+use App\Entity\Priorite;
 use App\Entity\Probleme;
 use App\Entity\Image;
+use Doctrine\DBAL\Types\StringType;
+use Doctrine\DBAL\Types\TextType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
@@ -12,11 +16,12 @@ use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Validator\Constraints\File;
 
-class ProblemeType extends AbstractType
+class  ProblemeType extends AbstractType
 {
     private $user;
 
@@ -34,8 +39,14 @@ class ProblemeType extends AbstractType
             ->add('localisation')
             ->add('nomVille', HiddenType::class, ["mapped" => false])
             ->add('reference')
-            ->add('Categorie')
-            ->add('Priorite');
+            ->add('Categorie',EntityType::class,[
+                "class" => Categorie::class,
+                "required" => true
+            ])
+            ->add('Priorite', EntityType::class,[
+                "class" => Priorite::class,
+                "required" => true,
+            ]);
         $builder->addEventListener(
             FormEvents::PRE_SET_DATA,
             [$this, 'onPreSetData']
