@@ -82,21 +82,15 @@ class CompteRenduController extends AbstractController
             return $this->redirectToRoute('compte_rendu_nouveau');
         }
         $compteRendu = new CompteRendu();
-        $historiqueStatut = new HistoriqueStatut();
-        $statut = $statutRepository->findOneBy(['nom' => 'En cours de traitement']);
+        $compteRendu->setProbleme($probleme);
 
         $form = $this->createForm(CompteRenduType::class, $compteRendu);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $document = $form->get('urlDocument')->getData();
-            $historiqueStatut->setProbleme($probleme);
-            $historiqueStatut->setStatut($statut);
-            $historiqueStatut->setDate(new \DateTime('now'));
-            $historiqueStatut->setDescription('En cours de traitement'); // description temporaire.
             $documentService->PersistCompteRendu($compteRendu, $probleme, $document);
             $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($historiqueStatut);
             $entityManager->flush();
 
             return $this->redirectToRoute('compte_rendu_index');

@@ -157,6 +157,6 @@ class Intervenir
     }
 
     public function getLabel(): string{
-        return $this->getDescription().'_'.date($this->getCreatedAt());
+        return $this->getCreatedAt()->format('Y-m-d H:i:s');
     }
 }

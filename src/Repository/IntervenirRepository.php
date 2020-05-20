@@ -14,9 +14,13 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class IntervenirRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    private $historiqueStatutRepository;
+
+    public function __construct(ManagerRegistry $registry, HistoriqueStatutRepository $historiqueStatutRepository
+    )
     {
         parent::__construct($registry, Intervenir::class);
+        $this->historiqueStatutRepository = $historiqueStatutRepository;
     }
 
     // /**
@@ -65,5 +69,30 @@ class IntervenirRepository extends ServiceEntityRepository
             ->setParameter('probleme', $probleme)
             ->getQuery()
             ->getResult();
+    }
+    public function findAllInterventionByPersonneAndUnresolvedProbleme($probleme, $personne){
+        $historiqueStatuts = $this->historiqueStatutRepository->findLatestHistoriqueStatutByProblem();
+        $idHistoriqueStatut = [];
+        foreach ($historiqueStatuts as $historiqueStatut){
+            array_push($idHistoriqueStatut,$historiqueStatut['id']);
+        }
+        return $this->createQueryBuilder('i')
+            ->join('i.Probleme','p')
+            ->join('i.TypeIntervention', 't' )
+            ->Join('p.HistoriqueStatuts','h')
+            ->join('h.Statut','s')
+            ->where("s.nom != 'Résolu'")
+            ->andWhere("s.nom != 'Archivé'")
+            ->andWhere('h.id IN (:historiqueStatut)')
+            ->andWhere('i.Personne = :personne')
+            ->andWhere("t.nom = 'Technicien'")
+            ->andWhere('i.Probleme = :probleme')
+            ->setParameter('probleme' , $probleme)
+            ->setParameter('personne', $personne)
+            ->setParameter('historiqueStatut', $idHistoriqueStatut)
+            ->orderBy('p.titre')
+            ->getQuery()
+            ->getResult();
+
     }
 }

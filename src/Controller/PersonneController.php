@@ -25,12 +25,15 @@ class PersonneController extends AbstractController
     private $encoder;
     private $personne;
     private $tokenGenerator;
+    private $personneRepository;
 
-    public function __construct(UserPasswordEncoderInterface $encoder,TokenStorageInterface $tokenStorageInterface, TokenGeneratorInterface $tokenGenerator)
+    public function __construct(PersonneRepository $personneRepository, UserPasswordEncoderInterface $encoder,TokenStorageInterface $tokenStorageInterface, TokenGeneratorInterface $tokenGenerator)
     {
         $this->encoder = $encoder;
         $this->personne = $tokenStorageInterface->getToken()->getUser();
         $this->tokenGenerator = $tokenGenerator;
+        $this->personneRepository = $personneRepository;
+
 
     }
     /**
@@ -53,27 +56,33 @@ class PersonneController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $nom =$request->request->all()['personne']['nom'];
-            $prenom = $request->request->all()['personne']['prenom'];
-            $personne->setUsername($nom.'_'.$prenom);
-            $plainPassword = $request->request->all()['personne']['password'];
-            $encoded = $this->encoder->encodePassword($personne, $plainPassword);
-            $activatedToken = $this->tokenGenerator->generateToken();
-            $personne->setActivatedToken($activatedToken);
-            $subscribeToken = $this->tokenGenerator->generateToken();
-            $personne->setSubscribeToken($subscribeToken);
-            $personne->setPassword($encoded);
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($personne);
-            $mailerService->sendMailActivatedAccount($personne,$activatedToken);
-            $entityManager->flush();
-            return $this->redirectToRoute('personne_index');
-        }
+            $personneMail = $this->personneRepository->findOneBy(['mail' => $request->request->all()["personne"]["mail"]]);
+            if (!$personneMail) {
+                $nom = $request->request->all()['personne']['nom'];
+                $prenom = $request->request->all()['personne']['prenom'];
+                $personne->setUsername($nom . '_' . $prenom);
+                $plainPassword = $request->request->all()['personne']['password'];
+                $encoded = $this->encoder->encodePassword($personne, $plainPassword);
+                $activatedToken = $this->tokenGenerator->generateToken();
+                $personne->setActivatedToken($activatedToken);
+                $subscribeToken = $this->tokenGenerator->generateToken();
+                $personne->setSubscribeToken($subscribeToken);
+                $personne->setPassword($encoded);
+                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager->persist($personne);
+                $mailerService->sendMailActivatedAccount($personne, $activatedToken);
+                $entityManager->flush();
+                return $this->redirectToRoute('personne_index');
+            } else {
 
-        return $this->render('personne/new.html.twig', [
-            'personne' => $personne,
-            'form' => $form->createView(),
-        ]);
+            }
+
+        }
+            return $this->render('personne/new.html.twig', [
+                'personne' => $personne,
+                'form' => $form->createView(),
+            ]);
+
     }
 
     /**
