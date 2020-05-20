@@ -10,6 +10,34 @@
         </div>
     </div>
     <div class="container">
+        <form>
+            <div class="form-row">
+                <div class="col">
+                    <label for="searchbox">Rechercher un problème</label>
+                    <input type="text" class="form-control mb-5" id="searchbox" placeholder="nom du problème">
+                </div>
+                <div class="col">
+                    <label for="categorie">Affiner par catégorie</label>
+                    <select multiple class="custom-select form-control selectpicker mb-5">
+                        {% for categorie in categories %}
+                            <option value={{ categorie }}>{{ categorie }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col">
+                    <label for="categorie">Nombre d'éléments par page</label>
+                    <select class="custom-select form-control selectpicker mb-5">
+                        <option value="10">10</option>
+                        <option value="20">20</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                </div>
+                <div class="col">
+                    <button type="submit" class="btn btn-success mb-5 btn-block form-bottom"><i class="fa fa-search"></i> Affiner la recherche</button>
+                </div>
+            </div>
+        </form>
 
         <table class="table">
             <thead>

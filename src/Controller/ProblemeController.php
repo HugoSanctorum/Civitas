@@ -53,10 +53,11 @@ class ProblemeController extends AbstractController
     public function index(
         Request $request,
         ProblemeRepository $problemeRepository,
+        CategorieRepository $categorieRepository,
         int $page = 1
     ): Response
     {
-        $nbr_max_element = $request->query->get('element') ? $request->query->get('element') : 15;
+        $nbr_max_element = $request->query->get('element') ? $request->query->get('element') : 15; //on va gérer surement ça dans la session bg
 
         $problemes = $problemeRepository->findAllPaginate($page, $nbr_max_element);
 
@@ -66,6 +67,7 @@ class ProblemeController extends AbstractController
             'problemes' => $problemes,
             'nbr_page' => $nbr_page,
             'active_page' => $page,
+            'categories' => $categorieRepository->findAll(),
         ]);
     }
 

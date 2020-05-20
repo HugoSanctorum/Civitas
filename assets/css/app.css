@@ -53,3 +53,9 @@ a.hover-light:hover {
     color: white !important;
     opacity: 0.6;
 }
+
+.form-bottom
+{
+    position: absolute;
+    bottom: 0;
+}
