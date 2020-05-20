@@ -3,7 +3,9 @@
 namespace App\Form;
 
 use App\Entity\CompteRendu;
+use App\Entity\Intervenir;
 use App\Entity\Probleme;
+use App\Repository\IntervenirRepository;
 use App\Repository\ProblemeRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -20,20 +22,22 @@ class CompteRenduType extends AbstractType
 {
     private $personne;
     private $problemeRepository;
+    private $intervenirRepository;
 
-    public function __construct(ProblemeRepository $problemeRepository,TokenStorageInterface $tokenStorageInterface)
+    public function __construct(ProblemeRepository $problemeRepository,TokenStorageInterface $tokenStorageInterface, IntervenirRepository $intervenirRepository)
     {
         $this->problemeRepository = $problemeRepository;
+        $this->intervenirRepository = $intervenirRepository;
         $this->personne = $tokenStorageInterface->getToken()->getUser();
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('Probleme')
-            ->add('urlDocument')
-            ->add('Intervenir')
-        ;
+            ->add('titre')
+            ->add('description')
+            ->add('urlDocument');
+
         $builder->addEventListener(
             FormEvents::PRE_SET_DATA,
             [$this, 'onPreSetData']
@@ -43,12 +47,10 @@ class CompteRenduType extends AbstractType
     public function onPreSetData(FormEvent $event)
     {
         $form = $event->getForm(); //récupération du formulaire
-        $form->add('Probleme',EntityType::class,[
-                "class" => Probleme::class,
-                "choices" =>$this->problemeRepository->findAllUnResolvedProblemeByPersonne($this->personne),
-                'choice_label' => 'Label',
+        $form->remove('Probleme');
+        $entity = $event->getData();
 
-            ]);
+
         $form->add('urlDocument', FileType::class, [
             'label' => 'Document',
             'mapped' => false,
@@ -66,6 +68,12 @@ class CompteRenduType extends AbstractType
                 ])
             ],
         ]);
+        $form->add('Intervenir', EntityType::class, [
+            "class" => Intervenir::class,
+            "choices" => $this->intervenirRepository->findAllInterventionByPersonneAndUnresolvedProbleme($entity->getProbleme(),$this->personne),
+            "choice_label" => 'label'
+            ])
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver)
