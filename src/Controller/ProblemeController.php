@@ -48,12 +48,24 @@ class ProblemeController extends AbstractController
     }
 
     /**
-     * @Route("/", name="probleme_index", methods={"GET"})
+     * @Route("/{page}", name="probleme_index", methods={"GET"}, defaults={"page": 1})
      */
-    public function index(ProblemeRepository $problemeRepository): Response
+    public function index(
+        Request $request,
+        ProblemeRepository $problemeRepository,
+        int $page = 1
+    ): Response
     {
+        $nbr_max_element = $request->query->get('element') ? $request->query->get('element') : 15;
+
+        $problemes = $problemeRepository->findAllPaginate($page, $nbr_max_element);
+
+        $nbr_page = ceil(count($problemeRepository->findAll())/$nbr_max_element);
+
         return $this->render('probleme/index.html.twig', [
-            'problemes' => $problemeRepository->findAll(),
+            'problemes' => $problemes,
+            'nbr_page' => $nbr_page,
+            'active_page' => $page,
         ]);
     }
 

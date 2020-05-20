@@ -27,34 +27,17 @@ class ProblemeRepository extends ServiceEntityRepository
     // /**
     //  * @return Probleme[] Returns an array of Probleme objects
     //  */
-    /*
-    public function findByExampleField($value)
+    
+    public function findAllPaginate(int $page, int $nbr_max_element)
     {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
+        return $this->createQueryBuilder('p')   
             ->orderBy('p.id', 'ASC')
-            ->setMaxResults(10)
             ->getQuery()
+            ->setFirstResult(($page-1) * $nbr_max_element)
+            ->setMaxResults($nbr_max_element)
             ->getResult()
         ;
     }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?Probleme
-    {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
-
-
-
 
 
     public function findAllUnresolvedProblem()
