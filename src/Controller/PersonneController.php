@@ -73,8 +73,25 @@ class PersonneController extends AbstractController
                 $mailerService->sendMailActivatedAccount($personne, $activatedToken);
                 $entityManager->flush();
                 return $this->redirectToRoute('personne_index');
-            } else {
-
+            }elseif (!$personneMail->getPassword()) {
+                $nom = $request->request->all()['personne']['nom'];
+                $prenom = $request->request->all()['personne']['prenom'];
+                $personneMail->setUsername($nom . '_' . $prenom);
+                $plainPassword = $request->request->all()['personne']['password'];
+                $encoded = $this->encoder->encodePassword($personneMail, $plainPassword);
+                $activatedToken = $this->tokenGenerator->generateToken();
+                $personneMail->setActivatedToken($activatedToken);
+                $subscribeToken = $this->tokenGenerator->generateToken();
+                $personneMail->setSubscribeToken($subscribeToken);
+                $personneMail->setPassword($encoded);
+                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager->persist($personneMail);
+                $mailerService->sendMailActivatedAccount($personneMail, $activatedToken);
+                $entityManager->flush();
+                return $this->redirectToRoute('personne_index');
+            }else{
+                $this->addFlash("fail","Cette adresse mail est déjà utilisé.");
+                return $this->redirectToRoute('/senregistrer');
             }
 
         }
