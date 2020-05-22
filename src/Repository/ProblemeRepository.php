@@ -3,8 +3,10 @@
 namespace App\Repository;
 
 use App\Entity\HistoriqueAction;
-use App\Repository\HistoriqueStatutRepository;
 use App\Entity\Probleme;
+use App\Entity\Statut;
+use App\Entity\Categorie;
+use App\Repository\HistoriqueStatutRepository;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -24,19 +26,99 @@ class ProblemeRepository extends ServiceEntityRepository
         $this->historiqueStatutRepository = $historiqueStatutRepository;
     }
 
-    // /**
-    //  * @return Probleme[] Returns an array of Probleme objects
-    //  */
-    
-    public function findAllPaginate(int $page, int $nbr_max_element)
+    public function formatValues($query){
+        $str = "(";
+        foreach ($query as $val) {
+            $str .= $val->getId().", ";
+        }
+        return substr($str, 0, -2).")";
+    }
+
+    public function getRequestPagination(
+        array $categories,
+        array $statuts,
+        string $nom
+    )
     {
-        return $this->createQueryBuilder('p')   
-            ->orderBy('p.id', 'ASC')
-            ->getQuery()
-            ->setFirstResult(($page-1) * $nbr_max_element)
-            ->setMaxResults($nbr_max_element)
-            ->getResult()
+        $em = $this->getEntityManager();
+
+        $parameters = [];
+
+        if (empty($categories)){
+            $categories_raw = $em->getRepository(Categorie::class)->findAll();
+            $parameters['categorie_ids'] = $this->formatValues($categories_raw);
+        }else{
+            $parameters['categorie_ids'] = $this->formatValues($categories);
+        }
+        if (empty($statuts)){
+            $statuts_raw = $em->getRepository(Statut::class)->findAll();
+            $parameters['statut_ids'] = $this->formatValues($statuts_raw);
+        }else{
+            $parameters['statut_ids'] = $this->formatValues($statuts);
+        }
+        if (empty($nom)){
+            $parameters['nom'] = '%';
+        }else{
+            $parameters['nom'] = '%'.$nom.'%';
+        }
+
+        $sql = '
+            SELECT probleme.*
+            FROM historique_statut AS t1 LEFT OUTER JOIN 
+            (
+                SELECT probleme_id, MAX(date) as maxdate
+                FROM historique_statut
+                GROUP BY probleme_id
+            )AS t2 USING (probleme_id)
+            INNER JOIN statut ON t1.statut_id = statut.id
+            INNER JOIN probleme ON t1.probleme_id = probleme.id
+            WHERE t1.date = t2.maxdate
+            AND statut.id IN '.$parameters['statut_ids'].'
+            AND probleme.categorie_id IN '.$parameters['categorie_ids'].'
+            AND titre LIKE "'.$parameters['nom'].'"
+            GROUP BY t1.probleme_id
+            ORDER BY probleme.categorie_id
+            '
         ;
+
+        return $sql;
+    }
+    
+    public function findPaginateByCategoryAndName(
+        int $page,
+        int $nbr_max_element,
+        array $categories,
+        array $statuts,
+        string $nom
+    )
+    {
+        $conn = $this->getEntityManager()->getConnection();
+
+        $sql = $this->getRequestPagination($categories, $statuts, $nom);
+        $sql .= 'LIMIT '.$nbr_max_element.' OFFSET '.($page-1) * $nbr_max_element;
+
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+
+        return $stmt->fetchAll();
+    }
+
+    public function findAllByCategoryAndName(
+        int $page,
+        int $nbr_max_element,
+        array $categories,
+        array $statuts,
+        string $nom
+    )
+    {
+        $conn = $this->getEntityManager()->getConnection();
+
+        $sql = $this->getRequestPagination($categories, $statuts, $nom);
+
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+
+        return $stmt->fetchAll();
     }
 
 

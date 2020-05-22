@@ -24,7 +24,7 @@ a.active:hover {
 }
 
 .nounderline {
-  text-decoration: none !important
+    text-decoration: none !important
 }
 
 a.hover-light:hover {
@@ -58,4 +58,15 @@ a.hover-light:hover {
 {
     position: absolute;
     bottom: 0;
+}
+
+.col-fill
+{
+    display: flex;
+    flex-direction: column;
+}
+
+.col-fill > *
+{
+    flex: 1;
 }

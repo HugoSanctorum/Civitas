@@ -9,6 +9,7 @@ use App\Entity\Image;
 use App\Entity\Intervenir;
 use App\Entity\Personne;
 use App\Form\ProblemeType;
+use App\Form\ProblemeSearchType;
 use App\Form\RedirectProblemeType;
 use App\Repository\CategorieRepository;
 use App\Repository\CommuneRepository;
@@ -48,33 +49,77 @@ class ProblemeController extends AbstractController
     }
 
     /**
-     * @Route("/{page}", name="probleme_index", methods={"GET"}, defaults={"page": 1},requirements={"page"="\d+"})
+     * @Route("/{page}", name="probleme_index", methods={"GET", "POST"}, defaults={"page": 1},requirements={"page"="\d+"})
      */
     public function index(
         Request $request,
+        SessionInterface $session,
         ProblemeRepository $problemeRepository,
         CategorieRepository $categorieRepository,
         int $page = 1
     ): Response
     {
-        $nbr_max_element = $request->query->get('element') ? $request->query->get('element') : 15; //on va gérer surement ça dans la session bg
+        $form = $this->createForm(ProblemeSearchType::class);
+        $form->handleRequest($request);
 
-        $problemes = $problemeRepository->findAllPaginate($page, $nbr_max_element);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $tab = $request->request->get("probleme_search");
 
-        $nbr_page = ceil(count($problemeRepository->findAll())/$nbr_max_element);
+            if(array_key_exists("nom", $tab))
+                $session->set("search_nom_probleme", $tab["nom"]);
+            else
+                $session->remove("search_nom_probleme");
+
+            if(array_key_exists("categories", $tab))
+                $session->set("search_categories", $tab["categories"]);
+            else 
+                $session->remove("search_categories");
+
+            if(array_key_exists("statuts", $tab))
+                $session->set("search_statuts", $tab["statuts"]);
+            else 
+                $session->remove("search_statuts");
+
+            if(array_key_exists("element", $tab))
+                $session->set("search_element", $tab["element"]);
+            else
+                $session->remove("search_element");
+        }
+
+        $active_nom = $session->get('search_nom_probleme') ? $session->get('search_nom_probleme') : "";
+        $active_categories = $session->get('search_categories') ? $session->get('search_categories') : [];
+        $active_statuts = $session->get('search_statuts') ? $session->get('search_statuts') : [];
+        $active_element = $session->get('search_element') ? $session->get('search_element') : 20;
+
+        $problemes = $problemeRepository->findPaginateByCategoryAndName($page, $active_element, $active_categories, $active_statuts, $active_nom);
+
+        $nbr_page = ceil(count($problemeRepository->findAllByCategoryAndName($page, $active_element, $active_categories, $active_statuts, $active_nom))/$active_element);
+
+        dd($problemes);
 
         return $this->render('probleme/index.html.twig', [
             'problemes' => $problemes,
             'nbr_page' => $nbr_page,
             'active_page' => $page,
             'categories' => $categorieRepository->findAll(),
+            'active_nom' => $active_nom,
+            'active_categories' => $active_categories,
+            'active_statuts' => $active_statuts,
+            'active_element' => $active_element,
+            'form' => $form->createView(),
         ]);
     }
 
     /**
      * @Route("/new", name="probleme_new", methods={"GET","POST"})
      */
-    public function new(Request $request, GeocoderService $geocoderService, SessionInterface $session, ProblemeService $problemeService, CommuneRepository $communeRepository): Response
+    public function new(
+        Request $request,
+        GeocoderService $geocoderService,
+        SessionInterface $session,
+        ProblemeService $problemeService,
+        CommuneRepository $communeRepository
+    ): Response
     {
         $probleme = new Probleme();
 
@@ -147,7 +192,7 @@ class ProblemeController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="probleme_show", methods={"GET"})
+     * @Route("/{id}/show", name="probleme_show", methods={"GET"})
      */
     public function show(
         Probleme $probleme,
@@ -349,5 +394,20 @@ class ProblemeController extends AbstractController
 
 
         return $this->redirectToRoute('probleme_show', ["id" => $probleme->getId()]);
+    }
+
+    /**
+     *@Route("/search/reset", name="probleme_search_reset", methods={"GET"}, requirements={"id"="\d+"})
+     */
+    public function problemeResetSearch(
+        SessionInterface $session
+    ) : Response
+    {
+        $session->remove("search_nom_probleme");
+        $session->remove("search_categories");
+        $session->remove("search_statuts");
+        $session->remove("search_element");
+
+        return $this->redirectToRoute('probleme_index');
     }
 }
