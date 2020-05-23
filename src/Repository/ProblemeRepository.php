@@ -62,7 +62,7 @@ class ProblemeRepository extends ServiceEntityRepository
         if (empty($nom)){
             $parameters['nom'] = '%';
         }else{
-            $parameters['nom'] = '%'.$nom.'%';
+            $parameters['nom'] = '%'.str_replace("\"", "'", $nom).'%';
         }
 
         $sql = '
