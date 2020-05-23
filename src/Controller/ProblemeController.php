@@ -95,8 +95,6 @@ class ProblemeController extends AbstractController
 
         $nbr_page = ceil(count($problemeRepository->findAllByCategoryAndName($page, $active_element, $active_categories, $active_statuts, $active_nom))/$active_element);
 
-        dd($problemes);
-
         return $this->render('probleme/index.html.twig', [
             'problemes' => $problemes,
             'nbr_page' => $nbr_page,

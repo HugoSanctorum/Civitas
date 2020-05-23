@@ -29,7 +29,10 @@ class ProblemeRepository extends ServiceEntityRepository
     public function formatValues($query){
         $str = "(";
         foreach ($query as $val) {
-            $str .= $val->getId().", ";
+            if($val instanceof Categorie || $val instanceof Statut)
+                $str .= $val->getId().", ";
+            else
+                $str .= $val.", ";
         }
         return substr($str, 0, -2).")";
     }
@@ -100,7 +103,11 @@ class ProblemeRepository extends ServiceEntityRepository
         $stmt = $conn->prepare($sql);
         $stmt->execute();
 
-        return $stmt->fetchAll();
+        $problemes = [];
+        foreach ($stmt->fetchAll() as $probleme) {
+            array_push($problemes, $this->getEntityManager()->getRepository(Probleme::class)->findOneBy(['id' => $probleme['id']]));
+        }
+        return $problemes;
     }
 
     public function findAllByCategoryAndName(
