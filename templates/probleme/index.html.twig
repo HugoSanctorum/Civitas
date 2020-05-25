@@ -4,6 +4,11 @@
 {% block title %}Probleme index{% endblock %}
 
 {% block body %}
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
+    {% endfor %}
     {% set pagination = true %}
 
     <div class="jumbotron jumbotron-fluid">

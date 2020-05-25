@@ -248,15 +248,15 @@ class ProblemeController extends AbstractController
      */
     public function delete(
         Request $request,
-        Probleme $probleme
+        Probleme $probleme,
+        ProblemeService $problemeService
     ): Response
     {
+        $problemeTitre = $probleme->getTitre();
         if ($this->isCsrfTokenValid('delete'.$probleme->getId(), $request->request->get('_token'))) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->remove($probleme);
-            $entityManager->flush();
+           $problemeService->DeleteProbleme($probleme);
         }
-
+        $this->addFlash('success','le problème "'.$probleme->getTitre().'" a bien été supprimé');
         return $this->redirectToRoute('probleme_index');
     }
 

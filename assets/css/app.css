@@ -70,3 +70,8 @@ a.hover-light:hover {
 {
     flex: 1;
 }
+
+#delete_probleme{
+    list-style-type: "➽" !important;
+    width: 40%
+}

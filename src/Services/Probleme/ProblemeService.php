@@ -8,7 +8,10 @@ use App\Entity\Intervenir;
 use App\Entity\HistoriqueStatut;
 use App\Entity\Personne;
 use App\Entity\Probleme;
+use App\Repository\CompteRenduRepository;
 use App\Repository\HistoriqueStatutRepository;
+use App\Repository\ImageRepository;
+use App\Repository\IntervenirRepository;
 use App\Repository\ProblemeRepository;
 use App\Repository\StatutRepository;
 use App\Repository\TypeInterventionRepository;
@@ -33,6 +36,10 @@ class ProblemeService extends AbstractController
     private $entityManager;
     private $mailerService;
     private $personne;
+    private $historiqueStatutRepository;
+    private $internirRepository;
+    private $imageRepository;
+    private $compteRenduRepository;
 
     public function __construct(
         ProblemeRepository $problemeRepository,
@@ -40,7 +47,11 @@ class ProblemeService extends AbstractController
         StatutRepository $statutRepository,
         EntityManagerInterface $entityManager,
         MailerService $mailerService,
-        TokenStorageInterface $tokenStorageInterface
+        TokenStorageInterface $tokenStorageInterface,
+        HistoriqueStatutRepository $historiqueStatutRepository,
+        IntervenirRepository $intervenirRepository,
+        ImageRepository $imageRepository,
+        CompteRenduRepository $compteRenduRepository
     )
     {
         $this->problemeRepository = $problemeRepository;
@@ -49,6 +60,10 @@ class ProblemeService extends AbstractController
         $this->entityManager = $entityManager;
         $this->mailerService = $mailerService;
         $this->personne = $tokenStorageInterface->getToken()->getUser();
+        $this->historiqueStatutRepository = $historiqueStatutRepository;
+        $this->internirRepository = $intervenirRepository;
+        $this->imageRepository =$imageRepository;
+        $this->compteRenduRepository = $compteRenduRepository;
     }
 
     public function CreateNewIntervenirMailExistingNonAuthentificated($probleme, $personne)
@@ -184,5 +199,43 @@ class ProblemeService extends AbstractController
         $id =((int)$string[1]);
         $cell = 26;
         $probleme->setReference($anneeMois.($id+$cell));
+    }
+
+    public function DeleteProbleme($probleme){
+        $historiqueStatuts = $this->historiqueStatutRepository->findBy(["Probleme" => $probleme]);
+        $intervenirs = $this->internirRepository->findBy(["Probleme" => $probleme]);
+        $images = $this->imageRepository->findBy(["Probleme" => $probleme]);
+        $compteRendus = $this->compteRenduRepository->findBy(["Probleme" => $probleme]);
+
+        if($historiqueStatuts){
+            foreach ($historiqueStatuts as $historiqueStatut) {
+                $this->entityManager->remove($historiqueStatut);
+                $this->entityManager->flush();
+            }
+        }
+        if($intervenirs){
+            foreach ($intervenirs as $intervenir) {
+                $this->entityManager->remove($intervenir);
+                $this->entityManager->flush();
+            }
+        }
+        if($images){
+            foreach ($images as $image) {
+                $this->entityManager->remove($image);
+                $this->entityManager->flush();
+
+            }
+        }
+        if($compteRendus){
+            foreach ($compteRendus as $compteRendu) {
+                $this->entityManager->remove($compteRendu);
+                $this->entityManager->flush();
+            }
+        }
+
+        $this->entityManager->remove($probleme);
+        $this->entityManager->flush();
+
+
     }
 }
