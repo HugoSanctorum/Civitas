@@ -51,7 +51,7 @@
                 markerColor: probleme.marker_color
             });
             let marker = L.marker(probleme.coordonnees, {icon: markerstyle}).addTo(map);
-            marker.bindPopup('<b>' + probleme.titre + '</b></br><i>' + probleme.statut + '</i></br><a href="/probleme/'+ probleme.id +'">Voir le problème</a>');
+            marker.bindPopup('<b>' + probleme.titre + '</b></br><i>' + probleme.statut + '</i></br><a href="/probleme/'+ probleme.id +'/show">Voir le problème</a>');
         }
 
 		map.locate({setView: true, maxZoom: 16});

@@ -69,8 +69,7 @@
                         markerColor: probleme.marker_color
                     });
                     let marker = L.marker(probleme.coordonnees, {icon: markerstyle});
-                    marker.bindPopup('<b>' + probleme.titre + '</b>');
-                    
+                    marker.bindPopup("<a href='/probleme/"+ probleme.id +"/show'>Voir le problème</a>");
                     list.push(marker);                    
                 }
             }
