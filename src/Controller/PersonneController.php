@@ -6,6 +6,7 @@ use App\Entity\Personne;
 use App\Form\PersonneType;
 use App\Form\ProfileType;
 use App\Form\PasswdType;
+use App\Repository\CommuneRepository;
 use App\Repository\PersonneRepository;
 use App\Services\Mailer\MailerService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -26,13 +27,15 @@ class PersonneController extends AbstractController
     private $personne;
     private $tokenGenerator;
     private $personneRepository;
+    private $communeRepository;
 
-    public function __construct(PersonneRepository $personneRepository, UserPasswordEncoderInterface $encoder,TokenStorageInterface $tokenStorageInterface, TokenGeneratorInterface $tokenGenerator)
+    public function __construct(CommuneRepository $communeRepository, PersonneRepository $personneRepository, UserPasswordEncoderInterface $encoder,TokenStorageInterface $tokenStorageInterface, TokenGeneratorInterface $tokenGenerator)
     {
         $this->encoder = $encoder;
         $this->personne = $tokenStorageInterface->getToken()->getUser();
         $this->tokenGenerator = $tokenGenerator;
         $this->personneRepository = $personneRepository;
+        $this->communeRepository = $communeRepository;
 
 
     }
@@ -56,45 +59,65 @@ class PersonneController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $communeId = $request->request->all()['personne']['Commune'];
+            $commune = $this->communeRepository->findOneBy(['id' => $communeId]);
             $personneMail = $this->personneRepository->findOneBy(['mail' => $request->request->all()["personne"]["mail"]]);
             if (!$personneMail) {
                 $nom = $request->request->all()['personne']['nom'];
                 $prenom = $request->request->all()['personne']['prenom'];
+                $personne->setNom($nom);
+                $personne->setPrenom($prenom);
                 $personne->setUsername($nom . '_' . $prenom);
+
+                $personne->setCommune($commune);
+
                 $plainPassword = $request->request->all()['personne']['password'];
                 $encoded = $this->encoder->encodePassword($personne, $plainPassword);
+                $personne->setPassword($encoded);
+
                 $activatedToken = $this->tokenGenerator->generateToken();
                 $personne->setActivatedToken($activatedToken);
+
                 $subscribeToken = $this->tokenGenerator->generateToken();
                 $personne->setSubscribeToken($subscribeToken);
-                $personne->setPassword($encoded);
+
                 $entityManager = $this->getDoctrine()->getManager();
                 $entityManager->persist($personne);
                 $mailerService->sendMailActivatedAccount($personne, $activatedToken);
                 $entityManager->flush();
                 return $this->redirectToRoute('personne_index');
-            }elseif (!$personneMail->getPassword()) {
+            } elseif (!$personneMail->getPassword()) {
                 $nom = $request->request->all()['personne']['nom'];
                 $prenom = $request->request->all()['personne']['prenom'];
+                $personneMail->setNom($nom);
+                $personneMail->setPrenom($prenom);
+
+                $personneMail->setCommune($commune);
+
                 $personneMail->setUsername($nom . '_' . $prenom);
                 $plainPassword = $request->request->all()['personne']['password'];
                 $encoded = $this->encoder->encodePassword($personneMail, $plainPassword);
+                $personneMail->setPassword($encoded);
+
                 $activatedToken = $this->tokenGenerator->generateToken();
                 $personneMail->setActivatedToken($activatedToken);
+
                 $subscribeToken = $this->tokenGenerator->generateToken();
                 $personneMail->setSubscribeToken($subscribeToken);
-                $personneMail->setPassword($encoded);
+
                 $entityManager = $this->getDoctrine()->getManager();
                 $entityManager->persist($personneMail);
+
                 $mailerService->sendMailActivatedAccount($personneMail, $activatedToken);
+
                 $entityManager->flush();
                 return $this->redirectToRoute('personne_index');
-            }else{
-                $this->addFlash("fail","Cette adresse mail est déjà utilisé.");
+            } else {
+                $this->addFlash("fail", "Cette adresse mail est déjà utilisé.");
                 return $this->redirectToRoute('/senregistrer');
             }
-
         }
+
             return $this->render('personne/new.html.twig', [
                 'personne' => $personne,
                 'form' => $form->createView(),

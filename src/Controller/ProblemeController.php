@@ -161,7 +161,7 @@ class ProblemeController extends AbstractController
                 $problemeService->CreateNewProblemeMailExisting($probleme, $this->personne);
                 $problemeService->UploadImagesNewProbleme($tabImageToProblemes, $probleme);
 
-            } else {
+            }else {
                 $session->set('titre', $probleme->getTitre());
                 $session->set('description', $probleme->getDescription());
                 $session->set('localisation', $probleme->getLocalisation());
@@ -295,22 +295,21 @@ class ProblemeController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($probleme);
+            $problemeService->PersistUrlWithProbleme($tabUrl, $probleme);
             $mail = $request->request->all()["redirect_probleme"]["mail"];
             $isExisting = $personneRepository->findOneBy(['mail'=>$mail]);
             if($isExisting){
-                $problemeService->CreateNewProblemeMailExisting($probleme,$isExisting);
+                $problemeService->CreateNewIntervenirMailExistingNonAuthentificated($probleme,$isExisting);
             }else{
-                $problemeService->CreateNewIntervenirNonAuthentificated($probleme,$mail);
-                $problemeService->PersistUrlWithProbleme($tabUrl, $probleme);
+                $problemeService->CreateNewIntervenirMailNonExistingNonAuthentificated($probleme,$mail);
             }
             $entityManager->flush();
+            $session->clear();
 
             return $this->redirectToRoute('probleme_index');
         }else{
 /*             $problemeService->DeleteThosesImages($tabUrl);*/
         }
-        $session->clear();
         return $this->render('probleme/assets/redirect.html.twig',[
             'form' => $form->createView(),
             'images' => null,

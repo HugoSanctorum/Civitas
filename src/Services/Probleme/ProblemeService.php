@@ -51,7 +51,7 @@ class ProblemeService extends AbstractController
         $this->personne = $tokenStorageInterface->getToken()->getUser();
     }
 
-    public function CreateNewProblemeMailExisting($probleme, $personne)
+    public function CreateNewIntervenirMailExistingNonAuthentificated($probleme, $personne)
     {
         $this->entityManager->persist($probleme);
 
@@ -64,12 +64,11 @@ class ProblemeService extends AbstractController
 
         $this->CreateNewHistoriqueStatut($probleme);
         $this->entityManager->persist($intervenir);
-        $this->entityManager->flush();
 
         $this->mailerService->sendMailToSignaleurNewProbleme($personne, $probleme);
     }
 
-    public function CreateNewIntervenirNonAuthentificated($probleme, $mail)
+    public function CreateNewIntervenirMailNonExistingNonAuthentificated($probleme, $mail)
     {
 
         $intervenir = new Intervenir();
@@ -86,6 +85,7 @@ class ProblemeService extends AbstractController
 
         $this->entityManager->persist($intervenir);
         $this->entityManager->persist($personne);
+        $this->entityManager->persist($probleme);
         $this->mailerService->sendMailToSignaleurNewProbleme($personne, $probleme);
 
     }
