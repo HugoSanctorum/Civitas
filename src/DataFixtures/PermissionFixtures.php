@@ -13,11 +13,13 @@ class PermissionFixtures extends Fixture
         $permissions = [
         	"GET_SELF_PROBLEME",
         	"GET_OTHER_PROBLEME",
-        	"POST_PROBLEME",
-        	"UPDATE_SELF_PROBLEME",
+        	//"POST_PROBLEME", //Un compte anonyme ne possede pas de role, donc tout le monde peut creer un probleme
+        	//"UPDATE_SELF_PROBLEME", //Non utilisable
         	"UPDATE_OTHER_PROBLEME",
-        	"DELETE_SELF_PROBLEME",
+        	//"DELETE_SELF_PROBLEME",//''
         	"DELETE_OTHER_PROBLEME",
+            "VALIDATE_PROBLEME",
+/*            "ARCHIVATE_PROBLEME",*/
 
         	"GET_SELF_PERSONNE",
         	"GET_OTHER_PERSONNE",
@@ -83,6 +85,7 @@ class PermissionFixtures extends Fixture
         	"UPDATE_OTHER_STATUT",
         	"DELETE_SELF_STATUT",
         	"DELETE_OTHER_STATUT",
+
 
         	"GET_SELF_PRIORITE",
         	"GET_OTHER_PRIORITE",

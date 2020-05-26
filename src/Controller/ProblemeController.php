@@ -20,8 +20,11 @@ use App\Repository\ProblemeRepository;
 use App\Repository\StatutRepository;
 use App\Services\Geocoder\GeocoderService;
 use App\Services\Mailer\MailerService;
+use App\Services\Personne\PermissionChecker;
 use App\Services\Probleme\ProblemeService;
 use Doctrine\Common\Collections\ArrayCollection;
+use PhpParser\Node\Stmt\Label;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
@@ -32,6 +35,8 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Validator\Constraints\Date;
 use Doctrine\ORM\EntityManagerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+
 
 /**
  * @Route("/probleme")
@@ -40,16 +45,18 @@ class ProblemeController extends AbstractController
 {
 
     private $personne;
+    private $permissionChecker;
 
     public function __construct(
-        TokenStorageInterface $tokenStorageInterface
-    )
+        TokenStorageInterface $tokenStorageInterface, PermissionChecker $permissionChecker )
     {
         $this->personne = $tokenStorageInterface->getToken()->getUser();
+        $this->permissionChecker = $permissionChecker;
     }
 
     /**
      * @Route("/{page}", name="probleme_index", methods={"GET", "POST"}, defaults={"page": 1},requirements={"page"="\d+"})
+     * @IsGranted("ROLE_USER")
      */
     public function index(
         Request $request,
@@ -59,6 +66,10 @@ class ProblemeController extends AbstractController
         int $page = 1
     ): Response
     {
+        if(!$this->permissionChecker->isUserGranted(['GET_OTHER_PROBLEME'])){
+            $this->addFlash('fail','vous ne possedez pas les permissions necessaires.');
+            return $this->redirectToRoute('home_index');
+        }
         $form = $this->createForm(ProblemeSearchType::class);
         $form->handleRequest($request);
 
@@ -92,7 +103,6 @@ class ProblemeController extends AbstractController
         $active_element = $session->get('search_element') ? $session->get('search_element') : 20;
 
         $problemes = $problemeRepository->findPaginateByCategoryAndName($page, $active_element, $active_categories, $active_statuts, $active_nom);
-
         $nbr_page = ceil(count($problemeRepository->findAllByCategoryAndName($page, $active_element, $active_categories, $active_statuts, $active_nom))/$active_element);
 
         return $this->render('probleme/index.html.twig', [
@@ -116,10 +126,13 @@ class ProblemeController extends AbstractController
         GeocoderService $geocoderService,
         SessionInterface $session,
         ProblemeService $problemeService,
-        CommuneRepository $communeRepository
+        CommuneRepository $communeRepository,
+        LoggerInterface $logger
     ): Response
     {
+
         $probleme = new Probleme();
+
 
         $form = $this->createForm(ProblemeType::class, $probleme);
         $form->handleRequest($request);
@@ -191,17 +204,33 @@ class ProblemeController extends AbstractController
 
     /**
      * @Route("/{id}/show", name="probleme_show", methods={"GET"})
+     * @IsGranted("ROLE_USER")
      */
     public function show(
         Probleme $probleme,
-        ImageRepository $imageRepository
+        ImageRepository $imageRepository,
+        ProblemeRepository $problemeRepository
     ): Response
     {
-        return $this->render('probleme/show.html.twig', [
-            'probleme' => $probleme,
-            'images' => $imageRepository->findbyProbleme($probleme)
-
-        ]);
+        $request = $problemeRepository->findByProblemeByPersonne($probleme, $this->personne);
+        if(!$request) {
+            if (!$this->permissionChecker->isUserGranted(['GET_OTHER_PROBLEME'])) {
+                $this->addFlash('fail', 'vous ne possedez pas les permissions necessaires pour visualiser ce problème.');
+                return $this->redirectToRoute('home_index');
+            }return $this->render('probleme/show.html.twig', [
+                'probleme' => $probleme,
+                'images' => $imageRepository->findbyProbleme($probleme)
+            ]);
+        }else{
+            $canValidate = $this->permissionChecker->isUserGranted(["VALIDATE_PROBLEME"]);
+            $canUpdateStatut = $this->permissionChecker->isUserGranted(["UPDATE_OTHER_STATUT"]);
+            return $this->render('probleme/show.html.twig', [
+                'probleme' => $probleme,
+                'images' => $imageRepository->findbyProbleme($probleme),
+                'canValidate' => $canValidate,
+                'canUpdateStatut' => $canUpdateStatut
+                ]);
+        }
     }
 
     /**
@@ -215,6 +244,10 @@ class ProblemeController extends AbstractController
 
     ): Response
     {
+        if(!$this->permissionChecker->isUserGranted(['UPDATE_OTHER_PROBLEME'])){
+            $this->addFlash('fail','Vous ne possedez pas les permissions necessaires pour modifier ce problème');
+            return $this->redirectToRoute('home_index');
+        }
         $images = $imageRepository->findbyProbleme($probleme);
 
 
@@ -252,7 +285,11 @@ class ProblemeController extends AbstractController
         ProblemeService $problemeService
     ): Response
     {
-        $problemeTitre = $probleme->getTitre();
+        if(!$this->permissionChecker->isUserGranted(['DELETE_OTHER_PROBLEME'])){
+            $this->addFlash('fail','Vous ne possedez pas les permissions necessaires pour supprimer ce problème');
+            return $this->redirectToRoute('home_index');
+        }
+
         if ($this->isCsrfTokenValid('delete'.$probleme->getId(), $request->request->get('_token'))) {
            $problemeService->DeleteProbleme($probleme);
         }
@@ -324,6 +361,10 @@ class ProblemeController extends AbstractController
         StatutRepository $statutRepository
     ) : Response
     {
+        if(!$this->permissionChecker->isUserGranted(['VALIDATE_PROBLEME'])){
+            $this->addFlash('fail','Vous ne possedez pas les permissions necessaires pour valider ce problème');
+            return $this->redirectToRoute('home_index');
+        }
         if($probleme->getHistoriqueStatuts()->last()->getStatut()->getNom() != "Nouveau"){
             return $this->redirectToRoute('probleme_show', ["id" => $probleme->getId()]);
         }
@@ -350,6 +391,10 @@ class ProblemeController extends AbstractController
         StatutRepository $statutRepository
     ) : Response
     {
+        if(!$this->permissionChecker->isUserGranted(['ARCHIVATE_PROBLEME'])){
+            $this->addFlash('fail','Vous ne possedez pas les permissions necessaires pour archiver ce problème');
+            return $this->redirectToRoute('home_index');
+        }
         if($probleme->getHistoriqueStatuts()->last()->getStatut()->getNom() != "Résolu"){
             return $this->redirectToRoute('probleme_show', ["id" => $probleme->getId()]);
         }

@@ -54,18 +54,19 @@
                 {% set intervention = true %}
             {% endif %}
         {% endfor %}
-        
-        {% if not nouveau %}
 
-            {{ macros.alert_priorite_probleme(probleme.priorite.poids, probleme.priorite.nom, resolved, archived, probleme.id) }}
-            {% if images is empty and not archived %}    
+        {% if not nouveau %}
+            {% if (canUpdateStatut is not defined) or (canUpdateStatut == true) %}
+                {{ macros.alert_priorite_probleme(probleme.priorite.poids, probleme.priorite.nom, resolved, archived, probleme.id) }}
+            {% endif %}
+            {% if images is empty and not archived %}
                 <div class="alert alert-secondary alert-dismissible fade show" role="alert">
                     Aucune image pour ce problème.
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-            {% endif %}  
+            {% endif %}
             {% if not intervention and not archived %}
                 <div class="alert alert-secondary alert-dismissible fade show" role="alert">
                     Aucune intervention de technicien en cours pour ce problème.
@@ -154,7 +155,7 @@
                 <h4 class="alert-heading"><i class="fa fa-exclamation-triangle"></i> Nouveau problème</h4>
                 <p class="mb-0">Ce problème n'a pas encore été validé.</p>
             </div>
-
+            {% if (canValidate is not defined) or (canValidate == true) %}
             <div class="card border-primary mb-3 section">
                 <div class="card-header">Validation du problème</div>
                 <div class="card-body">
@@ -170,6 +171,7 @@
                     </div>
                 </div>
             </div>
+            {% endif %}
 
         {% endif %}
 

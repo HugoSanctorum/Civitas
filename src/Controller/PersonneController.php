@@ -4,14 +4,21 @@ namespace App\Controller;
 
 use App\Entity\Personne;
 use App\Form\PersonneType;
+use App\Form\ProblemeSearchType;
 use App\Form\ProfileType;
 use App\Form\PasswdType;
+use App\Repository\CategorieRepository;
 use App\Repository\CommuneRepository;
 use App\Repository\PersonneRepository;
+use App\Repository\ProblemeRepository;
+use App\Repository\RoleRepository;
 use App\Services\Mailer\MailerService;
+use App\Services\Personne\PermissionChecker;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -28,16 +35,18 @@ class PersonneController extends AbstractController
     private $tokenGenerator;
     private $personneRepository;
     private $communeRepository;
+    private $permissionChecker;
+    private $roleRepository;
 
-    public function __construct(CommuneRepository $communeRepository, PersonneRepository $personneRepository, UserPasswordEncoderInterface $encoder,TokenStorageInterface $tokenStorageInterface, TokenGeneratorInterface $tokenGenerator)
+    public function __construct(RoleRepository $roleRepository,PermissionChecker $permissionChecker, CommuneRepository $communeRepository, PersonneRepository $personneRepository, UserPasswordEncoderInterface $encoder,TokenStorageInterface $tokenStorageInterface, TokenGeneratorInterface $tokenGenerator)
     {
         $this->encoder = $encoder;
         $this->personne = $tokenStorageInterface->getToken()->getUser();
         $this->tokenGenerator = $tokenGenerator;
         $this->personneRepository = $personneRepository;
         $this->communeRepository = $communeRepository;
-
-
+        $this->permissionChecker = $permissionChecker;
+        $this->roleRepository = $roleRepository;
     }
     /**
      * @Route("personne/", name="personne_index", methods={"GET"})
@@ -68,6 +77,7 @@ class PersonneController extends AbstractController
                 $personne->setNom($nom);
                 $personne->setPrenom($prenom);
                 $personne->setUsername($nom . '_' . $prenom);
+                $personne->addRole($this->roleRepository->findOneBy(['role' => 'ROLE_USER']));
 
                 $personne->setCommune($commune);
 
@@ -98,6 +108,7 @@ class PersonneController extends AbstractController
                 $plainPassword = $request->request->all()['personne']['password'];
                 $encoded = $this->encoder->encodePassword($personneMail, $plainPassword);
                 $personneMail->setPassword($encoded);
+                $personneMail->addRole($this->roleRepository->findOneBy(['role' => 'ROLE_USER']));
 
                 $activatedToken = $this->tokenGenerator->generateToken();
                 $personneMail->setActivatedToken($activatedToken);
@@ -229,4 +240,71 @@ class PersonneController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+    /**
+     * @Route("/mesProblemes", name="personne_probleme", methods={"GET","POST"})
+     * @IsGranted("ROLE_USER")
+     */
+
+    public function probleme(
+        Request $request,
+        SessionInterface $session,
+        ProblemeRepository $problemeRepository,
+        CategorieRepository $categorieRepository,
+        int $page = 1): Response
+    {
+        if(!$this->permissionChecker->isUserGranted(["GET_SELF_PROBLEME"])){
+            $this->addFlash('fail','Vous ne possedez pas les permissions necessaires');
+            return new RedirectResponse("/");
+        }
+
+
+        $form = $this->createForm(ProblemeSearchType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $tab = $request->request->get("probleme_search");
+
+            if(array_key_exists("nom", $tab))
+                $session->set("search_nom_probleme", $tab["nom"]);
+            else
+                $session->remove("search_nom_probleme");
+
+            if(array_key_exists("categories", $tab))
+                $session->set("search_categories", $tab["categories"]);
+            else
+                $session->remove("search_categories");
+
+            if(array_key_exists("statuts", $tab))
+                $session->set("search_statuts", $tab["statuts"]);
+            else
+                $session->remove("search_statuts");
+
+            if(array_key_exists("element", $tab))
+                $session->set("search_element", $tab["element"]);
+            else
+                $session->remove("search_element");
+        }
+
+        $active_nom = $session->get('search_nom_probleme') ? $session->get('search_nom_probleme') : "";
+        $active_categories = $session->get('search_categories') ? $session->get('search_categories') : [];
+        $active_statuts = $session->get('search_statuts') ? $session->get('search_statuts') : [];
+        $active_element = $session->get('search_element') ? $session->get('search_element') : 20;
+
+        $problemes = $problemeRepository->findPaginateByCategoryAndNameByPersonne($page, $active_element, $active_categories, $active_statuts, $active_nom);
+
+        $nbr_page = ceil(count($problemeRepository->findAllByCategoryAndName($page, $active_element, $active_categories, $active_statuts, $active_nom))/$active_element);
+
+        return $this->render('probleme/index.html.twig', [
+            'problemes' => $problemes,
+            'nbr_page' => $nbr_page,
+            'active_page' => $page,
+            'categories' => $categorieRepository->findAll(),
+            'active_nom' => $active_nom,
+            'active_categories' => $active_categories,
+            'active_statuts' => $active_statuts,
+            'active_element' => $active_element,
+            'form' => $form->createView(),
+        ]);
+    }
+
 }

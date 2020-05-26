@@ -3,12 +3,16 @@
 namespace App\Repository;
 
 use App\Entity\HistoriqueAction;
+use App\Entity\Personne;
 use App\Entity\Probleme;
 use App\Entity\Statut;
 use App\Entity\Categorie;
 use App\Repository\HistoriqueStatutRepository;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * @method Probleme|null find($id, $lockMode = null, $lockVersion = null)
@@ -19,11 +23,17 @@ use Doctrine\Persistence\ManagerRegistry;
 class ProblemeRepository extends ServiceEntityRepository
 {
     private $historiqueStatutRepository;
+    /**
+     * @var TokenStorageInterface
+     */
+    private $personne;
 
-    public function __construct(ManagerRegistry $registry, HistoriqueStatutRepository $historiqueStatutRepository)
+
+    public function __construct(ManagerRegistry $registry, TokenStorageInterface $tokenStorageInterface, HistoriqueStatutRepository $historiqueStatutRepository)
     {
         parent::__construct($registry, Probleme::class);
         $this->historiqueStatutRepository = $historiqueStatutRepository;
+        $this->personne = $tokenStorageInterface->getToken()->getUser();
     }
 
     public function formatValues($query){
@@ -178,5 +188,92 @@ class ProblemeRepository extends ServiceEntityRepository
             ->getResult();
 
     }
+    public function findByProblemeByPersonne($probleme,$personne){
+        return $this->createQueryBuilder('p')
+            ->join('p.Intervenirs','i')
+            ->join ('i.TypeIntervention','t')
+            ->where('i.Personne = :personne')
+            ->andWhere("t.nom = 'Signaleur'")
+            ->andWhere('p.id = :probleme')
+            ->setParameter('probleme', $probleme)
+            ->setParameter('personne', $personne)
+            ->getQuery()
+            ->getResult();
+    }
 
+    public function getRequestPaginationByPersonne(
+        array $categories,
+        array $statuts,
+        string $nom
+    )
+    {
+        $em = $this->getEntityManager();
+
+        $parameters = [];
+
+        if (empty($categories)){
+            $categories_raw = $em->getRepository(Categorie::class)->findAll();
+            $parameters['categorie_ids'] = $this->formatValues($categories_raw);
+        }else{
+            $parameters['categorie_ids'] = $this->formatValues($categories);
+        }
+        if (empty($statuts)){
+            $statuts_raw = $em->getRepository(Statut::class)->findAll();
+            $parameters['statut_ids'] = $this->formatValues($statuts_raw);
+        }else{
+            $parameters['statut_ids'] = $this->formatValues($statuts);
+        }
+        if (empty($nom)){
+            $parameters['nom'] = '%';
+        }else{
+            $parameters['nom'] = '%'.str_replace("\"", "'", $nom).'%';
+        }
+
+        $sql = '
+            SELECT probleme.*
+            FROM historique_statut AS t1 LEFT OUTER JOIN 
+            (
+                SELECT probleme_id, MAX(date) as maxdate
+                FROM historique_statut
+                GROUP BY probleme_id
+            )AS t2 USING (probleme_id)
+            INNER JOIN statut ON t1.statut_id = statut.id
+            INNER JOIN probleme ON t1.probleme_id = probleme.id
+            INNER JOIN intervenir ON probleme.id = intervenir.probleme_id
+            INNER JOIN personne ON intervenir.personne_id = personne.id 
+            WHERE t1.date = t2.maxdate
+            AND statut.id IN '.$parameters['statut_ids'].'
+            AND probleme.categorie_id IN '.$parameters['categorie_ids'].'
+            AND titre LIKE "'.$parameters['nom'].'"
+            AND personne.id = '.$this->personne->getId().'
+            GROUP BY t1.probleme_id
+            ORDER BY probleme.categorie_id
+            '
+        ;
+
+        return $sql;
+    }
+
+    public function findPaginateByCategoryAndNameByPersonne(
+        int $page,
+        int $nbr_max_element,
+        array $categories,
+        array $statuts,
+        string $nom
+    )
+    {
+        $conn = $this->getEntityManager()->getConnection();
+
+        $sql = $this->getRequestPaginationByPersonne($categories, $statuts, $nom);
+        $sql .= 'LIMIT '.$nbr_max_element.' OFFSET '.($page-1) * $nbr_max_element;
+
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+
+        $problemes = [];
+        foreach ($stmt->fetchAll() as $probleme) {
+            array_push($problemes, $this->getEntityManager()->getRepository(Probleme::class)->findOneBy(['id' => $probleme['id']]));
+        }
+        return $problemes;
+    }
 }

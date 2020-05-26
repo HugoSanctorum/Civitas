@@ -43,6 +43,7 @@ class PersonneFixtures extends Fixture implements DependentFixtureInterface
             $this->addReference('personne_'.$i, $personne);
             $personne->setCommune($communes[array_rand($communes)]);
             $personne->setCreatedAt(new \DateTime('now'));
+            $personne->addRole($this->getReference('ROLE_USER'));
             $manager->persist($personne);
         }
 

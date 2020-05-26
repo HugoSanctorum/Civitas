@@ -7,6 +7,7 @@ use App\Repository\StatutRepository;
 
 use App\Services\Geocoder\GeocoderService;
 
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -23,7 +24,8 @@ class HomeController extends AbstractController
         StatutRepository $statutRepository,
         GeocoderService $geocoderService
     ){
-    	$user = $tokenStorageInterface->getToken()->getUser();
+
+        $user = $tokenStorageInterface->getToken()->getUser();
         $problemes = [];
         $infos_problemes = [];
         $contour = [];
