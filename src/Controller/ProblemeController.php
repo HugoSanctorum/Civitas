@@ -223,7 +223,7 @@ class ProblemeController extends AbstractController
             ]);
         }else{
             $canValidate = $this->permissionChecker->isUserGranted(["VALIDATE_PROBLEME"]);
-            $canUpdateStatut = $this->permissionChecker->isUserGranted(["UPDATE_OTHER_STATUT"]);
+            $canUpdateStatut = $this->permissionChecker->isUserGranted(["CAN_EDIT_STATUT_PROBLEME"]);
             return $this->render('probleme/show.html.twig', [
                 'probleme' => $probleme,
                 'images' => $imageRepository->findbyProbleme($probleme),

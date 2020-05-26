@@ -20,6 +20,7 @@ class PermissionFixtures extends Fixture
         	"DELETE_OTHER_PROBLEME",
             "VALIDATE_PROBLEME",
 /*            "ARCHIVATE_PROBLEME",*/
+            "CAN_EDIT_STATUT_PROBLEME",
 
         	"GET_SELF_PERSONNE",
         	"GET_OTHER_PERSONNE",
