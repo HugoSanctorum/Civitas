@@ -171,7 +171,7 @@ class ProblemeController extends AbstractController
 
             if ($this->personne != "anon.") {
                 $problemeService->SetReference($probleme);
-                $problemeService->CreateNewProblemeMailExisting($probleme, $this->personne);
+                $problemeService->CreateNewIntervenirMailNonExistingNonAuthentificated($probleme, $this->personne);
                 $problemeService->UploadImagesNewProbleme($tabImageToProblemes, $probleme);
 
             }else {
