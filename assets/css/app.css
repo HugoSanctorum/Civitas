@@ -75,3 +75,14 @@ a.hover-light:hover {
     list-style-type: "➽" !important;
     width: 40%
 }
+
+.page-center-container {
+      display: flex;
+      flex-grow : 1;
+      align-items: center;
+      justify-content: center;
+}
+
+.page-center-container > .content {
+    max-width: 80%;
+}

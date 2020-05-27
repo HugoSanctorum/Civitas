@@ -79,7 +79,7 @@ class RoleFixtures extends Fixture implements DependentFixtureInterface
 			$this->getReference("UPDATE_OTHER_PROBLEME"),
 			$this->getReference("DELETE_OTHER_PROBLEME"),
             $this->getReference("VALIDATE_PROBLEME"),
-            $this->getReference("ARCHIVATE_PROBLEME"),
+            //$this->getReference("ARCHIVATE_PROBLEME"),
             $this->getReference("CAN_EDIT_STATUT_PROBLEME"),
 
 			$this->getReference("GET_OTHER_PERSONNE"),

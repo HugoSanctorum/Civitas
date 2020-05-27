@@ -1,13 +1,10 @@
 {% extends 'base.html.twig' %}
-{% use 'erreurs/base.html.twig' %}
 
 {% block title %}Probleme index{% endblock %}
 
-{% block moreStyle %} {{ parent() }} {% endblock %}
-
 {% block body%}
 
-<div class="container text-center fill aligner">
+<div class="container text-center page-center-container">
 	<div class="content">
 		<h3>La ville de <span class="font-weight-bolder"> {{commune}} </span> n'utilise pas encore nos services :/</h3>
 		<p>Vous pouvez contacter votre mairie pour leur parler de nous !</p>
