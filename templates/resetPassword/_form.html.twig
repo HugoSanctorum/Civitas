@@ -1,4 +1,9 @@
 {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+    <div class="input-group input-group-lg mb-3">
+        <div class="input-group-prepend">
+            <label class="input-group-text" for="reset_password_mail_email"><i class="fa fa-at"></i></label>
+        </div>
+        {{form_widget(form.email, {'attr' : {'class': 'form-control'}}) }}
+    </div>
+    <button class="btn btn-primary btn-lg btn-block">{{ button_label|default('Envoyer') }}</button>
 {{ form_end(form) }}
