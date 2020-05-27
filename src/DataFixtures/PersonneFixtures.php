@@ -8,15 +8,19 @@ use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Faker;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
 
 class PersonneFixtures extends Fixture implements DependentFixtureInterface
 {
 
     private $encoder;
+    private $tokenGenerator;
 
-    public function __construct(UserPasswordEncoderInterface $encoder)
+    public function __construct(UserPasswordEncoderInterface $encoder,TokenGeneratorInterface $tokenGenerator)
     {
         $this->encoder = $encoder;
+
+        $this->tokenGenerator = $tokenGenerator;
     }
 
     public function load(ObjectManager $manager)
@@ -44,10 +48,20 @@ class PersonneFixtures extends Fixture implements DependentFixtureInterface
             $personne->setCommune($communes[array_rand($communes)]);
             $personne->setCreatedAt(new \DateTime('now'));
             $personne->addRole($this->getReference('ROLE_USER'));
+            if($i % 2 == 0 ){
+                $tokenSub = $this->tokenGenerator->generateToken();
+                $personne->setSubscribeToken($tokenSub);
+            }
+            if($i % 3 == 0){
+                $tokenAct = $this->tokenGenerator->generateToken();
+                $personne->setActivatedToken($tokenAct);
+            }
             $manager->persist($personne);
         }
 
         $personne = new Personne();
+        $tokenSub = $this->tokenGenerator->generateToken();
+        $personne->setSubscribeToken($tokenSub);
         $personne->setPrenom("Hugo");
         $personne->setNom("Duporge");
         $personne->setMail("hugo_duporge@ens.univ-artois.fr");
@@ -63,6 +77,8 @@ class PersonneFixtures extends Fixture implements DependentFixtureInterface
         $manager->persist($personne);
 
         $personne2 = new Personne();
+        $tokenSub = $this->tokenGenerator->generateToken();
+        $personne2->setSubscribeToken($tokenSub);
         $personne2->setPrenom("Hugo");
         $personne2->setNom("Sanctorum");
         $personne2->setMail("hugo_sanctorum@ens.univ-artois.fr");

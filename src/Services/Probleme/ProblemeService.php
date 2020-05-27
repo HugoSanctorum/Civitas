@@ -25,6 +25,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
 use Symfony\Component\Validator\Constraints\Date;
 
 
@@ -40,6 +41,8 @@ class ProblemeService extends AbstractController
     private $internirRepository;
     private $imageRepository;
     private $compteRenduRepository;
+    private $tokenGenerator;
+
 
     public function __construct(
         ProblemeRepository $problemeRepository,
@@ -51,7 +54,8 @@ class ProblemeService extends AbstractController
         HistoriqueStatutRepository $historiqueStatutRepository,
         IntervenirRepository $intervenirRepository,
         ImageRepository $imageRepository,
-        CompteRenduRepository $compteRenduRepository
+        CompteRenduRepository $compteRenduRepository,
+        TokenGeneratorInterface $tokenGenerator
     )
     {
         $this->problemeRepository = $problemeRepository;
@@ -64,58 +68,69 @@ class ProblemeService extends AbstractController
         $this->internirRepository = $intervenirRepository;
         $this->imageRepository =$imageRepository;
         $this->compteRenduRepository = $compteRenduRepository;
+        $this->tokenGenerator = $tokenGenerator;
     }
 
-    public function CreateNewIntervenirMailExistingNonAuthentificated($probleme, $personne)
+    public function CreateNewProblemeAuthentificated(Probleme $probleme, $personne){
+        $this->entityManager->persist($probleme);
+
+        $this->CreateNewIntervenir($probleme, $personne,'Signaleur');
+        $this->CreateNewHistoriqueStatut($probleme, 'Nouveau');
+        $this->mailerService->sendMailToSignaleurNewProbleme($personne, $probleme);
+
+        $this->entityManager->flush();
+    }
+
+    public function CreateNewProblemeMailExistingNonAuthentificated(Probleme $probleme, $personne)
     {
         $this->entityManager->persist($probleme);
 
-        $intervenir = new Intervenir();
-
-        $intervenir->setProbleme($probleme);
-        $intervenir->setPersonne($personne);
-        $intervenir->setCreatedAt(new \DateTime('now'));
-        $intervenir->setTypeIntervention($this->typeInterventionRepository->findOneBy(['nom' => 'Signaleur']));
-
-        $this->CreateNewHistoriqueStatut($probleme);
-        $this->entityManager->persist($intervenir);
-
+        $this->CreateNewIntervenir($probleme, $personne,'Signaleur');
+        $this->CreateNewHistoriqueStatut($probleme,'Nouveau');
         $this->mailerService->sendMailToSignaleurNewProbleme($personne, $probleme);
+
+        $this->entityManager->flush();
     }
 
-    public function CreateNewIntervenirMailNonExistingNonAuthentificated($probleme, $mail)
+    public function CreateNewProblemeMailNonExistingNonAuthentificated(Probleme $probleme, $mail)
     {
-
-        $intervenir = new Intervenir();
+        $token = $this->tokenGenerator->generateToken();
+        $this->entityManager->persist($probleme);
         $personne = new Personne();
-
         $personne->setMail($mail);
+        $personne->setSubscribeToken($token);
         $personne->setCreatedAt(new \DateTime('now'));
 
-        $intervenir->setProbleme($probleme);
-        $intervenir->setPersonne($personne);
-        $intervenir->setCreatedAt(new \DateTime('now'));
-        $intervenir->setTypeIntervention($this->typeInterventionRepository->findOneBy(['nom' => 'Signaleur']));
-        $this->CreateNewHistoriqueStatut($probleme);
+        $this->CreateNewIntervenir($probleme, $personne, 'Signaleur');
+        $this->CreateNewHistoriqueStatut($probleme,'Nouveau');
 
-        $this->entityManager->persist($intervenir);
         $this->entityManager->persist($personne);
-        $this->entityManager->persist($probleme);
+        $this->entityManager->flush();
         $this->mailerService->sendMailToSignaleurNewProbleme($personne, $probleme);
+
 
     }
 
-    public function CreateNewHistoriqueStatut($probleme)
+    public function CreateNewHistoriqueStatut(Probleme $probleme, $statut)
     {
-        $statut = $this->statutRepository->findOneBy(['nom' => 'Nouveau']);
+        $statut = $this->statutRepository->findOneBy(['nom' => $statut]);
         $historiqueStatut = new HistoriqueStatut();
 
         $historiqueStatut->setProbleme($probleme);
         $historiqueStatut->setStatut($statut);
         $historiqueStatut->setDate(new \DateTime('now'));
-        $historiqueStatut->setDescription('Le problème a été créé');
         $this->entityManager->persist($historiqueStatut);
 
+    }
+
+    public function CreateNewIntervenir(Probleme $probleme, Personne $personne, $typeIntervenition){
+        $intervention = new Intervenir();
+
+        $intervention->setProbleme($probleme);
+        $intervention->setPersonne($personne);
+        $intervention->setTypeIntervention($this->typeInterventionRepository->findOneBy(['nom' => $typeIntervenition]));
+        $intervention->setCreatedAt(new \DateTime('now'));
+        $this->entityManager->persist($intervention);
     }
 
     public function UploadImagesNewProbleme($tabImageToProblemes, $probleme)
