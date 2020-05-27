@@ -20,16 +20,16 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 class UserController extends AbstractController
 {
 
-
     private $personneRepository;
     private $tokenGenerator;
     private $mailerService;
     private $encoder;
 
-
-
     public function __construct(
-        PersonneRepository $personneRepository,TokenGeneratorInterface $tokenGenerator,UserPasswordEncoderInterface $encoder,MailerService $mailerService
+        PersonneRepository $personneRepository,
+        TokenGeneratorInterface $tokenGenerator,
+        UserPasswordEncoderInterface $encoder,
+        MailerService $mailerService
     )
     {
         $this->personneRepository = $personneRepository;
@@ -37,17 +37,15 @@ class UserController extends AbstractController
         $this->mailerService = $mailerService;
         $this->encoder = $encoder;
     }
+
     /**
      * @Route("/login", name="app_login")
      */
-    public function login(Request $request,AuthenticationUtils $authenticationUtils): Response
+    public function login(Request $request, AuthenticationUtils $authenticationUtils): Response
     {
-        // if ($this->getUser()) {
-        //     return $this->redirectToRoute('target_path');
-        // }
-
-        // get the login error if there is one
-
+        if ($this->getUser()) {
+            return $this->redirectToRoute('home_index', [], 301);
+        }
 
         $error = $authenticationUtils->getLastAuthenticationError();
         // last username entered by the user
