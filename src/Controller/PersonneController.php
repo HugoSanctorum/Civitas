@@ -241,7 +241,7 @@ class PersonneController extends AbstractController
         ]);
     }
     /**
-     * @Route("/mesProblemes", name="personne_probleme", methods={"GET","POST"})
+     * @Route("/mes_signalements", name="personne_probleme", methods={"GET","POST"})
      * @IsGranted("ROLE_USER")
      */
 
@@ -290,9 +290,9 @@ class PersonneController extends AbstractController
         $active_statuts = $session->get('search_statuts') ? $session->get('search_statuts') : [];
         $active_element = $session->get('search_element') ? $session->get('search_element') : 20;
 
-        $problemes = $problemeRepository->findPaginateByCategoryAndNameByPersonne($page, $active_element, $active_categories, $active_statuts, $active_nom);
+        $problemes = $problemeRepository->findPaginateByCategoryAndName($page, $active_element, $active_categories, $active_statuts, $active_nom, 1);
 
-        $nbr_page = ceil(count($problemeRepository->findAllByCategoryAndName($page, $active_element, $active_categories, $active_statuts, $active_nom))/$active_element);
+        $nbr_page = ceil(count($problemeRepository->findAllByCategoryAndName($page, $active_element, $active_categories, $active_statuts, $active_nom, 1))/$active_element);
 
         return $this->render('probleme/index.html.twig', [
             'problemes' => $problemes,
