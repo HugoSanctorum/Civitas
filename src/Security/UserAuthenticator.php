@@ -71,7 +71,7 @@ class UserAuthenticator extends AbstractFormLoginAuthenticator
 
         if (!$user) {
             // fail authentication with a custom error
-            throw new CustomUserMessageAuthenticationException('Mail could not be found.');
+            throw new CustomUserMessageAuthenticationException('Ce mail est inconnu.');
         }
 
 
@@ -86,6 +86,8 @@ class UserAuthenticator extends AbstractFormLoginAuthenticator
             if($user->getActivatedToken() != null){
                 throw  new CustomUserMessageAuthenticationException('Ce compte n\'est pas activé, veuillez vérifier vos mails.');
             }
+        }else{
+             throw new CustomUserMessageAuthenticationException('Mot de passe incorrect');
         }
         return $this->passwordEncoder->isPasswordValid($user, $credentials['password']);
     }
