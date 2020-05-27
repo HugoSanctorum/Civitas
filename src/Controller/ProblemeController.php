@@ -171,7 +171,7 @@ class ProblemeController extends AbstractController
 
             if ($this->personne != "anon.") {
                 $problemeService->SetReference($probleme);
-                $problemeService->CreateNewIntervenirMailNonExistingNonAuthentificated($probleme, $this->personne);
+                $problemeService->CreateNewProblemeAuthentificated($probleme, $this->personne,);
                 $problemeService->UploadImagesNewProbleme($tabImageToProblemes, $probleme);
 
             }else {
@@ -336,9 +336,9 @@ class ProblemeController extends AbstractController
             $mail = $request->request->all()["redirect_probleme"]["mail"];
             $isExisting = $personneRepository->findOneBy(['mail'=>$mail]);
             if($isExisting){
-                $problemeService->CreateNewIntervenirMailExistingNonAuthentificated($probleme,$isExisting);
+                $problemeService->CreateNewProblemeMailExistingNonAuthentificated($probleme,$isExisting);
             }else{
-                $problemeService->CreateNewIntervenirMailNonExistingNonAuthentificated($probleme,$mail);
+                $problemeService->CreateNewProblemeMailNonExistingNonAuthentificated($probleme,$mail);
             }
             $entityManager->flush();
             $session->clear();
