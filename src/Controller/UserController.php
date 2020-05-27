@@ -124,7 +124,6 @@ class UserController extends AbstractController
             }else{
                 $token = $this->tokenGenerator->generateToken();
                 $personne->setResetPasswordToken($token);
-                $personne->setResetPasswordToken(null);
                 $em->persist($personne);
                 $em->flush();
                 $this->mailerService->sendMailResetPassword($personne,$token);
@@ -158,11 +157,13 @@ class UserController extends AbstractController
                 return $this->redirectToRoute('reset_passwordConfirmed', ['resetPasswordToken' => $resetPasswordToken]);
             }else{
                 $encoded = $this->encoder->encodePassword($personne, $password);
+                $personne->setResetPasswordToken(null);
                 $personne->setPassword($encoded);
                 $em->persist($personne);
                 $em->flush();
                 $this->addFlash('success','votre mot de passe a bien été modifié.');
                 $this->mailerService->sendMailPasswordChanged($personne);
+
                 return $this->redirectToRoute('home_index');
             }
         }

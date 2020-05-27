@@ -71,7 +71,7 @@ class UserAuthenticator extends AbstractFormLoginAuthenticator
 
         if (!$user) {
             // fail authentication with a custom error
-            throw new CustomUserMessageAuthenticationException('Ce mail est inconnu.');
+            throw new CustomUserMessageAuthenticationException('Ce mail n\'est associé à aucun compte ');
         }
 
 
