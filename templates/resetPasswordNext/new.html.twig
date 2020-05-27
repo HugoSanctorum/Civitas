@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Réinitaliser le mot de passe{% endblock %}
+
+{% block body %}
+    {% for message in app.flashes('fail') %}
+        <div class="alert alert-danger my-2 mx-1 text-center">
+            <h4>{{ message }}</h4>
+        </div>
+    {% endfor %}
+    <div class="page-center-container">
+        <div class="content fill text-center">
+    		<h1 class="mb-5 text-primary">Réinitaliser votre mot de passe</h1>
+
+    		{{ include('resetPasswordNext/_form.html.twig') }}
+    	</div>
+    </div>
+
+{% endblock %}

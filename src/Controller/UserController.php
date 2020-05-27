@@ -165,7 +165,7 @@ class UserController extends AbstractController
                 return $this->redirectToRoute('home_index');
             }
         }
-        return $this->render('resetPassword/new.html.twig', [
+        return $this->render('resetPasswordNext/new.html.twig', [
             'form' => $form->createView(),
         ]);
     }
