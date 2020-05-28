@@ -47,7 +47,11 @@ class PersonneFixtures extends Fixture implements DependentFixtureInterface
             $this->addReference('personne_'.$i, $personne);
             $personne->setCommune($communes[array_rand($communes)]);
             $personne->setCreatedAt(new \DateTime('now'));
-            $personne->addRole($this->getReference('ROLE_USER'));
+            if($i % 7 == 0){
+                $personne->addRole($this->getReference('ROLE_TECHNICIEN'));
+            }else{
+                $personne->addRole($this->getReference('ROLE_USER'));
+            }
             if($i % 2 == 0 ){
                 $tokenSub = $this->tokenGenerator->generateToken();
                 $personne->setSubscribeToken($tokenSub);
@@ -91,6 +95,8 @@ class PersonneFixtures extends Fixture implements DependentFixtureInterface
         $personne2->setCommune($this->getReference("Lille"));
         $personne2->setCreatedAt(new \DateTime('now'));
         $manager->persist($personne2);
+
+
 
         $manager->flush();
     }

@@ -1,0 +1,110 @@
+{% extends 'base.html.twig' %}
+{% import "assets/macros.html.twig" as macros %}
+
+{% block title %}Probleme index{% endblock %}
+
+{% block body %}
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
+    {% endfor %}
+    {% set pagination = true %}
+
+    <div class="jumbotron jumbotron-fluid">
+        <div class="container">
+            <h1 class="display-4">Liste des problèmes</h1>
+        </div>
+    </div>
+    <div class="container">
+        
+        {{ include('probleme/forms/_form.search.html.twig') }}
+
+        {% set cpt = 0 %}
+
+        {% for probleme in problemes %}
+
+            {% if loop.index0 % 2 == 0 %}
+                <div class="row">
+            {% endif %}
+                {% set cpt = cpt + 1 %}
+                <div class="col col-fill">
+                    <div class="card border-primary mb-4 mx-2">
+                        <div class="card-header">
+                            <h3>{{ probleme.titre }}</h3>
+                            <p class="card-subtitle">{{ macros.color_statut((probleme.HistoriqueStatuts|last).Statut.nom, (probleme.HistoriqueStatuts|last).Statut.couleur, (probleme.HistoriqueStatuts|last).Statut.icone) }}</p>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">{{ probleme.description }}</h5>
+                            <h6 class="card-subtitle text-muted">{{ macros.color_categorie(probleme.categorie, probleme.categorie.couleur, probleme.categorie.icone) }}</h6>
+                            <a href={{ path('probleme_show', {'id': probleme.id}) }} class="stretched-link"></a>
+                        </div>
+                        <div class="card-footer text-muted">
+                            <p>Dernière mise à jour le {{ (probleme.HistoriqueStatuts|last).date|date('d-m-Y à H\\hi') }}</p>
+                        </div>
+                    </div>
+                </div>
+            {% if cpt % 2 == 0 %}
+                </div>
+                {% set cpt = 0 %}
+            {% endif %}
+            {% if loop.last %}
+                </div>
+            {% endif %}
+  
+        {% else %}
+            <div class="alert alert-info">
+                <h4 class="alert-heading">Aucune entrée trouvée !</h4>
+                <p class="mb-0">
+                    <a href={{ path("probleme_index") }} class="btn btn-outline-light nounderline">Revenir au début</a>
+                </p>
+            </div>
+                
+            {% set pagination = false %}
+        {% endfor %}
+
+        {% if pagination %}
+            <nav aria-label="Page navigation">
+                <ul class="pagination pagination-primary justify-content-center">
+                    {% if active_page == 1 %}
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Précédent</a>
+                        </li>
+                    {% else %}
+                        <li class="page-item">
+                            <a class="page-link" href="/mes_signalements/1"><<</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="/mes_signalements/{{ active_page - 1 }}">Précédent</a>
+                        </li>
+                    {% endif %}       
+                    {% if active_page == nbr_page %}
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Suivant</a>
+                        </li>
+                    {% else %}
+                        <li class="page-item">
+                            <a class="page-link" href="/mes_signalements/{{ active_page + 1 }}">Suivant</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="/mes_signalements/{{ nbr_page }}">>></a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        {% endif %}
+    </div>
+
+    <input id="data_selected" type="hidden" data-categories={{ active_categories|json_encode|e('html_attr') }} data-statuts={{ active_statuts|json_encode|e('html_attr') }}>
+
+{% endblock %}
+{% block moreScript %}
+    <script type="text/javascript">
+        let data = document.getElementById("data_selected");
+        let categories = JSON.parse(data.dataset.categories);
+        let statuts = JSON.parse(data.dataset.statuts);
+        $("#probleme_search_categories").val(categories);
+        $("#probleme_search_statuts").val(statuts);
+        $("#probleme_search_element").val("{{active_element}}");
+    </script>
+{% endblock %}
