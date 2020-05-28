@@ -36,6 +36,8 @@
 
         let categories = JSON.parse(document.getElementById("mapid").dataset.categories);
 
+        let statuts = JSON.parse(document.getElementById("mapid").dataset.statuts);
+
         let feature = {
             "type": "Feature",
             "geometry": {
@@ -59,21 +61,23 @@
 
         let layers = new Map();
 
-        for(let categorie of categories){
-            let list = [];
+        let legendComponents = new Map();
+        for(let statut of statuts){
+            let list_statuts = [];
             for(let probleme of problemes){
-                if(probleme.categorie === categorie){
+                if(probleme.statut === statut){
                     let markerstyle = L.AwesomeMarkers.icon({
                         prefix: 'fa',
                         icon: probleme.marker_icone ? probleme.marker_icone : "times-circle",
                         markerColor: probleme.marker_color
                     });
+                    legendComponents.set(probleme.statut, [probleme.marker_color, probleme.marker_icone]);
                     let marker = L.marker(probleme.coordonnees, {icon: markerstyle});
-                    marker.bindPopup("<a href='/probleme/"+ probleme.id +"/show'>Voir le problème</a>");
-                    list.push(marker);                    
+                    marker.bindPopup("<h3>"+probleme.categorie+"</h3><br><a href='/probleme/"+ probleme.id +"/show'>Voir le problème</a>");
+                    list_statuts.push(marker);                    
                 }
             }
-            if(list.length!=0) layers.set(categorie, L.layerGroup(list).addTo(map));
+            if(list_statuts.length!=0) layers.set(statut, L.layerGroup(list_statuts).addTo(map));
         }
 
         let overlays = {};
@@ -87,15 +91,49 @@
             collapsed:false
         }).addTo(map);
 
-		map.locate({setView: true, maxZoom: 16});
+        let legend = L.control({position: 'bottomleft'});
 
-		map.on('click', function(e){
-			//a faire
-		});
+        legend.onAdd = function (map) {
+
+            let div = L.DomUtil.create('div', 'info legend');
+
+            legendComponents.forEach(function(value, key){
+                div.innerHTML += "<div><i style='"+getColor(value[0])+"' class='fa fa-"+value[1]+"'></i>" + key + "</div>";
+            });
+
+            return div;
+        };
+
+        legend.addTo(map);
+
+        function getColor($color){
+            switch ($color) {
+                case "red":
+                    return "background: #d63e2a; color: white";
+                case "darkred":
+                    return "background: #a13336; color: white";
+                case "orange":
+                    return "background: #f0932f; color: white";
+                case "green":
+                    return "background: #72af26; color: white";
+                case "darkgreen":
+                    return "background: #728224; color: white";
+                case "blue":
+                    return "background: #38aadd; color: white";
+                case "darkblue":
+                    return "background: #0067a3; color: white";
+                case "purple":
+                    return "background: #d252b9; color: white";
+                case "darkpurple":
+                    return "background: #5b396b; color: white";
+                case "cadetblue":
+                    return "background: #436978; color: white";
+            }
+        }
 	</script>
     <script type="text/javascript">
         $( document ).ready(function() {
-            $(".leaflet-control-layers-list").prepend("<h3 class='text-primary'>Categorie</h3>");
+            $(".leaflet-control-layers-list").prepend("<h3 class='text-primary'>Statut</h3>");
         });
     </script>
 {% endblock %}

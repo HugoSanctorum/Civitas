@@ -149,6 +149,7 @@ class CommuneController extends AbstractController
         $problemes = $commune->getProblemes();
         $infos_problemes = [];
         $categories = [];
+        $statuts = [];
 
         foreach ($problemes as $probleme) {
             $hs = $historiqueStatutRepository->findLatestHistoriqueStatutForOneProblemExcludingArchived($probleme);
@@ -168,10 +169,15 @@ class CommuneController extends AbstractController
             array_push($categories, $categorie->getNom());
         }
 
+        foreach($statutRepository->findAll() as $statut){
+            array_push($statuts, $statut->getNom());
+        }
+
         return $this->render('commune/manage.html.twig', [
             'commune' => $commune,
             'problemes' => $infos_problemes,
-            'categories' => $categories
+            'categories' => $categories,
+            'statuts' => $statuts
         ]);
     }
 }

@@ -89,7 +89,7 @@ a.hover-light:hover {
 
 .info {
     padding: 6px 8px;
-    font: 14px/16px Arial, Helvetica, sans-serif;
+    font: 16px/18px Arial, Helvetica, sans-serif;
     background: white;
     background: rgba(255,255,255,0.8);
     box-shadow: 0 0 15px rgba(0,0,0,0.2);
@@ -97,14 +97,14 @@ a.hover-light:hover {
 }
 
 .legend {
-    line-height: 22px;
+    line-height: 28px;
     color: #555;
     margin-bottom: 2px;
 }
 
 .legend i {
-    width: 22px;
-    height: 22px;
+    width: 28px;
+    height: 28px;
     float: left;
     margin-right: 10px;
     opacity: 0.9;
