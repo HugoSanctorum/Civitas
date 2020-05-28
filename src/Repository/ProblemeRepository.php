@@ -7,6 +7,7 @@ use App\Entity\Personne;
 use App\Entity\Probleme;
 use App\Entity\Statut;
 use App\Entity\Categorie;
+use App\Entity\TypeIntervention;
 use App\Repository\HistoriqueStatutRepository;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -51,7 +52,7 @@ class ProblemeRepository extends ServiceEntityRepository
         array $categories,
         array $statuts,
         string $nom,
-        bool $personne = false
+        string $typeIntervention = null
     )
     {
         $em = $this->getEntityManager();
@@ -78,16 +79,14 @@ class ProblemeRepository extends ServiceEntityRepository
         }
         $parameters['join'] = '';
         $parameters['conditions'] = '';
-        if($personne){
-            if($this->personne != ".anon"){
-                $parameters['join'] = " 
-                    INNER JOIN intervenir ON probleme.id = intervenir.probleme_id
-                    INNER JOIN personne ON intervenir.personne_id = personne.id 
-                    INNER JOIN type_intervention ti on intervenir.type_intervention_id = ti.id";
+        if($typeIntervention != null){
+            $parameters['join'] = " 
+                INNER JOIN intervenir ON probleme.id = intervenir.probleme_id
+                INNER JOIN personne ON intervenir.personne_id = personne.id 
+                INNER JOIN type_intervention ti on intervenir.type_intervention_id = ti.id";
                 $parameters['conditions'] = "
-                    AND personne.id = ".$this->personne->getId()."
-                    AND ti.nom = 'Signaleur'";
-            }
+                AND personne.id = ".$this->personne->getId()."
+                AND ti.nom = '".$typeIntervention."'";
         }
 
         $sql = '
@@ -110,7 +109,6 @@ class ProblemeRepository extends ServiceEntityRepository
             ORDER BY probleme.categorie_id
             '
         ;
-
         return $sql;
     }
     
@@ -120,12 +118,12 @@ class ProblemeRepository extends ServiceEntityRepository
         array $categories,
         array $statuts,
         string $nom,
-        bool $personne = false
+        string $typeIntervention = null
     )
     {
         $conn = $this->getEntityManager()->getConnection();
 
-        $sql = $this->getRequestPagination($categories, $statuts, $nom, $personne);
+        $sql = $this->getRequestPagination($categories, $statuts, $nom, $typeIntervention);
         $sql .= 'LIMIT '.$nbr_max_element.' OFFSET '.($page-1) * $nbr_max_element;
 
         $stmt = $conn->prepare($sql);
@@ -144,12 +142,12 @@ class ProblemeRepository extends ServiceEntityRepository
         array $categories,
         array $statuts,
         string $nom,
-        bool $personne = false
+        string $typeIntervention = null
     )
     {
         $conn = $this->getEntityManager()->getConnection();
 
-        $sql = $this->getRequestPagination($categories, $statuts, $nom, $personne);
+        $sql = $this->getRequestPagination($categories, $statuts, $nom, $typeIntervention);
 
         $stmt = $conn->prepare($sql);
         $stmt->execute();

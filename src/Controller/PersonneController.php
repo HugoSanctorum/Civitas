@@ -48,6 +48,145 @@ class PersonneController extends AbstractController
         $this->permissionChecker = $permissionChecker;
         $this->roleRepository = $roleRepository;
     }
+
+    /**
+     * @Route("/mes_signalements/{page}", name="personne_signalements", methods={"GET","POST"}, defaults={"page": 1}, requirements={"page"="\d+"})
+     */
+    public function mesSignalements(
+        Request $request,
+        SessionInterface $session,
+        ProblemeRepository $problemeRepository,
+        CategorieRepository $categorieRepository,
+        int $page = 1): Response
+    {
+        if(!$this->isGranted('ROLE_USER')){
+            $this->addFlash('fail','Veuillez vous connectez pour acceder à cette page.');
+            return $this->redirectToRoute('app_login');
+        }else{
+            if(!$this->permissionChecker->isUserGranted(["GET_SELF_PROBLEME"])){
+                $this->addFlash('fail','Vous ne possedez pas les permissions necessaires.');
+                return new RedirectResponse("/");
+            }
+        }
+        $form = $this->createForm(ProblemeSearchType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $tab = $request->request->get("probleme_search");
+
+            if(array_key_exists("nom", $tab))
+                $session->set("search_nom_probleme", $tab["nom"]);
+            else
+                $session->remove("search_nom_probleme");
+
+            if(array_key_exists("categories", $tab))
+                $session->set("search_categories", $tab["categories"]);
+            else
+                $session->remove("search_categories");
+
+            if(array_key_exists("statuts", $tab))
+                $session->set("search_statuts", $tab["statuts"]);
+            else
+                $session->remove("search_statuts");
+
+            if(array_key_exists("element", $tab))
+                $session->set("search_element", $tab["element"]);
+            else
+                $session->remove("search_element");
+        }
+
+        $active_nom = $session->get('search_nom_probleme') ? $session->get('search_nom_probleme') : "";
+        $active_categories = $session->get('search_categories') ? $session->get('search_categories') : [];
+        $active_statuts = $session->get('search_statuts') ? $session->get('search_statuts') : [];
+        $active_element = $session->get('search_element') ? $session->get('search_element') : 20;
+
+        $problemes = $problemeRepository->findPaginateByCategoryAndName($page, $active_element, $active_categories, $active_statuts, $active_nom, "Signaleur");
+
+        $nbr_page = ceil(count($problemeRepository->findAllByCategoryAndName($page, $active_element, $active_categories, $active_statuts, $active_nom, "Signaleur"))/$active_element);
+
+        return $this->render('personne/mesSignalements.html.twig', [
+            'problemes' => $problemes,
+            'nbr_page' => $nbr_page,
+            'active_page' => $page,
+            'categories' => $categorieRepository->findAll(),
+            'active_nom' => $active_nom,
+            'active_categories' => $active_categories,
+            'active_statuts' => $active_statuts,
+            'active_element' => $active_element,
+            'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * @Route("/mes_interventions/{page}", name="personne_interventions", methods={"GET","POST"}, defaults={"page": 1}, requirements={"page"="\d+"})
+     */
+
+    public function mesInterventions(
+        Request $request,
+        SessionInterface $session,
+        ProblemeRepository $problemeRepository,
+        CategorieRepository $categorieRepository,
+        int $page = 1): Response
+    {
+        if(!$this->isGranted('ROLE_USER')){
+            $this->addFlash('fail','Veuillez vous connectez pour acceder à cette page.');
+            return $this->redirectToRoute('app_login');
+        }else{
+            if(!$this->permissionChecker->isUserGranted(["GET_INTERVENED_PROBLEME"])){
+                $this->addFlash('fail','Vous ne possedez pas les permissions necessaires');
+                return new RedirectResponse("/");
+            }
+        }
+
+        $form = $this->createForm(ProblemeSearchType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $tab = $request->request->get("probleme_search");
+
+            if(array_key_exists("nom", $tab))
+                $session->set("search_nom_probleme", $tab["nom"]);
+            else
+                $session->remove("search_nom_probleme");
+
+            if(array_key_exists("categories", $tab))
+                $session->set("search_categories", $tab["categories"]);
+            else
+                $session->remove("search_categories");
+
+            if(array_key_exists("statuts", $tab))
+                $session->set("search_statuts", $tab["statuts"]);
+            else
+                $session->remove("search_statuts");
+
+            if(array_key_exists("element", $tab))
+                $session->set("search_element", $tab["element"]);
+            else
+                $session->remove("search_element");
+        }
+
+        $active_nom = $session->get('search_nom_probleme') ? $session->get('search_nom_probleme') : "";
+        $active_categories = $session->get('search_categories') ? $session->get('search_categories') : [];
+        $active_statuts = $session->get('search_statuts') ? $session->get('search_statuts') : [];
+        $active_element = $session->get('search_element') ? $session->get('search_element') : 20;
+
+        $problemes = $problemeRepository->findPaginateByCategoryAndName($page, $active_element, $active_categories, $active_statuts, $active_nom, "Technicien");
+
+        $nbr_page = ceil(count($problemeRepository->findAllByCategoryAndName($page, $active_element, $active_categories, $active_statuts, $active_nom, "Technicien"))/$active_element);
+
+        return $this->render('personne/mesInterventions.html.twig', [
+            'problemes' => $problemes,
+            'nbr_page' => $nbr_page,
+            'active_page' => $page,
+            'categories' => $categorieRepository->findAll(),
+            'active_nom' => $active_nom,
+            'active_categories' => $active_categories,
+            'active_statuts' => $active_statuts,
+            'active_element' => $active_element,
+            'form' => $form->createView(),
+        ]);
+    }
+
     /**
      * @Route("personne/", name="personne_index", methods={"GET"})
      */
@@ -240,138 +379,4 @@ class PersonneController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
-    /**
-     * @Route("/mes_signalements", name="personne_probleme", methods={"GET","POST"})
-     * @IsGranted("ROLE_USER")
-     */
-
-    public function probleme(
-        Request $request,
-        SessionInterface $session,
-        ProblemeRepository $problemeRepository,
-        CategorieRepository $categorieRepository,
-        int $page = 1): Response
-    {
-        if(!$this->permissionChecker->isUserGranted(["GET_SELF_PROBLEME"])){
-            $this->addFlash('fail','Vous ne possedez pas les permissions necessaires');
-            return new RedirectResponse("/");
-        }
-
-
-        $form = $this->createForm(ProblemeSearchType::class);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $tab = $request->request->get("probleme_search");
-
-            if(array_key_exists("nom", $tab))
-                $session->set("search_nom_probleme", $tab["nom"]);
-            else
-                $session->remove("search_nom_probleme");
-
-            if(array_key_exists("categories", $tab))
-                $session->set("search_categories", $tab["categories"]);
-            else
-                $session->remove("search_categories");
-
-            if(array_key_exists("statuts", $tab))
-                $session->set("search_statuts", $tab["statuts"]);
-            else
-                $session->remove("search_statuts");
-
-            if(array_key_exists("element", $tab))
-                $session->set("search_element", $tab["element"]);
-            else
-                $session->remove("search_element");
-        }
-
-        $active_nom = $session->get('search_nom_probleme') ? $session->get('search_nom_probleme') : "";
-        $active_categories = $session->get('search_categories') ? $session->get('search_categories') : [];
-        $active_statuts = $session->get('search_statuts') ? $session->get('search_statuts') : [];
-        $active_element = $session->get('search_element') ? $session->get('search_element') : 20;
-
-        $problemes = $problemeRepository->findPaginateByCategoryAndName($page, $active_element, $active_categories, $active_statuts, $active_nom, 1);
-
-        $nbr_page = ceil(count($problemeRepository->findAllByCategoryAndName($page, $active_element, $active_categories, $active_statuts, $active_nom, 1))/$active_element);
-
-        return $this->render('probleme/index.html.twig', [
-            'problemes' => $problemes,
-            'nbr_page' => $nbr_page,
-            'active_page' => $page,
-            'categories' => $categorieRepository->findAll(),
-            'active_nom' => $active_nom,
-            'active_categories' => $active_categories,
-            'active_statuts' => $active_statuts,
-            'active_element' => $active_element,
-            'form' => $form->createView(),
-        ]);
-    }
-
-    /**
-     * @Route("mes_interventions", name="personne_interention", methods={"GET","POST"})
-     * @IsGranted("ROLE_USER")
-     */
-
-    public function intervention(
-        Request $request,
-        SessionInterface $session,
-        ProblemeRepository $problemeRepository,
-        CategorieRepository $categorieRepository,
-        int $page = 1): Response
-    {
-        if(!$this->permissionChecker->isUserGranted(["GET_SELF_PROBLEME_TECHNICIEN"])){
-            $this->addFlash('fail','Vous ne possedez pas les permissions necessaires');
-            return new RedirectResponse("/");
-        }
-
-
-        $form = $this->createForm(ProblemeSearchType::class);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $tab = $request->request->get("probleme_search");
-
-            if(array_key_exists("nom", $tab))
-                $session->set("search_nom_probleme", $tab["nom"]);
-            else
-                $session->remove("search_nom_probleme");
-
-            if(array_key_exists("categories", $tab))
-                $session->set("search_categories", $tab["categories"]);
-            else
-                $session->remove("search_categories");
-
-            if(array_key_exists("statuts", $tab))
-                $session->set("search_statuts", $tab["statuts"]);
-            else
-                $session->remove("search_statuts");
-
-            if(array_key_exists("element", $tab))
-                $session->set("search_element", $tab["element"]);
-            else
-                $session->remove("search_element");
-        }
-
-        $active_nom = $session->get('search_nom_probleme') ? $session->get('search_nom_probleme') : "";
-        $active_categories = $session->get('search_categories') ? $session->get('search_categories') : [];
-        $active_statuts = $session->get('search_statuts') ? $session->get('search_statuts') : [];
-        $active_element = $session->get('search_element') ? $session->get('search_element') : 20;
-
-        $problemes = $problemeRepository->findPaginateByCategoryAndName($page, $active_element, $active_categories, $active_statuts, $active_nom, 1);
-
-        $nbr_page = ceil(count($problemeRepository->findAllByCategoryAndName($page, $active_element, $active_categories, $active_statuts, $active_nom, 1))/$active_element);
-
-        return $this->render('probleme/index.html.twig', [
-            'problemes' => $problemes,
-            'nbr_page' => $nbr_page,
-            'active_page' => $page,
-            'categories' => $categorieRepository->findAll(),
-            'active_nom' => $active_nom,
-            'active_categories' => $active_categories,
-            'active_statuts' => $active_statuts,
-            'active_element' => $active_element,
-            'form' => $form->createView(),
-        ]);
-    }
-
 }
