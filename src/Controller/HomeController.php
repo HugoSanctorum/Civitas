@@ -46,6 +46,7 @@ class HomeController extends AbstractController
                     "id" => $probleme->getId(),
                     "titre" => $probleme->getTitre(),
                     "statut" => $statutRepository->findStatutById(intval($latest[0]['statut_id']))->getNom(),
+                    "nom_categorie" => $probleme->getCategorie()->getNom(),
                     "marker_color" => $probleme->getCategorie()->getCouleur(),
                     "marker_icone" => $probleme->getCategorie()->getIcone(),
                     "coordonnees" => $coordonnees_problemes

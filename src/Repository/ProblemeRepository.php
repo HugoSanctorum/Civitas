@@ -36,7 +36,8 @@ class ProblemeRepository extends ServiceEntityRepository
         $this->personne = $tokenStorageInterface->getToken()->getUser();
     }
 
-    public function formatValues($query){
+    public function formatValues($query)
+    {
         $str = "(";
         foreach ($query as $val) {
             if($val instanceof Categorie || $val instanceof Statut)
@@ -76,8 +77,10 @@ class ProblemeRepository extends ServiceEntityRepository
         }else{
             $parameters['nom'] = '%'.str_replace("\"", "'", $nom).'%';
         }
+
         $parameters['join'] = '';
         $parameters['conditions'] = '';
+        
         if($personne){
             if($this->personne != ".anon"){
                 $parameters['join'] = " 
