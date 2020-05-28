@@ -21,8 +21,9 @@ class PermissionFixtures extends Fixture
             "VALIDATE_PROBLEME",
 /*            "ARCHIVATE_PROBLEME",*/
             "CAN_EDIT_STATUT_PROBLEME",
+            "GET_INTERVENED_PROBLEME",
 
-        	"GET_SELF_PERSONNE",
+        	//"GET_SELF_PERSONNE",
         	"GET_OTHER_PERSONNE",
         	"POST_PERSONNE",
         	"UPDATE_SELF_PERSONNE",

@@ -27,13 +27,16 @@ class RoleFixtures extends Fixture implements DependentFixtureInterface
     public function load(ObjectManager $manager)
     {
         $user = new Role();
+        $technicien = new Role();
         $gestionnaire = new Role();
         $admin = new Role();
 
         $user->setRole("ROLE_USER");
+        $technicien->setRole("ROLE_TECHNICIEN");
         $gestionnaire->setRole("ROLE_GESTIONNAIRE");
         $admin->setRole("ROLE_ADMIN");
         $this->addReference($admin->getRole(),$admin);
+        $this->addReference($technicien->getRole(), $technicien);
         $this->addReference($gestionnaire->getRole(),$gestionnaire);
         $this->addReference($user->getRole(),$user);
 
@@ -43,7 +46,7 @@ class RoleFixtures extends Fixture implements DependentFixtureInterface
 /*			$this->getReference("UPDATE_SELF_PROBLEME"),*/
 /*			$this->getReference("DELETE_SELF_PROBLEME"),*/
 
-			$this->getReference("GET_SELF_PERSONNE"),
+/*			$this->getReference("GET_SELF_PERSONNE"),*/
 			$this->getReference("UPDATE_SELF_PERSONNE"),
 			$this->getReference("DELETE_SELF_PERSONNE"),
 
@@ -73,6 +76,15 @@ class RoleFixtures extends Fixture implements DependentFixtureInterface
 			$this->getReference("GET_SELF_CATEGORIE"),
 			$this->getReference("GET_OTHER_CATEGORIE")
 		];
+
+		$technicienPermissions = [
+            $this->getReference("GET_INTERVENED_PROBLEME"),
+            $this->getReference("GET_SELF_INTERVENTION"),
+            $this->getReference("POST_INTERVENTION"),
+            $this->getReference( "CAN_DO_INTERVENTION"),
+            $this->getReference("GET_SELF_COMPTE_RENDU"),
+            $this->getReference("POST_COMPTE_RENDU")
+        ];
 
 		$gestionnairePermissions = [
 			$this->getReference("GET_OTHER_PROBLEME"),
@@ -129,11 +141,13 @@ class RoleFixtures extends Fixture implements DependentFixtureInterface
 		$adminPermissions = $this->permissionRepository->findAll();
 
 		$this->feed($user, $userPermissions);
+        $this->feed($technicien,$technicienPermissions);
 		$this->feed($admin, $adminPermissions);
 		$this->feed($gestionnaire, $gestionnairePermissions);
 
 
 		$manager->persist($user);
+		$manager->persist($technicien);
 		$manager->persist($gestionnaire);
 		$manager->persist($admin);
 
