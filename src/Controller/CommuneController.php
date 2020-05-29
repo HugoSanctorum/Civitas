@@ -8,6 +8,7 @@ use App\Repository\CommuneRepository;
 use App\Repository\HistoriqueStatutRepository;
 use App\Repository\CategorieRepository;
 use App\Repository\StatutRepository;
+use App\Services\Commune\CommuneService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -53,31 +54,37 @@ class CommuneController extends AbstractController
     /**
      * @Route("/new", name="commune_new", methods={"GET","POST"})
      */
-    public function new(Request $request, Geoquery $geoquery): Response
+    public function new(Request $request, Geoquery $geoquery,CommuneService $communeService): Response
     {
-        if(!$this->permissionChecker->isUserGranted(["POST_COMMUNE"])){
-            return new RedirectResponse("/");
+        if(!$this->isGranted('ROLE_USER')){
+            $this->addFlash('fail','Veuillez vous connectez pour acceder à cette page.');
+            return $this->redirectToRoute('app_login');
+        }else{
+            if(!$this->permissionChecker->isUserGranted(["POST_COMMUNE"])){
+                $this->addFlash('fail','Vous ne possedez pas les permissions necessaires.');
+                return new RedirectResponse("/");
+            }else{
+                $commune = new Commune();
+                $form = $this->createForm(CommuneType::class, $commune);
+                $form->handleRequest($request);
+
+                if ($form->isSubmitted() && $form->isValid()) {
+                    $array = $request->request->all()["commune"];
+                    $geoquery->populate($commune, $array["nom"], $array["code"]);
+                    $document = $form->get('imageBackground')->getData();
+                    $communeService->SetBackground($commune,$document);
+                    $entityManager = $this->getDoctrine()->getManager();
+                    $entityManager->persist($commune);
+                    $entityManager->flush();
+                    return $this->redirectToRoute('commune_index');
+                }
+
+                return $this->render('commune/new.html.twig', [
+                    'commune' => $commune,
+                    'form' => $form->createView(),
+                ]);}
         }
 
-        $commune = new Commune();
-        $form = $this->createForm(CommuneType::class, $commune);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $array = $request->request->all()["commune"];
-            $geoquery->populate($commune, $array["nom"], $array["code"]);
-
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($commune);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('commune_index');
-        }
-
-        return $this->render('commune/new.html.twig', [
-            'commune' => $commune,
-            'form' => $form->createView(),
-        ]);
     }
 
     /**
@@ -85,11 +92,14 @@ class CommuneController extends AbstractController
      */
     public function show(Commune $commune): Response
     {
-        if(!$this->permissionChecker->isUserGrantedSelf(
-            ["GET_SELF_COMMUNE"],
-            $commune==$this->user->getCommune()
-        )){
-            return new RedirectResponse("/");
+        if(!$this->isGranted('ROLE_USER')){
+            $this->addFlash('fail','Veuillez vous connectez pour acceder à cette page.');
+            return $this->redirectToRoute('app_login');
+        }else{
+            if(!$this->permissionChecker->isUserGranted(["GET_OTHER_COMMUNE"])){
+                $this->addFlash('fail','Vous ne possedez pas les permissions necessaires.');
+                return new RedirectResponse("/");
+            }
         }
 
         return $this->render('commune/show.html.twig', [
@@ -100,21 +110,31 @@ class CommuneController extends AbstractController
     /**
      * @Route("/{id}/edit", name="commune_edit", methods={"GET","POST"}, requirements={"id"="\d+"})
      */
-    public function edit(Request $request, Commune $commune): Response
+    public function edit(Request $request, Commune $commune,CommuneService $communeService): Response
     {
-        $form = $this->createForm(CommuneType::class, $commune);
-        $form->handleRequest($request);
+        if(!$this->isGranted('ROLE_USER')){
+            $this->addFlash('fail','Veuillez vous connectez pour acceder à cette page.');
+            return $this->redirectToRoute('app_login');
+        }else{
+            if(!$this->permissionChecker->isUserGranted(["UPDATE_OTHER_COMMUNE"])){
+                $this->addFlash('fail','Vous ne possedez pas les permissions necessaires.');
+                return new RedirectResponse("/");
+            }else{
+                $form = $this->createForm(CommuneType::class, $commune);
+                $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
-
-            return $this->redirectToRoute('commune_index');
+                if ($form->isSubmitted() && $form->isValid()) {
+                    $document = $form->get('imageBackground')->getData();
+                    $communeService->SetBackground($commune,$document);
+                    $this->getDoctrine()->getManager()->flush();
+                    return $this->redirectToRoute('commune_index');
+                }
+                return $this->render('commune/edit.html.twig', [
+                    'commune' => $commune,
+                    'form' => $form->createView(),
+                ]);
+            }
         }
-
-        return $this->render('commune/edit.html.twig', [
-            'commune' => $commune,
-            'form' => $form->createView(),
-        ]);
     }
 
     /**

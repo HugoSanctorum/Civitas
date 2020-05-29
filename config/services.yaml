@@ -12,6 +12,8 @@ parameters:
     probleme_directory: '%kernel.project_dir%/public/probleme'
     document_path: '/document'
     document_directory: '%kernel.project_dir%/public/document'
+    communeBackground_path: '/communeBackground'
+    communeBackground_directory: '%kernel.project_dir%/public/communeBackground'
 
 
 

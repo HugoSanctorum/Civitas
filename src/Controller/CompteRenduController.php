@@ -11,7 +11,10 @@ use App\Repository\HistoriqueStatutRepository;
 use App\Repository\PersonneRepository;
 use App\Repository\ProblemeRepository;
 use App\Repository\StatutRepository;
+use App\Services\Commune\CommuneService;
+use App\Services\CompteRendu\CompteRenduService;
 use App\Services\CompteRendu\DocumentService;
+use App\Services\UploadDocumentService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -71,9 +74,9 @@ class CompteRenduController extends AbstractController
     public function new(
         StatutRepository $statutRepository,
         Request $request,
-        DocumentService $documentService,
         ProblemeRepository $problemeRepository,
-        SessionInterface $session
+        SessionInterface $session,
+        CompteRenduService $compteRenduService
     ): Response
     {
         $probleme = $session->get('Probleme');
@@ -89,7 +92,7 @@ class CompteRenduController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $document = $form->get('urlDocument')->getData();
-            $documentService->PersistCompteRendu($compteRendu, $probleme, $document);
+            $compteRenduService->PersistCompteRendu($compteRendu,$probleme,$document);
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->flush();
 

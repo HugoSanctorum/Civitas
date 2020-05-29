@@ -8,6 +8,9 @@
     <div class="form-group">
     	{{ form_row(form.Service, {'attr': {'class': 'form-control selectpicker'}}) }}
     </div>
+	<div class="form-group">
+		{{ form_row(form.imageBackground) }}
+	</div>
     <div class="row">
     	<div class="col">
 	    	<a class="btn btn-primary btn-lg btn-block" href="{{ path('commune_index') }}">back to list</a>
