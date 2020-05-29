@@ -1,9 +1,9 @@
 {% extends 'base.html.twig' %}
-{% use 'home/map.html.twig' %}
-{% use 'home/script.html.twig' %}
+{% use 'home/assets/map.html.twig' %}
+{% use 'home/assets/script.html.twig' %}
 
 {% set modal %}
-	{% include ('home/modal.html.twig') %}
+	{% include ('home/assets/modal.html.twig') %}
 {% endset %}
 
 {% block title %}Civitas Home{% endblock %}
@@ -24,7 +24,7 @@
 
 
 {% if is_granted('ROLE_USER') %}
-    <div id="mapid" class="fill" data-centre="{{ centre|json_encode|e('html_attr') }}" data-contour="{{ contour|json_encode|e('html_attr') }}" data-problemes="{{ problemes|json_encode|e('html_attr') }}"></div>
+    <div id="mapid" class="fill" data-centre="{{ centre|json_encode|e('html_attr') }}" data-contour="{{ contour|json_encode|e('html_attr') }}" data-problemes="{{ problemes|json_encode|e('html_attr') }}" data-commune="{{ commune }}"></div>
     {{ modal }}
 {% else %}
     <div class="fill">

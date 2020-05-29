@@ -17,11 +17,15 @@
             zoomOffset: -1,
             accessToken: 'pk.eyJ1IjoiYW5hY29tYiIsImEiOiJjazltdG82d2EwMnp5M21scGc1cWdtOGM3In0.WbSl0RvM9KcZkU3C4EDrug'
         }).addTo(map);
+
+        let commune = document.getElementById("mapid").dataset.commune;
         
         let centre = JSON.parse(document.getElementById("mapid").dataset.centre).reverse();
 		map.setView(centre, 13);
 
         let contour = JSON.parse(document.getElementById("mapid").dataset.contour);
+
+        let problemes = JSON.parse(document.getElementById("mapid").dataset.problemes);
 
         let feature = {
             "type": "Feature",
@@ -42,8 +46,6 @@
             style: featureStyle      
         }).addTo(map);
 
-        let problemes = JSON.parse(document.getElementById("mapid").dataset.problemes);
-
         let legendComponents = new Map();
 
         for(probleme of problemes){
@@ -58,6 +60,7 @@
         }
 
         let legend = L.control({position: 'bottomleft'});
+        let info = L.control({position: 'topright'});
 
         legend.onAdd = function (map) {
 
@@ -70,12 +73,24 @@
             return div;
         };
 
+        info.onAdd = function (map) {
+
+            let div = L.DomUtil.create('div', 'info legend stretch text-wrap');
+                       
+            div.innerHTML += "<div class='row mb-2'><div class='col-sm-10'><h3>Carte des problèmes de "+ commune +"</h3></div><div class='col-sm-2 text-right'><a style='font-size:30px;' href='#' class='nounderline' onclick='info.remove()'>&times;</a></div></div>";
+            div.innerHTML += "<p>Cliquez sur un problème pour voir ses détails.</p>";
+            div.innerHTML += "<p>Cliquez sur un endroit dans la ville pour ajouter un problème ou passez par le <a href={{ path('probleme_new') }}>formulaire d'ajout de problème</a>.</p>";
+
+            return div;
+        };
+
         legend.addTo(map);
+        info.addTo(map);
 
 		map.on('click', function(e){
 			if(addmarker) addmarker.remove(map);
 			addmarker = L.marker(e.latlng, {icon: questionmarker}).addTo(map);
-			addmarker.bindPopup('<b>Ajouter un nouveau <a href="/probleme/new?lat=' + e.latlng.lat + '&lng=' + e.latlng.lng + '" data-toggle="modal" data-target="#modal">problème</a> ici ?').openPopup();
+			addmarker.bindPopup('<b><a href="/probleme/new?lat=' + e.latlng.lat + '&lng=' + e.latlng.lng + '" data-toggle="modal" data-target="#modal">Ajouter</a> un nouveau problème ici ?').openPopup();
 		});
 
         function getColor($color){
