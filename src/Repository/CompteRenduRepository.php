@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\CompteRendu;
+use App\Entity\Personne;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -47,4 +48,14 @@ class CompteRenduRepository extends ServiceEntityRepository
         ;
     }
     */
+    public function getOneCompteRenduByTechnicien(CompteRendu $compteRendu, Personne $personne)
+    {
+        return $this->createQueryBuilder('c')
+            ->where('c.Personne = :personne')
+            ->andWhere('c.id = :compteRendu')
+            ->setParameter('compteRendu', $compteRendu)
+            ->setParameter('personne', $personne)
+            ->getQuery()
+            ->getResult();
+    }
 }

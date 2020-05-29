@@ -6,6 +6,8 @@
 /config/secrets/prod/prod.decrypt.private.php
 /public/probleme/
 /public/bundles/
+/public/communeBackground/
+/public/document/
 /var/
 /vendor/
 ###< symfony/framework-bundle ###

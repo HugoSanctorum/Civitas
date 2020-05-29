@@ -43,12 +43,19 @@ class CommuneController extends AbstractController
      */
     public function index(CommuneRepository $communeRepository): Response
     {
-        if(!$this->permissionChecker->isUserGranted(["GET_OTHER_COMMUNE"])){
-            return new RedirectResponse("/");
+        if(!$this->isGranted('ROLE_USER')){
+            $this->addFlash('fail','Veuillez vous connectez pour acceder à cette page.');
+            return $this->redirectToRoute('app_login');
+        }else {
+            if (!$this->permissionChecker->isUserGranted(["GET_OTHER_COMMUNE"])) {
+                $this->addFlash('fail', 'Vous ne possedez pas les permissions necessaires.');
+                return new RedirectResponse("/");
+            } else {
+                return $this->render('commune/index.html.twig', [
+                    'communes' => $communeRepository->findAll(),
+                ]);
+            }
         }
-        return $this->render('commune/index.html.twig', [
-            'communes' => $communeRepository->findAll(),
-        ]);
     }
 
     /**
@@ -142,13 +149,22 @@ class CommuneController extends AbstractController
      */
     public function delete(Request $request, Commune $commune): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$commune->getId(), $request->request->get('_token'))) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->remove($commune);
-            $entityManager->flush();
+        if(!$this->isGranted('ROLE_USER')){
+            $this->addFlash('fail','Veuillez vous connectez pour acceder à cette page.');
+            return $this->redirectToRoute('app_login');
+        }else {
+            if (!$this->permissionChecker->isUserGranted(["DELETE_OTHER_COMMUNE"])) {
+                $this->addFlash('fail', 'Vous ne possedez pas les permissions necessaires.');
+                return new RedirectResponse("/");
+            } else {
+                if ($this->isCsrfTokenValid('delete' . $commune->getId(), $request->request->get('_token'))) {
+                    $entityManager = $this->getDoctrine()->getManager();
+                    $entityManager->remove($commune);
+                    $entityManager->flush();
+                }
+                return $this->redirectToRoute('commune_index');
+            }
         }
-
-        return $this->redirectToRoute('commune_index');
     }
 
     /**
@@ -162,42 +178,49 @@ class CommuneController extends AbstractController
         GeocoderService $geocoderService
     ): Response
     {
-        if(!$this->permissionChecker->isUserGranted(["GET_OTHER_PROBLEME"])){
-            return new RedirectResponse("/");
-        }
-        $commune = $this->user->getCommune();
-        $problemes = $commune->getProblemes();
-        $infos_problemes = [];
-        $categories = [];
-        $statuts = [];
+        if (!$this->isGranted('ROLE_USER')) {
+            $this->addFlash('fail', 'Veuillez vous connectez pour acceder à cette page.');
+            return $this->redirectToRoute('app_login');
+        } else {
+            if (!$this->permissionChecker->isUserGranted(["GET_OTHER_PROBLEME"])) {
+                $this->addFlash('fail', 'Vous ne possedez pas les permissions necessaires.');
+                return new RedirectResponse("/");
+            } else {
+                $commune = $this->user->getCommune();
+                $problemes = $commune->getProblemes();
+                $infos_problemes = [];
+                $categories = [];
+                $statuts = [];
 
-        foreach ($problemes as $probleme) {
-            $hs = $historiqueStatutRepository->findLatestHistoriqueStatutForOneProblemExcludingArchived($probleme);
-            $statut = $statutRepository->findStatutById($hs[0]['statut_id']);
-            array_push($infos_problemes, [
-                "id" => $probleme->getId(),
-                "titre" => $probleme->getTitre(),
-                "categorie" => $probleme->getCategorie()->getNom(),
-                "statut" => $statut->getNom(),
-                "marker_color" => $statut->getCouleur(),
-                "marker_icone" => $statut->getIcone(),
-                "coordonnees" => $geocoderService->getCoordinateFromAdress($probleme->getLocalisation())
-            ]);
-        }
+                foreach ($problemes as $probleme) {
+                    $hs = $historiqueStatutRepository->findLatestHistoriqueStatutForOneProblemExcludingArchived($probleme);
+                    $statut = $statutRepository->findStatutById($hs[0]['statut_id']);
+                    array_push($infos_problemes, [
+                        "id" => $probleme->getId(),
+                        "titre" => $probleme->getTitre(),
+                        "categorie" => $probleme->getCategorie()->getNom(),
+                        "statut" => $statut->getNom(),
+                        "marker_color" => $statut->getCouleur(),
+                        "marker_icone" => $statut->getIcone(),
+                        "coordonnees" => $geocoderService->getCoordinateFromAdress($probleme->getLocalisation())
+                    ]);
+                }
 
-        foreach($categorieRepository->findAll() as $categorie){
-            array_push($categories, $categorie->getNom());
-        }
+                foreach ($categorieRepository->findAll() as $categorie) {
+                    array_push($categories, $categorie->getNom());
+                }
 
-        foreach($statutRepository->findAll() as $statut){
-            array_push($statuts, $statut->getNom());
-        }
+                foreach ($statutRepository->findAll() as $statut) {
+                    array_push($statuts, $statut->getNom());
+                }
 
-        return $this->render('commune/manage.html.twig', [
-            'commune' => $commune,
-            'problemes' => $infos_problemes,
-            'categories' => $categories,
-            'statuts' => $statuts
-        ]);
+                return $this->render('commune/manage.html.twig', [
+                    'commune' => $commune,
+                    'problemes' => $infos_problemes,
+                    'categories' => $categories,
+                    'statuts' => $statuts
+                ]);
+            }
+        }
     }
 }
