@@ -1,10 +1,9 @@
 <?php
 
 
-namespace App\Services\CompteRendu;
+namespace App\Services;
 
 
-use App\Entity\CompteRendu;
 use App\Entity\Personne;
 use App\Entity\Probleme;
 use App\Repository\PersonneRepository;
@@ -13,7 +12,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
-class DocumentService extends AbstractController
+class UploadDocumentService extends AbstractController
 {
     private $personne;
     private $entityManager;
@@ -26,7 +25,7 @@ class DocumentService extends AbstractController
         $this->entityManager = $entityManager;
     }
 
-    public function UploadDocument($document)
+    public function UploadDocument($document, string $string)
     {
         if ($document) {
             $originalFilename = pathinfo($document->getClientOriginalName(),
@@ -41,7 +40,7 @@ class DocumentService extends AbstractController
             // Move the file to the directory where brochures are stored
             try {
                 $document->move(
-                    $this->getParameter('document_directory'),
+                    $this->getParameter($string),
                     $newFilename
                 );
                 return $newFilename;
@@ -50,14 +49,4 @@ class DocumentService extends AbstractController
             }
         }
     }
-
-        public function PersistCompteRendu(CompteRendu $compteRendu,Probleme $probleme, $document){
-            $compteRendu->setProbleme($probleme);
-            $compteRendu->setPersonne($this->personne);
-            $compteRendu->setUrlDocument($this->UploadDocument($document));
-            $this->entityManager->persist($compteRendu);
-
-
-        }
-
 }

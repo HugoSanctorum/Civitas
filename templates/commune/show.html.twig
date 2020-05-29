@@ -19,7 +19,15 @@
                 <th>Region</th>
                 <td>{{ commune.codeRegion }}</td>
             </tr>
-        </tbody>
+            <tr>
+                <th> Image de fond pour page d'accueil</th>
+            <td>{{ commune.imageBackground }}</td>
+            <div class="zoom-gallery">
+                <a href="{{ asset('/communeBackground/'~commune.imageBackground) }}">
+                    <img class="img-thumbnail" src="{{ asset('/communeBackground/'~commune.imageBackground) }}">
+                </a>
+            </div>
+            </tr>
     </table>
 
     <a href="{{ path('commune_index') }}">back to list</a>

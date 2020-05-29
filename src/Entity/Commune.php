@@ -68,6 +68,11 @@ class Commune
      */
     private $codeInsee;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $imageBackground;
+
     public function __construct()
     {
         $this->Service = new ArrayCollection();
@@ -255,6 +260,18 @@ class Commune
     public function setCodeInsee(string $codeInsee): self
     {
         $this->codeInsee = $codeInsee;
+
+        return $this;
+    }
+
+    public function getImageBackground(): ?string
+    {
+        return $this->imageBackground;
+    }
+
+    public function setImageBackground(?string $imageBackground): self
+    {
+        $this->imageBackground = $imageBackground;
 
         return $this;
     }
