@@ -15,10 +15,29 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 
 class HomeController extends AbstractController
 {
+
     /**
      * @Route("/", name="home_index" )
      */
     public function index(
+        TokenStorageInterface $tokenStorageInterface
+    ){
+        $parameters = [];
+        $user = $tokenStorageInterface->getToken()->getUser() != "anon." ? $tokenStorageInterface->getToken()->getUser() : null;
+
+        $render = $user ? 'home/home_commune.html.twig' : 'home/home_general.html.twig';
+        
+        if($user){
+            $parameters["commune"] = $user->getCommune()->getNom();
+        }
+
+        return $this->render($render, $parameters);
+    }
+
+    /**
+     * @Route("/carte_probleme", name="home_carte" )
+     */
+    public function carte(
         TokenStorageInterface $tokenStorageInterface,
         HistoriqueStatutRepository $historiqueStatutRepository,
         StatutRepository $statutRepository,
@@ -53,9 +72,10 @@ class HomeController extends AbstractController
                 ]);
             }
         }
-        return $this->render('home/index.html.twig', [
+        return $this->render('home/map_index.html.twig', [
         	"centre" => $centre,
             "contour" => $contour,
+            "commune" => $commune->getNom(),
             "problemes" => $infos_problemes
         ]);
     }
