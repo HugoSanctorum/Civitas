@@ -85,20 +85,21 @@ class CompteRenduController extends AbstractController
             return $this->redirectToRoute('compte_rendu_nouveau');
         }
         $compteRendu = new CompteRendu();
-        $compteRendu->setProbleme($probleme);
-
+        $pb = $problemeRepository->findOneBy(['id'=> $probleme->getId()]);
+        $compteRendu->setProbleme($pb);
         $form = $this->createForm(CompteRenduType::class, $compteRendu);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $document = $form->get('urlDocument')->getData();
-            $compteRenduService->PersistCompteRendu($compteRendu,$probleme,$document);
+            $compteRenduService->PersistCompteRendu($compteRendu,$pb,$document);
             $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($compteRendu);
             $entityManager->flush();
 
             return $this->redirectToRoute('compte_rendu_index');
         }
-        $session->clear();
+
         return $this->render('compte_rendu/new.html.twig', [
             'compte_rendu' => $compteRendu,
             'form' => $form->createView(),

@@ -25,10 +25,9 @@ class CompteRenduService
 
     public function PersistCompteRendu(CompteRendu $compteRendu, Probleme $probleme, $document)
     {
+
         $compteRendu->setProbleme($probleme);
         $compteRendu->setPersonne($this->personne);
         $compteRendu->setUrlDocument($this->documentService->UploadDocument($document, 'document_directory'));
-        $this->entityManager->persist($compteRendu);
-
     }
 }

@@ -60,11 +60,11 @@ class CompteRenduType extends AbstractType
                     'maxSize' => '1024k',
                     'mimeTypes' => [
                         'image/png',
-                        'image/jpg',
+                        'image/jpeg',
                         'application/pdf',
                         'application/x-pdf'
                         ],
-                    'mimeTypesMessage' => 'Please upload a valid png/jpg document',
+                    'mimeTypesMessage' => 'Choisissez un document valide (pdf, xpdf, png,jpg, jpeg)',
                 ])
             ],
         ]);
@@ -80,6 +80,7 @@ class CompteRenduType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => CompteRendu::class,
+            'allow_extra_fields' => true
         ]);
     }
 }
