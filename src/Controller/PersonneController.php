@@ -93,16 +93,22 @@ class PersonneController extends AbstractController
                 $session->set("search_element", $tab["element"]);
             else
                 $session->remove("search_element");
+
+            if(array_key_exists("orderby", $tab))
+                $session->set("search_orderby", $tab["orderby"]);
+            else
+                $session->remove("search_orderby");
         }
 
         $active_nom = $session->get('search_nom_probleme') ? $session->get('search_nom_probleme') : "";
         $active_categories = $session->get('search_categories') ? $session->get('search_categories') : [];
         $active_statuts = $session->get('search_statuts') ? $session->get('search_statuts') : [];
         $active_element = $session->get('search_element') ? $session->get('search_element') : 20;
+        $active_orderby = $session->get('search_orderby') ? $session->get('search_orderby') : "priorite";
 
-        $problemes = $problemeRepository->findPaginateByCategoryAndName($page, $active_element, $active_categories, $active_statuts, $active_nom, "Signaleur");
+        $problemes = $problemeRepository->findPaginateByCategoryAndName($page, $active_element, $active_categories, $active_statuts, $active_nom, $active_orderby, "Signaleur");
 
-        $nbr_page = ceil(count($problemeRepository->findAllByCategoryAndName($page, $active_element, $active_categories, $active_statuts, $active_nom, "Signaleur"))/$active_element);
+        $nbr_page = ceil(count($problemeRepository->findAllByCategoryAndName($page, $active_element, $active_categories, $active_statuts, $active_nom, null, "Signaleur"))/$active_element);
 
         return $this->render('personne/mesSignalements.html.twig', [
             'problemes' => $problemes,
@@ -113,6 +119,7 @@ class PersonneController extends AbstractController
             'active_categories' => $active_categories,
             'active_statuts' => $active_statuts,
             'active_element' => $active_element,
+            'active_orderby' => $active_orderby,
             'form' => $form->createView(),
         ]);
     }
