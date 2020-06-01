@@ -53,6 +53,7 @@ class ProblemeRepository extends ServiceEntityRepository
         array $categories,
         array $statuts,
         string $nom,
+        string $orderBy = null,
         string $typeIntervention = null
     )
     {
@@ -61,29 +62,51 @@ class ProblemeRepository extends ServiceEntityRepository
 
         $parameters = [];
 
+        $parameters['join'] = '';
+        $parameters['conditions'] = '';
+
         if (empty($categories)){
             $categories_raw = $em->getRepository(Categorie::class)->findAll();
             $parameters['categorie_ids'] = $this->formatValues($categories_raw);
         }else{
             $parameters['categorie_ids'] = $this->formatValues($categories);
         }
+
         if (empty($statuts)){
             $statuts_raw = $em->getRepository(Statut::class)->findAll();
             $parameters['statut_ids'] = $this->formatValues($statuts_raw);
         }else{
             $parameters['statut_ids'] = $this->formatValues($statuts);
         }
+
         if (empty($nom)){
             $parameters['nom'] = '%';
         }else{
             $parameters['nom'] = '%'.str_replace("\"", "'", $nom).'%';
         }
 
-        $parameters['join'] = '';
-        $parameters['conditions'] = '';
+        //ORDER BY
+        if ($orderBy){
+            if ($orderBy == 'date_asc'){
+                $parameters['orderBy'] = 'maxdate ';
+            }
+            else if($orderBy == 'date_desc'){
+                $parameters['orderBy'] = 'maxdate DESC ';
+            }else if($orderBy == 'categorie'){
+                $parameters['orderBy'] = 'categorie.nom ';
+                $parameters['join'] .= 'INNER JOIN categorie ON probleme.categorie_id = categorie.id ';
+            }else if($orderBy == 'priorite'){
+                $parameters['orderBy'] = 'priorite.poids DESC ';
+                $parameters['join'] .= 'INNER JOIN priorite ON probleme.priorite_id = priorite.id ';
+            }else{
+                $parameters['orderBy'] = 'statut.nom ';
+            }
+        }else{
+            $parameters['orderBy'] = 'maxdate ';
+        }
 
         if($typeIntervention != null){
-            $parameters['join'] = " 
+            $parameters['join'] .= " 
                 INNER JOIN intervenir ON probleme.id = intervenir.probleme_id
                 INNER JOIN personne ON intervenir.personne_id = personne.id 
                 INNER JOIN type_intervention ti on intervenir.type_intervention_id = ti.id";
@@ -110,8 +133,7 @@ class ProblemeRepository extends ServiceEntityRepository
             AND titre LIKE "'.$parameters['nom'].'"
             '.$parameters['conditions'].'
             GROUP BY t1.probleme_id
-            ORDER BY probleme.categorie_id
-            '
+            ORDER BY '.$parameters['orderBy']
         ;
         return $sql;
     }
@@ -122,12 +144,13 @@ class ProblemeRepository extends ServiceEntityRepository
         array $categories,
         array $statuts,
         string $nom,
+        string $orderBy,
         string $typeIntervention = null
     )
     {
         $conn = $this->getEntityManager()->getConnection();
 
-        $sql = $this->getRequestPagination($categories, $statuts, $nom, $typeIntervention);
+        $sql = $this->getRequestPagination($categories, $statuts, $nom, $orderBy, $typeIntervention);
         $sql .= 'LIMIT '.$nbr_max_element.' OFFSET '.($page-1) * $nbr_max_element;
 
         $stmt = $conn->prepare($sql);
@@ -146,12 +169,13 @@ class ProblemeRepository extends ServiceEntityRepository
         array $categories,
         array $statuts,
         string $nom,
+        string $orderBy = null,
         string $typeIntervention = null
     )
     {
         $conn = $this->getEntityManager()->getConnection();
 
-        $sql = $this->getRequestPagination($categories, $statuts, $nom, $typeIntervention);
+        $sql = $this->getRequestPagination($categories, $statuts, $nom, $orderBy, $typeIntervention);
 
         $stmt = $conn->prepare($sql);
         $stmt->execute();

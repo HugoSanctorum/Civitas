@@ -100,11 +100,16 @@
 {% endblock %}
 {% block moreScript %}
     <script type="text/javascript">
-        let data = document.getElementById("data_selected");
-        let categories = JSON.parse(data.dataset.categories);
-        let statuts = JSON.parse(data.dataset.statuts);
-        $("#probleme_search_categories").val(categories);
-        $("#probleme_search_statuts").val(statuts);
-        $("#probleme_search_element").val("{{active_element}}");
+        $( document ).ready(function() {
+            let data = document.getElementById("data_selected");
+            let categories = JSON.parse(data.dataset.categories);
+            let statuts = JSON.parse(data.dataset.statuts);
+
+            $("#probleme_search_categories").val(categories);
+            $("#probleme_search_statuts").val(statuts);
+            $("#probleme_search_element").val("{{active_element}}");
+
+            $('[data-toggle="tooltip"]').tooltip();
+        });
     </script>
 {% endblock %}

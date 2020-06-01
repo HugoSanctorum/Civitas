@@ -50,6 +50,17 @@ class ProblemeSearchType extends AbstractType
                     '100' => 100,
                 ]
             ])
+            ->add('orderby', ChoiceType::class, [
+                'required' => false,
+                'placeholder' => false,
+                'choices' => [
+                    'Date ↑' => "date_asc",
+                    'Date ↓' => "date_desc",
+                    'Statut' => "statut",
+                    'Priorité' => "priorite",
+                    'Catégorie' => "categorie"
+                ]
+            ])
         ;
 
     }
