@@ -60,7 +60,7 @@ class HistoriqueStatutFixtures extends Fixture implements DependentFixtureInterf
         ];
 
         $problemes = [];
-        for($i = 0; $i < 100; $i++){
+        for($i = 1; $i <= 100; $i++){
             array_push($problemes, $this->getReference("probleme_".$i));
         }
 

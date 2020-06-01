@@ -53,7 +53,7 @@ class ProblemeFixtures extends Fixture implements DependentFixtureInterface
             $this->getReference("Urgent")
         ];
 
-        for($i = 0; $i < 100; $i++){
+        for($i = 1; $i <= 100; $i++){
             $probleme = new Probleme();
             $probleme->setCommune($communes[array_rand($communes)]);
             $probleme->setCategorie($categories[array_rand($categories)]);

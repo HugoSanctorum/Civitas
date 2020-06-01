@@ -58,4 +58,14 @@ class CompteRenduRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function getAllCompteRenduByTechnicien(Personne $personne){
+        return $this->createQueryBuilder('c')
+            ->join('c.Probleme','p')
+            ->join('p.HistoriqueStatuts','h')
+            ->where('c.Personne = :personne')
+            ->setParameter('personne', $personne)
+            ->getQuery()
+            ->getResult();
+    }
 }
