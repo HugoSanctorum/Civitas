@@ -17,7 +17,7 @@ class CompteRendu
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $urlDocument;
 
@@ -50,7 +50,7 @@ class CompteRendu
     private $description;
 
     /**
-     * @ORM\Column(type="date")
+     * @ORM\Column(type="datetime")
      */
     private $date;
 

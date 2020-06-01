@@ -49,6 +49,7 @@ class CompteRenduType extends AbstractType
         $form = $event->getForm(); //récupération du formulaire
         $form->remove('Probleme');
         $entity = $event->getData();
+        $entity->setDate(new \DateTime());
 
 
         $form->add('urlDocument', FileType::class, [
@@ -62,9 +63,10 @@ class CompteRenduType extends AbstractType
                         'image/png',
                         'image/jpeg',
                         'application/pdf',
-                        'application/x-pdf'
+                        'application/x-pdf',
+                        'application/docx'
                         ],
-                    'mimeTypesMessage' => 'Choisissez un document valide (pdf, xpdf, png,jpg, jpeg)',
+                    'mimeTypesMessage' => 'Choisissez un document valide (pdf, xpdf, doc, png, jpeg)',
                 ])
             ],
         ]);

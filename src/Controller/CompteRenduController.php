@@ -134,7 +134,7 @@ class CompteRenduController extends AbstractController
                     $entityManager->persist($compteRendu);
                     $entityManager->flush();
 
-                    return $this->redirectToRoute('compte_rendu_index');
+                    return $this->redirectToRoute('mes_compte-rendus');
                 }
 
                 return $this->render('compte_rendu/new.html.twig', [
@@ -146,7 +146,7 @@ class CompteRenduController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="compte_rendu_show", methods={"GET"})
+     * @Route("/{id}", name="compte_rendu_show", methods={"GET"},  requirements={"id"="\d+"})
      */
     public function show(CompteRendu $compteRendu): Response
     {
@@ -159,7 +159,7 @@ class CompteRenduController extends AbstractController
                 $this->addFlash('fail', 'Ce compte rendu ne vous appartient pas.');
                 return $this->redirectToRoute("home_index");
             }else {
-                if (!$this->permissionChecker->isUserGranted(["GET_OTHER_COMPTE_RENDU"])) {
+                if (!$this->permissionChecker->isUserGranted(["GET_SELF_COMPTE_RENDU"])) {
                     $this->addFlash('fail', 'Vous ne possedez pas les permissions necessaires.');
                     return new RedirectResponse("/");
                 }else {
@@ -172,7 +172,7 @@ class CompteRenduController extends AbstractController
     }
 
     /**
-     * @Route("/{id}/edit", name="compte_rendu_edit", methods={"GET","POST"})
+     * @Route("/{id}/edit", name="compte_rendu_edit", methods={"GET","POST"}, requirements={"id"="\d+"})
      */
     public function edit(Request $request, CompteRendu $compteRendu): Response
     {
@@ -202,7 +202,7 @@ class CompteRenduController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="compte_rendu_delete", methods={"DELETE"})
+     * @Route("/{id}", name="compte_rendu_delete", methods={"DELETE"}, requirements={"id"="\d+"})
      */
     public function delete(Request $request, CompteRendu $compteRendu): Response
     {
@@ -225,4 +225,25 @@ class CompteRenduController extends AbstractController
         }
     }
 
+    /**
+     * @Route("/mes_compte-rendus", name="mes_compte-rendus", methods={"GET","POST"})
+     */
+    public function mesCompteRendus()
+    {
+        if (!$this->isGranted('ROLE_USER')) {
+            $this->addFlash('fail', 'Veuillez vous connectez pour acceder à cette page.');
+            return $this->redirectToRoute('app_login');
+        } else {
+            if (!$this->permissionChecker->isUserGranted(["GET_SELF_COMPTE_RENDU"])) {
+                $this->addFlash('fail', 'Vous ne possedez pas les permissions necessaires.');
+            }else {
+                $compteRendus = $this->compteRenduRepository->getAllCompteRenduByTechnicien($this->personne);
+                return $this->render('compte_rendu/mes_compte-rendu.html.twig', [
+                    "compte_rendus" => $compteRendus
+                ]);
+            }
+
+        }
+        return $this->redirectToRoute('compte_rendu_index');
+    }
 }

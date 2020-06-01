@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}CompteRendu index{% endblock %}
+
+{% block body %}
+    <h1>CompteRendu index</h1>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Probleme concerné</th>
+            <th>Titre</th>
+            <th>Description</th>
+            <th>Le</th>
+            <th>Document associé</th>
+            <th>actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for compte_rendu in compte_rendus %}
+            <tr>
+                <td>"{{ compte_rendu.Probleme }}" (N°{{ compte_rendu.Probleme.reference }})</td>
+                <td>{{ compte_rendu.titre }}</td>
+                <td>{{ compte_rendu.description }}</td>
+                <td>{{ compte_rendu.date|date("d/m/Y")  }} à {{ compte_rendu.date|date("H:i:s")  }}</td>
+                <td><a href="{{ absolute_url(path('download_file', {'urlFile': compte_rendu.urlDocument})) }}">{{ compte_rendu.urlDocument }}</a></td>
+                <td>
+                    <a href="{{ path('compte_rendu_show', {'id': compte_rendu.id}) }}">show</a>
+                    <a href="{{ path('compte_rendu_edit', {'id': compte_rendu.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('compte_rendu_nouveau') }}">Create new</a>
+{% endblock %}
