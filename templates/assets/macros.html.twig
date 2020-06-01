@@ -149,3 +149,17 @@
         </div>
     {% endif %}
 {% endmacro %}
+
+{% macro border_priorite(priorite, poids) %}
+    {% if priorite == "résolu" %}
+        border-success
+    {% elseif priorite == "archivé" %}
+        border-secondary
+    {% elseif poids < 64 %}
+        border-info
+    {% elseif poids >= 64 and poids < 128 %}
+        border-warning
+    {% else %}
+        border-danger
+    {% endif %}
+{% endmacro %}

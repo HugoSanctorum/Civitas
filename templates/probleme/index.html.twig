@@ -29,7 +29,7 @@
             {% endif %}
                 {% set cpt = cpt + 1 %}
                 <div class="col col-fill">
-                    <div class="card border-primary mb-4 mx-2">
+                    <div class="card {{ macros.border_priorite(probleme.Priorite, probleme.Priorite.poids) }} mb-4 mx-2">
                         <div class="card-header">
                             <h3>{{ probleme.titre }}</h3>
                             <p class="card-subtitle">{{ macros.color_statut((probleme.HistoriqueStatuts|last).Statut.nom, (probleme.HistoriqueStatuts|last).Statut.couleur, (probleme.HistoriqueStatuts|last).Statut.icone) }}</p>

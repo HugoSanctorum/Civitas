@@ -456,6 +456,7 @@ class ProblemeController extends AbstractController
         $session->remove("search_categories");
         $session->remove("search_statuts");
         $session->remove("search_element");
+        $session->remove("search_orderBy");
 
         return $this->redirectToRoute('probleme_index');
     }
