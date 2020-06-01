@@ -18,6 +18,7 @@ class CompteRenduFixtures extends Fixture implements DependentFixtureInterface
             $compteRendu->setProbleme($this->getReference("probleme_".random_int(0, 99)));
             $compteRendu->setIntervenir($this->getReference('intervention_'.$i));
             $compteRendu->setTitre('compte_rendu'.$i);
+            $compteRendu->setDate(new \DateTime());
             $manager->persist($compteRendu);
         }
         $manager->flush();
