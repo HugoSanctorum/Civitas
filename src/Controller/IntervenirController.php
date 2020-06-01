@@ -75,23 +75,25 @@ class IntervenirController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($intervenir);
-            $technicien = $this->personneRepository->findOneBy(['id' =>$request->request->all()['intervenir']['Personne']]);
+            $technicien = $this->personneRepository->findOneBy(['id' => $request->request->all()['intervenir']['Personne']]);
 
-            if(!$probleme) $probleme = $this->problemeRepository->findOneBy(['id' =>$request->request->all()['intervenir']['Probleme']]);
+            if (!$probleme) $probleme = $this->problemeRepository->findOneBy(['id' => $request->request->all()['intervenir']['Probleme']]);
             $historiqueStatut->setProbleme($probleme);
             $historiqueStatut->setStatut($statut);
             $historiqueStatut->setDate(new \DateTime('now'));
             $historiqueStatut->setDescription('Le probleme a été affecté');
 
             $signaleurIntervention = $this->intervenirRepository->findSignaleurByProbleme($probleme);
-            $signaleur = $signaleurIntervention->getPersonne();
+            if (!$signaleurIntervention) {
+                $signaleur = $signaleurIntervention->getPersonne();
+
+                $mailerService->sendMailToTechnicienAffectedProbleme($technicien, $probleme);
+                $mailerService->sendMailToSignaleurAffectedProbleme($signaleur, $probleme);
+            }
             $entityManager->persist($historiqueStatut);
             $entityManager->flush();
 
-            $mailerService->sendMailToTechnicienAffectedProbleme($technicien,$probleme);
-            $mailerService->sendMailToSignaleurAffectedProbleme($signaleur,$probleme);
-
-            return $this->redirectToRoute('intervenir_index');
+            return $this->redirectToRoute('probleme_show', ['id' => $probleme->getId()]);
         }
 
         return $this->render('intervenir/new.html.twig', [
