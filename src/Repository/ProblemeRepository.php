@@ -152,7 +152,6 @@ class ProblemeRepository extends ServiceEntityRepository
 
         $sql = $this->getRequestPagination($categories, $statuts, $nom, $orderBy, $typeIntervention);
         $sql .= 'LIMIT '.$nbr_max_element.' OFFSET '.($page-1) * $nbr_max_element;
-        dump($sql);
         $stmt = $conn->prepare($sql);
         $stmt->execute();
 
