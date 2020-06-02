@@ -3,36 +3,86 @@
 {% block title %}Intervenir{% endblock %}
 
 {% block body %}
-    <h1>Intervenir</h1>
+    <div class="jumbotron jumbotron-fluid">
+        <div class="container">
+            <div class="row">
+                <div class="col-11">
+                    <h1 class="display-4">
+                        Intervention <span class="h4">n°{{intervenir.id}}                       
+                    </h1>
+                </div>
+                <div class="col-1 text-right p-3">
+                    <button id="delete_probleme_button" type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#modal_delete" title="Supprimer le probleme">
+                        <i class="fa fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+            <p class="lead">
+                <a class="text-info" href={{ path('personne_show', {'id': intervenir.Personne.id}) }} data-toggle="tooltip" data-placement="bottom" title="Technicien chargé du problème"><i class="fa fa-user"></i> {{ intervenir.Personne.username }}</a>
+                <i class="fa fa-arrow-right"></i>
+                <a class="text-info" href={{ path('probleme_show', {'id': intervenir.Probleme.id}) }} data-toggle="tooltip" data-placement="bottom" title="Problème sur lequel travaille le technicien"><i class="fa fa-clipboard"></i> {{ intervenir.Probleme.titre }}</a>
+            </p>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row section">
+            <div class="col"> 
+                <h4 class="text-primary">
+                    <span class="text-info">
+                        <i class="fa fa-file-alt"></i>
+                    </span>
+                    Liste des compte(s)-rendu(s)
+                </h4>
+            </div>
+            <div class="col text-right">
+                <h4 class="text-primary ">
+                    <a href={{ path('compte_rendu_nouveau') }} data-toggle="tooltip" data-placement="right" title="Ajouter un compte-rendu"><i class="fa fa-plus-circle text-primary"></a></i>
+                </h4>
+            </div>
+        </div>
+        <div class="historique border border-primary">
+            <div class="row flex-center">
+                <div class="col-md-4">
+                    <div id="list" class="list-group">
+                        {% for cr in intervenir.CompteRendus %}
+                            <a class="list-group-item list-group-item-action list-group-item-info" href="#list-item-{{loop.index}}">{{cr.titre}}</a>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div data-spy="scroll" data-target="#list-example" data-offset="0" class="scrollspy">
+                        {% for cr in intervenir.CompteRendus %}
+                            <h4 id="list-item-{{loop.index}}">{{cr.titre}}</h4>
+                            <p>{{cr.description}}</p>
+                            <p>{{cr.date ? cr.date|date('d-m-Y H\\hi') : ''}}</p>
+                            <p>
+                                <a href={{ path('download_file', {'urlFile': cr.urlDocument}) }}>
+                                    <i class="fa fa-link"></i> Télécharger le compte-rendu
+                                </a>
+                            </p>
+                            <div class="dropdown-divider"></div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ intervenir.id }}</td>
-            </tr>
-            <tr>
-                <th>Personne</th>
-                <td>{{ intervenir.Personne }}</td>
-            </tr>
-            <tr>
-                <th>Probleme</th>
-                <td>{{ intervenir.Probleme }}</td>
-            </tr>
-            <tr>
-                <th>Description</th>
-                <td>{{ intervenir.TypeIntervention.nom }}</td>
-            </tr>
-            <tr>
-                <th>CreatedAt</th>
-                <td>{{ intervenir.createdAt ? intervenir.createdAt|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-        </tbody>
-    </table>
 
-    <a href="{{ path('intervenir_index') }}">back to list</a>
 
-    <a href="{{ path('intervenir_edit', {'id': intervenir.id}) }}">edit</a>
 
-    {{ include('intervenir/_delete_form.html.twig') }}
+    </div>
+    
+
+    
+{% endblock %}
+{% block moreScript %}
+    <script type="text/javascript">
+        $('[data-toggle="tooltip"]').tooltip();
+        $('#delete_probleme_button').tooltip({ 
+            placement: 'right'
+        });
+        $('[data-spy="scroll"]').each(function () {
+            var $spy = $(this).scrollspy('refresh')
+        });
+    </script>
 {% endblock %}

@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 {% use 'probleme/assets/base.html.twig' %}
-{% import "assets/macros.html.twig" as macros %}
+{% import 'assets/macros.html.twig' as macros %}
 
 {% set modal_delete %}
     {% include 'probleme/assets/modal_delete.html.twig' %} 
@@ -24,7 +24,7 @@
                     </h1>
                 </div>
                 <div class="col-1 text-right p-3">
-                    <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#modal_delete">
+                    <button id="delete_probleme_button" type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#modal_delete" title="Supprimer le probleme">
                         <i class="fa fa-trash"></i>
                     </button>
                 </div>
@@ -62,34 +62,21 @@
             {% if images is empty and not archived %}
                 <div class="alert alert-secondary alert-dismissible fade show" role="alert">
                     Aucune image pour ce problème.
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"> 
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-            {% endif %}
-            {% if not intervention and not archived %}
-                <div class="alert alert-secondary alert-dismissible fade show" role="alert">
-                    Aucune intervention de technicien en cours pour ce problème.
-                    <a class="nounderline close" href={{ path('intervenir_new', {'id': probleme.id}) }}>
-                        <span aria-hidden="true">&plus;</span>
-                    </a>
-                </div>
-            {% endif %}  
+            {% endif %} 
 
             <div class="row section">
-                <div class="col"> 
-                    <h4 class="text-primary">
-                            <span class="text-info">
-                                <i class="fa fa-stream"></i>
-                            </span>
-                        Liste des statuts du problème
-                    </h4>
-                </div>
-                <div class="col text-right">
-                    <h4 class="text-primary ">
-                        <a href="/historiqueStatut/new"><i class="fa fa-plus-circle text-primary"></i></a>
-                    </h4>
-                </div>
+            	<div class="col-md">
+		            <h4 class="text-primary">
+	                    <span class="text-info">
+	                        <i class="fa fa-stream"></i>
+	                    </span>
+		                Liste des statuts du problème
+	            	</h4>
+	            </div>
             </div>
             <div class="historique border border-primary">
                 {% for hs in probleme.HistoriqueStatuts %}
@@ -107,22 +94,23 @@
                     </div>
                 {% endfor %}
             </div>
-            {% if intervention %}
-                <div class="row section">
-                    <div class="col"> 
-                        <h4 class="text-primary">
-                            <span class="text-warning">
-                                <i class="fa fa-hard-hat"></i>
-                            </span>
-                            Liste des interventions
-                        </h4>
-                    </div>
-                    <div class="col text-right">
-                        <h4 class="text-primary ">
-                            <a href={{ path('intervenir_new', {'id': probleme.id}) }}><i class="fa fa-plus-circle text-primary"></a></i>
-                        </h4>
-                    </div>
+            
+            <div class="row section">
+                <div class="col"> 
+                    <h4 class="text-primary">
+                        <span class="text-warning">
+                            <i class="fa fa-hard-hat"></i>
+                        </span>
+                        Liste des interventions
+                    </h4>
                 </div>
+                <div class="col text-right">
+                    <h4 class="text-primary ">
+                        <a href={{ path('intervenir_new', {'id': probleme.id}) }} data-toggle="tooltip" data-placement="right" title="Créer une intervention"><i class="fa fa-plus-circle text-primary"></a></i>
+                    </h4>
+                </div>
+            </div>
+            {% if intervention %}
                 <div class="historique border border-primary">
                     {% for inter in probleme.Intervenirs %}
                         {% if inter.TypeIntervention == "Technicien" %}
@@ -131,11 +119,22 @@
                                     {{ inter.createdAt ? inter.createdAt|date('d-m-Y H\\hi') : '' }}
                                 </span>
                                 <i class="fa fa-arrow-right text-primary"></i>
-                                {{ inter.Personne.username }} + <a href="">lien du compte rendu si existe</a>
+                                <a href={{ path('intervenir_show', {'id': inter.id}) }}>{{ inter.Personne.username }}
+                                {% if inter.CompteRendus|length == 1 %}
+                                    <span class="badge badge-pill badge-danger" data-toggle="tooltip" data-placement="right" title="{{inter.CompteRendus|length}} compte-rendu consultable">{{inter.CompteRendus|length}}</span>
+                                {% elseif inter.CompteRendus|length > 0 %}
+                                    <span class="badge badge-pill badge-danger" data-toggle="tooltip" data-placement="right" title="{{inter.CompteRendus|length}} comptes-rendus consultables">{{inter.CompteRendus|length}}</span>
+                                {% endif %}
+                                </a>
                             </div>
                         {% endif %}
                     {% endfor %}
                 </div>
+            {% else %}
+            	<div class="historique border border-primary">
+            		Aucune intervention en cours. Cliquez
+                    <a class="text-info font-weight-bold" href={{ path('intervenir_new', {'id': probleme.id}) }}>ici</a> pour en ajouter une.
+            	</div>
             {% endif %}
             {% if images is not empty %}    
                 <h4 class="text-primary section">Liste des images</h4>
@@ -175,7 +174,7 @@
 
         {% endif %}
 
-        <div class="row section">
+        <div class="row section mb-3">
             <div class="col">
                 <a class="btn btn-secondary btn-lg btn-block" href="{{ path('probleme_index') }}"><i class="fa fa-arrow-left"></i> retour</a>
             </div>

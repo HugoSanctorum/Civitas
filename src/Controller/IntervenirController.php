@@ -84,7 +84,7 @@ class IntervenirController extends AbstractController
             $historiqueStatut->setDescription('Le probleme a été affecté');
 
             $signaleurIntervention = $this->intervenirRepository->findSignaleurByProbleme($probleme);
-            if (!$signaleurIntervention) {
+            if ($signaleurIntervention) {
                 $signaleur = $signaleurIntervention->getPersonne();
 
                 $mailerService->sendMailToTechnicienAffectedProbleme($technicien, $probleme);
