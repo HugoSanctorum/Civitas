@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Manage role index{% endblock %}
+
+{% block body %}
+    <h1>Manage Role index</h1>
+
+    <h4> <a href={{ path('manageRole_add') }}> Ajouter un role </a></h4>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Personne</th>
+            <th>Mail</th>
+            <th> </th>
+            <th>Role</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for personne in personnes %}
+            <tr>
+                <td>{{ personne.id }}</td>
+                <td>{{ personne.nom }} {{ personne.prenom }}</td>
+                <td>{{ personne.mail}}</td>
+                <td> <a href={{ path('manageRole_remove',{'id' : personne.id }) }}> Supprimer un role</a></td>
+
+
+                {% for role in personne.Roles %}
+                    <td> <a href="{{ path('role_display', {'roleNom': role}) }}">{{ role }}</a> </td>
+                {% endfor %}
+
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

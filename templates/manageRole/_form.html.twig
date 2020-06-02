@@ -1,4 +1,19 @@
 {{ form_start(form) }}
-    {{ form_widget(form) }}
+    {{ form_row(form.role,
+        {'attr':
+            {'class':
+                'form-control selectpicker'
+            }
+        }
+    )}}
+
+    {{ form_row(form.personne,
+        {'attr':
+            {
+                'class': 'form-control selectpicker',
+                'data-live-search': 'true'
+            }
+        }
+    )}}
 <button class="btn">{{ button_label|default('Save') }}</button>
 {{ form_end(form) }}

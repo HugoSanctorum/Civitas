@@ -16,6 +16,19 @@ use Symfony\Component\Routing\Annotation\Route;
 class RoleController extends AbstractController
 {
     /**
+     * @var RoleRepository
+     */
+    private $roleRepository;
+
+    /**
+     * RoleController constructor.
+     */
+    public function __construct(RoleRepository $roleRepository)
+    {
+        $this->roleRepository = $roleRepository;
+    }
+
+    /**
      * @Route("/", name="role_index", methods={"GET"})
      */
     public function index(RoleRepository $roleRepository): Response
@@ -57,6 +70,17 @@ class RoleController extends AbstractController
             'role' => $role,
         ]);
     }
+    /**
+     * @Route("/display/{roleNom}", name="role_display", methods={"GET"})
+     */
+    public function display(string $roleNom): Response
+    {
+        $role = $this->roleRepository->findOneBy(["role" => $roleNom]);
+        return $this->render('role/show.html.twig', [
+            'role' => $role,
+        ]);
+    }
+
 
     /**
      * @Route("/{id}/edit", name="role_edit", methods={"GET","POST"})

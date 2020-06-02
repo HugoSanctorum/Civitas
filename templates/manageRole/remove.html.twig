@@ -3,9 +3,9 @@
 {% block title %}Supprimer Rôle{% endblock %}
 
 {% block body %}
-    <h1>Supprimer Rôle</h1>
+    <h1>Supprimer Rôle pour {{ personne }}</h1>
 
-    {{ include('manageRole/_form.html.twig') }}
+    {{ include('manageRole/_deleteForm.html.twig') }}
 
     <a href="{{ path('personne_index') }}">back to list</a>
 {% endblock %}
