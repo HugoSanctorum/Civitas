@@ -156,8 +156,14 @@ class CompteRenduController extends AbstractController
             return $this->redirectToRoute('app_login');
         }else {
             if(!$request) {
-                $this->addFlash('fail', 'Ce compte rendu ne vous appartient pas.');
-                return $this->redirectToRoute("home_index");
+                if ($this->permissionChecker->isUserGranted(["GET_OTHER_COMPTE_RENDU"])) {
+                    return $this->render('compte_rendu/show.html.twig', [
+                        'compte_rendu' => $compteRendu,
+                    ]);
+                }else{
+                    $this->addFlash('fail', 'Ce compte rendu ne vous appartient pas.');
+                    return $this->redirectToRoute("home_index");
+                }
             }else {
                 if (!$this->permissionChecker->isUserGranted(["GET_SELF_COMPTE_RENDU"])) {
                     $this->addFlash('fail', 'Vous ne possedez pas les permissions necessaires.');

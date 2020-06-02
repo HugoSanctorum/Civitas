@@ -398,7 +398,7 @@ class ProblemeController extends AbstractController
         StatutRepository $statutRepository
     ) : Response
     {
-        if(!$this->permissionChecker->isUserGranted(['ARCHIVATE_PROBLEME'])){
+        if(!$this->permissionChecker->isUserGranted(['UPDATE_OTHER_HISTORIQUE_STATUT'])){
             $this->addFlash('fail','Vous ne possedez pas les permissions necessaires pour archiver ce problème');
             return $this->redirectToRoute('home_index');
         }
