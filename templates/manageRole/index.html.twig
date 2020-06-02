@@ -18,6 +18,7 @@
         </tr>
         </thead>
         <tbody>
+
         {% for personne in personnes %}
             <tr>
                 <td>{{ personne.id }}</td>
@@ -29,7 +30,6 @@
                 {% for role in personne.Roles %}
                     <td> <a href="{{ path('role_display', {'roleNom': role}) }}">{{ role }}</a> </td>
                 {% endfor %}
-
             </tr>
         {% else %}
             <tr>
