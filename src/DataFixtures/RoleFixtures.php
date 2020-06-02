@@ -58,7 +58,6 @@ class RoleFixtures extends Fixture implements DependentFixtureInterface
 			$this->getReference("POST_HISTORIQUE_ACTION"),
 
 			$this->getReference("GET_SELF_INTERVENTION"),
-			$this->getReference("POST_INTERVENTION"),
 
 			$this->getReference("GET_SELF_IMAGE"),
 			$this->getReference("POST_IMAGE"),

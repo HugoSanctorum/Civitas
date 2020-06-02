@@ -12,7 +12,10 @@ use App\Repository\PersonneRepository;
 use App\Repository\ProblemeRepository;
 use App\Repository\StatutRepository;
 use App\Services\Mailer\MailerService;
+use App\Services\Personne\PermissionChecker;
+use App\Services\Probleme\ProblemeService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -30,13 +33,21 @@ class IntervenirController extends AbstractController
     private $problemeRepository;
     private $intervenirRepository;
     private $personneRepository;
+    private $permissionChecker;
+    private $problemeService;
+    private $personne;
+
+
 
     public function __construct(TokenStorageInterface $tokenStorage,
         AuthorizationCheckerInterface $authorizationChecker,
         StatutRepository $statutRepository,
         ProblemeRepository $problemeRepository,
         PersonneRepository $personneRepository,
-        IntervenirRepository $intervenirRepository
+        IntervenirRepository $intervenirRepository,
+        PermissionChecker $permissionChecker,
+        ProblemeService $problemeService,
+        TokenStorageInterface $tokenStorageInterface
     )
     {
         $this->tokenStorage = $tokenStorage; // le token utilisateur
@@ -45,15 +56,29 @@ class IntervenirController extends AbstractController
         $this->problemeRepository = $problemeRepository;
         $this->intervenirRepository = $intervenirRepository;
         $this->personneRepository = $personneRepository;
+        $this->permissionChecker = $permissionChecker;
+        $this->problemeService = $problemeService;
+        $this->personne = $tokenStorageInterface->getToken()->getUser();
+
     }
     /**
      * @Route("/", name="intervenir_index", methods={"GET"})
      */
     public function index(IntervenirRepository $intervenirRepository): Response
     {
-        return $this->render('intervenir/index.html.twig', [
-            'intervenirs' => $intervenirRepository->findAll(),
-        ]);
+        if (!$this->isGranted('ROLE_USER')) {
+            $this->addFlash('fail', 'Veuillez vous connectez pour acceder à cette page.');
+            return $this->redirectToRoute('app_login');
+        } else {
+            if (!$this->permissionChecker->isUserGranted(["GET_OTHER_INTERVENTION"])) {
+                $this->addFlash('fail', 'Vous ne possedez pas les permissions necessaires.');
+                return $this->redirectToRoute('home_index');
+            } else {
+                return $this->render('intervenir/index.html.twig', [
+                    'intervenirs' => $intervenirRepository->findAll(),
+                ]);
+            }
+        }
     }
 
     /**
@@ -65,41 +90,43 @@ class IntervenirController extends AbstractController
         Probleme $probleme = null
     ): Response
     {
+        if (!$this->isGranted('ROLE_USER')) {
+            $this->addFlash('fail', 'Veuillez vous connectez pour acceder à cette page.');
+            return $this->redirectToRoute('app_login');
+        }else {
+            if (!$this->permissionChecker->isUserGranted(["POST_INTERVENTION"])) {
+                $this->addFlash('fail', 'Vous ne possedez pas les permissions necessaires.');
+                return $this->redirectToRoute('home_index');
+            } else {
+                $intervenir = new Intervenir();
+                $statut = $this->statutRepository->findOneBy(['nom' => 'Affecté']);
+                $form = $this->createForm(IntervenirType::class, $intervenir, ["Probleme" => $probleme]);
+                $form->handleRequest($request);
 
-        $intervenir = new Intervenir();
-        $statut = $this->statutRepository->findOneBy(['nom' => 'Affecté']);
-        $historiqueStatut = new HistoriqueStatut();
-        $form = $this->createForm(IntervenirType::class, $intervenir, ["Probleme" => $probleme]);
-        $form->handleRequest($request);
+                if ($form->isSubmitted() && $form->isValid()) {
+                    $entityManager = $this->getDoctrine()->getManager();
+                    $entityManager->persist($intervenir);
+                    $technicien = $this->personneRepository->findOneBy(['id' => $request->request->all()['intervenir']['Personne']]);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($intervenir);
-            $technicien = $this->personneRepository->findOneBy(['id' => $request->request->all()['intervenir']['Personne']]);
+                    if (!$probleme) $probleme = $this->problemeRepository->findOneBy(['id' => $request->request->all()['intervenir']['Probleme']]);
+                    $this->problemeService->CreateNewHistoriqueStatut($probleme,$statut);
+                    $signaleurIntervention = $this->intervenirRepository->findSignaleurByProbleme($probleme);
+                    if ($signaleurIntervention) {
+                        $signaleur = $signaleurIntervention->getPersonne();
+                        $mailerService->sendMailToTechnicienAffectedProbleme($technicien, $probleme);
+                        $mailerService->sendMailToSignaleurAffectedProbleme($signaleur, $probleme);
+                    }
+                    $entityManager->flush();
 
-            if (!$probleme) $probleme = $this->problemeRepository->findOneBy(['id' => $request->request->all()['intervenir']['Probleme']]);
-            $historiqueStatut->setProbleme($probleme);
-            $historiqueStatut->setStatut($statut);
-            $historiqueStatut->setDate(new \DateTime('now'));
-            $historiqueStatut->setDescription('Le probleme a été affecté');
+                    return $this->redirectToRoute('probleme_show', ['id' => $probleme->getId()]);
+                }
 
-            $signaleurIntervention = $this->intervenirRepository->findSignaleurByProbleme($probleme);
-            if (!$signaleurIntervention) {
-                $signaleur = $signaleurIntervention->getPersonne();
-
-                $mailerService->sendMailToTechnicienAffectedProbleme($technicien, $probleme);
-                $mailerService->sendMailToSignaleurAffectedProbleme($signaleur, $probleme);
+                return $this->render('intervenir/new.html.twig', [
+                    'intervenir' => $intervenir,
+                    'form' => $form->createView(),
+                ]);
             }
-            $entityManager->persist($historiqueStatut);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('probleme_show', ['id' => $probleme->getId()]);
         }
-
-        return $this->render('intervenir/new.html.twig', [
-            'intervenir' => $intervenir,
-            'form' => $form->createView(),
-        ]);
     }
 
     /**
@@ -107,42 +134,64 @@ class IntervenirController extends AbstractController
      */
     public function show(Intervenir $intervenir): Response
     {
-        return $this->render('intervenir/show.html.twig', [
-            'intervenir' => $intervenir,
-        ]);
-    }
-
-    /**
-     * @Route("/{id}/edit", name="intervenir_edit", methods={"GET","POST"})
-     */
-    public function edit(Request $request, Intervenir $intervenir): Response
-    {
-        $form = $this->createForm(IntervenirType::class, $intervenir);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
-
-            return $this->redirectToRoute('intervenir_index');
+        $request = $this->intervenirRepository->isInterventionBelongToThisPersonne($intervenir, $this->personne);
+        if(!$this->isGranted('ROLE_USER')){
+            $this->addFlash('fail','Veuillez vous connectez pour acceder à cette page.');
+            return $this->redirectToRoute('app_login');
+        }else {
+            if ($request == false) {
+                if($this->permissionChecker->isUserGranted(['GET_OTHER_INTERVENTION'])){
+                    return $this->render('intervenir/show.html.twig', [
+                        'intervenir' => $intervenir,
+                    ]);
+                }else {
+                    $this->addFlash('fail', 'Cette intervention ne vous concerne pas.');
+                    return $this->redirectToRoute("home_index");
+                }
+            } else {
+                if (!$this->permissionChecker->isUserGranted(["GET_SELF_INTERVENTION"])) {
+                    $this->addFlash('fail', 'Vous ne possedez pas les permissions necessaires.');
+                    return $this->redirectToRoute('home_index');
+                } else {
+                    return $this->render('intervenir/show.html.twig', [
+                        'intervenir' => $intervenir,
+                    ]);
+                }
+            }
         }
-
-        return $this->render('intervenir/edit.html.twig', [
-            'intervenir' => $intervenir,
-            'form' => $form->createView(),
-        ]);
     }
 
-    /**
-     * @Route("/{id}", name="intervenir_delete", methods={"DELETE"})
-     */
-    public function delete(Request $request, Intervenir $intervenir): Response
-    {
-        if ($this->isCsrfTokenValid('delete'.$intervenir->getId(), $request->request->get('_token'))) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->remove($intervenir);
-            $entityManager->flush();
-        }
+//    /**
+//     * @Route("/{id}/edit", name="intervenir_edit", methods={"GET","POST"})
+//     */
+//    public function edit(Request $request, Intervenir $intervenir): Response
+//    {
+//        $form = $this->createForm(IntervenirType::class, $intervenir);
+//        $form->handleRequest($request);
+//
+//        if ($form->isSubmitted() && $form->isValid()) {
+//            $this->getDoctrine()->getManager()->flush();
+//
+//            return $this->redirectToRoute('intervenir_index');
+//        }
+//
+//        return $this->render('intervenir/edit.html.twig', [
+//            'intervenir' => $intervenir,
+//            'form' => $form->createView(),
+//        ]);
+//    }
 
-        return $this->redirectToRoute('intervenir_index');
-    }
+//    /**
+//     * @Route("/{id}", name="intervenir_delete", methods={"DELETE"})
+//     */
+//    public function delete(Request $request, Intervenir $intervenir): Response
+//    {
+//        if ($this->isCsrfTokenValid('delete'.$intervenir->getId(), $request->request->get('_token'))) {
+//            $entityManager = $this->getDoctrine()->getManager();
+//            $entityManager->remove($intervenir);
+//            $entityManager->flush();
+//        }
+//
+//        return $this->redirectToRoute('intervenir_index');
+//    }
 }

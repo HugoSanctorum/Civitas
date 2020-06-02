@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Intervenir;
+use App\Entity\Personne;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -94,5 +95,18 @@ class IntervenirRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
 
+    }
+    public function isInterventionBelongToThisPersonne(Intervenir $intervenir,Personne $personne){
+        $sql = $this->createQueryBuilder('i')
+            ->join('i.Personne','pe')
+            ->where('i.Personne = :personne')
+            ->andWhere('i.id = :intervenir')
+            ->setParameter('intervenir', $intervenir->getId())
+            ->setParameter('personne', $personne)
+            ->getQuery()
+            ->getResult();
+
+        if($sql) return true;
+        else return false;
     }
 }
