@@ -35,7 +35,7 @@ class PermissionFixtures extends Fixture
         	["GET_OTHER_ROLE","Voir les rôles des utilisateurs"],
         	["POST_ROLE","Ajouter un rôle"],
         	["UPDATE_SELF_ROLE","Modifier ses rôles"],
-        	["UPDATE_OTHER_ROLE","Modifier les rôles des utilisateurs"],
+        	["UPDATE_OTHER_ROLE","Modifier les rôles et les permissions des utilisateurs"],
         	["DELETE_SELF_ROLE","Supprimer ses roles"],
         	["DELETE_OTHER_ROLE","Supprimer les rôles des utilisateurs"],
 
