@@ -94,8 +94,8 @@ class PermissionFixtures extends Fixture
         	["GET_OTHER_HISTORIQUE_STATUT","Voir les statuts de tous les problèmes"],
         	["POST_HISTORIQUE_STATUT", "Modifier le statut d'un problème"],
 /*        	["UPDATE_SELF_HISTORIQUE_STATUT",],*/
-        /*	["UPDATE_OTHER_HISTORIQUE_STATUT",""],
-        	["DELETE_SELF_HISTORIQUE_STATUT",],
+            ["UPDATE_OTHER_HISTORIQUE_STATUT","Modifier le statut de tous les problèmes"],
+        	/*["DELETE_SELF_HISTORIQUE_STATUT",],
         	["DELETE_OTHER_HISTORIQUE_STATUT",],*/
 
         	["GET_OTHER_CATEGORIE","Voir la liste des catégories possibles"],
