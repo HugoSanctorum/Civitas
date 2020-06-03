@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Role;
 use App\Form\RoleType;
+use App\Repository\PermissionRepository;
 use App\Repository\RoleRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,13 +20,15 @@ class RoleController extends AbstractController
      * @var RoleRepository
      */
     private $roleRepository;
+    private $permissionRepository;
 
     /**
      * RoleController constructor.
      */
-    public function __construct(RoleRepository $roleRepository)
+    public function __construct(RoleRepository $roleRepository, PermissionRepository $permissionRepository)
     {
         $this->roleRepository = $roleRepository;
+        $this->permissionRepository = $permissionRepository;
     }
 
     /**
@@ -48,6 +51,11 @@ class RoleController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            foreach($request->request->all()["role"]["Permissions"] as $permission){
+                $data = $this->permissionRepository->findOneBy(['id' => (int)$permission]);
+                $data->addRole($role);
+
+            }
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($role);
             $entityManager->flush();

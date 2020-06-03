@@ -48,7 +48,7 @@ class IntervenirType extends AbstractType{
         $builder
             ->add('Personne', EntityType::class,[
                 "class" => Personne::class,
-                "choices"=>$this->personneRepository->getPersonneByPermission('CAN_DO_INTERVENTION'),
+                "choices"=>$this->personneRepository->getPersonneByPermission('POST_INTERVENTION'),
                 'choice_label' => 'Label',
 
             ])
