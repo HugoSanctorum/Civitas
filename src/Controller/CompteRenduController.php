@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\CompteRendu;
+use App\Entity\Probleme;
 use App\Entity\HistoriqueStatut;
 use App\Form\ChoiceProblemType;
 use App\Form\CompteRenduType;
@@ -98,11 +99,12 @@ class CompteRenduController extends AbstractController
     }
 
     /**
-     * @Route("/new", name="compte_rendu_new", methods={"GET","POST"})
+     * @Route("/new/{probleme}", name="compte_rendu_new", methods={"GET","POST"}, defaults={"probleme": null})
      */
     public function new(
-        StatutRepository $statutRepository,
         Request $request,
+        Probleme $probleme = null,
+        StatutRepository $statutRepository,
         ProblemeRepository $problemeRepository,
         SessionInterface $session,
         CompteRenduService $compteRenduService
@@ -116,7 +118,7 @@ class CompteRenduController extends AbstractController
                 $this->addFlash('fail', 'Vous ne possedez pas les permissions necessaires.');
                 return new RedirectResponse("/");
             } else {
-                $probleme = $session->get('Probleme');
+                if(!$probleme) $probleme = $session->get('Probleme');
                 if ($probleme == null) {
                     $this->addFlash('fail', 'Aucun problème n\'a été selectionné');
                     return $this->redirectToRoute('compte_rendu_nouveau');

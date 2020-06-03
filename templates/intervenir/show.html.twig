@@ -3,7 +3,8 @@
 {% block title %}Intervenir{% endblock %}
 
 {% block body %}
-    <div class="jumbotron jumbotron-fluid">
+   
+    <div class="jumbotron jumbotron-fluid mb-1">
         <div class="container">
             <div class="row">
                 <div class="col-11">
@@ -31,44 +32,45 @@
                     <span class="text-info">
                         <i class="fa fa-file-alt"></i>
                     </span>
-                    Liste des compte(s)-rendu(s)
+                    Liste des comptes-rendus
                 </h4>
             </div>
             <div class="col text-right">
                 <h4 class="text-primary ">
-                    <a href={{ path('compte_rendu_nouveau') }} data-toggle="tooltip" data-placement="right" title="Ajouter un compte-rendu"><i class="fa fa-plus-circle text-primary"></a></i>
+                    <a href={{ path('compte_rendu_new', {'probleme': intervenir.Probleme.id}) }} data-toggle="tooltip" data-placement="right" title="Ajouter un compte-rendu"><i class="fa fa-plus-circle text-primary"></a></i>
                 </h4>
             </div>
         </div>
-        <div class="historique border border-primary">
-            <div class="row flex-center">
-                <div class="col-md-4">
-                    <div id="list" class="list-group">
+        {% if intervenir.CompteRendus|length > 0 %}
+            <div class="historique border border-primary mb-3">
+                    <ul class="list-group">
                         {% for cr in intervenir.CompteRendus %}
-                            <a class="list-group-item list-group-item-action list-group-item-info" href="#list-item-{{loop.index}}">{{cr.titre}}</a>
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <h4>
+                                            {{cr.titre}}
+                                            <span class="badge badge-pill badge-secondary date_hs">
+                                                {{cr.date ? cr.date|date('d-m-Y H\\hi') : ''}}
+                                            </span>
+                                        </h4>
+                                        <p>{{cr.description ? cr.description : "Pas de description pour ce compte-rendu" }}</p>
+                                    </div>
+                                    <div class="col-md-4 flex-center">
+                                        <a class="btn btn-link" href={{ path('download_file', {'urlFile': cr.urlDocument}) }}>
+                                            <i class="fa fa-link"></i> Télécharger le compte-rendu
+                                        </a>
+                                    </div>
+                                </div>
+                            </li>
                         {% endfor %}
-                    </div>
-                </div>
-                <div class="col-md-8">
-                    <div data-spy="scroll" data-target="#list-example" data-offset="0" class="scrollspy">
-                        {% for cr in intervenir.CompteRendus %}
-                            <h4 id="list-item-{{loop.index}}">{{cr.titre}}</h4>
-                            <p>{{cr.description}}</p>
-                            <p>{{cr.date ? cr.date|date('d-m-Y H\\hi') : ''}}</p>
-                            <p>
-                                <a href={{ path('download_file', {'urlFile': cr.urlDocument}) }}>
-                                    <i class="fa fa-link"></i> Télécharger le compte-rendu
-                                </a>
-                            </p>
-                            <div class="dropdown-divider"></div>
-                        {% endfor %}
-                    </div>
-                </div>
+                    </ul>
             </div>
-        </div>
-
-
-
+        {% else %}
+            <div class="historique border border-primary mb-3">
+                Il n'y a encore aucun compte-rendu pour cette intervention. Cliquez <a class="text-info font-weight-bold" href={{ path('compte_rendu_new') }}>ici</a> pour en ajouter un.
+            </div>
+        {% endif %}
 
     </div>
     
@@ -84,5 +86,6 @@
         $('[data-spy="scroll"]').each(function () {
             var $spy = $(this).scrollspy('refresh')
         });
+        $('#test-collapse').collapse();
     </script>
 {% endblock %}

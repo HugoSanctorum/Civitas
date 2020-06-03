@@ -174,11 +174,12 @@ a.hover-light:hover {
 
 .scrollspy {
     position: relative;
-    max-height: 200px;
+    max-height: 300px;
     margin-top: .5rem;
     overflow: auto;
 }
 
 .flex-center {
+    display: flex;
     align-items: center!important;
 }
