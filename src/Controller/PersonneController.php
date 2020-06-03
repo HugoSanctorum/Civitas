@@ -199,9 +199,19 @@ class PersonneController extends AbstractController
      */
     public function index(PersonneRepository $personneRepository): Response
     {
-        return $this->render('personne/index.html.twig', [
-            'personnes' => $personneRepository->findAll(),
-        ]);
+        if(!$this->isGranted('ROLE_USER')){
+            $this->addFlash('fail','Veuillez vous connectez pour acceder à cette page.');
+            return $this->redirectToRoute('app_login');
+        }else {
+            if (!$this->permissionChecker->isUserGranted(["GET_OTHER_PERSONNE"])) {
+                $this->addFlash('fail', 'Vous ne possedez pas les permissions necessaires.');
+                return new RedirectResponse("/");
+            } else {
+                return $this->render('personne/index.html.twig', [
+                    'personnes' => $personneRepository->findAll(),
+                ]);
+            }
+        }
     }
 
     /**
@@ -287,9 +297,19 @@ class PersonneController extends AbstractController
      */
     public function show(Personne $personne): Response
     {
-        return $this->render('personne/show.html.twig', [
-            'personne' => $personne,
-        ]);
+        if(!$this->isGranted('ROLE_USER')){
+            $this->addFlash('fail','Veuillez vous connectez pour acceder à cette page.');
+            return $this->redirectToRoute('app_login');
+        }else {
+            if (!$this->permissionChecker->isUserGranted(["GET_OTHER_PERSONNE"])) {
+                $this->addFlash('fail', 'Vous ne possedez pas les permissions necessaires.');
+                return new RedirectResponse("/");
+            } else {
+                return $this->render('personne/show.html.twig', [
+                    'personne' => $personne,
+                ]);
+            }
+        }
     }
 
     /**
@@ -297,19 +317,29 @@ class PersonneController extends AbstractController
      */
     public function edit(Request $request, Personne $personne): Response
     {
-        $form = $this->createForm(PersonneType::class, $personne);
-        $form->handleRequest($request);
+        if(!$this->isGranted('ROLE_USER')){
+            $this->addFlash('fail','Veuillez vous connectez pour acceder à cette page.');
+            return $this->redirectToRoute('app_login');
+        }else {
+            if (!$this->permissionChecker->isUserGranted(["GET_OTHER_PERSONNE"])) {
+                $this->addFlash('fail', 'Vous ne possedez pas les permissions necessaires.');
+                return new RedirectResponse("/");
+            } else {
+                $form = $this->createForm(PersonneType::class, $personne);
+                $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+                if ($form->isSubmitted() && $form->isValid()) {
+                    $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('personne_index');
+                    return $this->redirectToRoute('personne_index');
+                }
+
+                return $this->render('personne/edit.html.twig', [
+                    'personne' => $personne,
+                    'form' => $form->createView(),
+                ]);
+            }
         }
-
-        return $this->render('personne/edit.html.twig', [
-            'personne' => $personne,
-            'form' => $form->createView(),
-        ]);
     }
 
     /**
@@ -317,12 +347,21 @@ class PersonneController extends AbstractController
      */
     public function delete(Request $request, Personne $personne): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$personne->getId(), $request->request->get('_token'))) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->remove($personne);
-            $entityManager->flush();
+        if(!$this->isGranted('ROLE_USER')){
+            $this->addFlash('fail','Veuillez vous connectez pour acceder à cette page.');
+            return $this->redirectToRoute('app_login');
+        }else {
+            if (!$this->permissionChecker->isUserGranted(["DELETE_OTHER_PERSONNE"])) {
+                $this->addFlash('fail', 'Vous ne possedez pas les permissions necessaires.');
+                return new RedirectResponse("/");
+            } else {
+                if ($this->isCsrfTokenValid('delete' . $personne->getId(), $request->request->get('_token'))) {
+                    $entityManager = $this->getDoctrine()->getManager();
+                    $entityManager->remove($personne);
+                    $entityManager->flush();
+                }
+            }
         }
-
         return $this->redirectToRoute('personne_index');
     }
 
