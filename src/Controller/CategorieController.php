@@ -49,10 +49,10 @@ class CategorieController extends AbstractController
      */
     public function new(Request $request): Response
     {
-        if(!$this->isGranted('ROLE_USER')){
-            $this->addFlash('fail','Veuillez vous connectez pour acceder à cette page.');
+        if (!$this->isGranted('ROLE_USER')) {
+            $this->addFlash('fail', 'Veuillez vous connectez pour acceder à cette page.');
             return $this->redirectToRoute('app_login');
-        }else {
+        } else {
             if (!$this->permissionChecker->isUserGranted(["POST_CATEGORIE"])) {
                 $this->addFlash('fail', 'Vous ne possedez pas les permissions necessaires.');
                 return new RedirectResponse("/");
@@ -65,10 +65,8 @@ class CategorieController extends AbstractController
                     $entityManager = $this->getDoctrine()->getManager();
                     $entityManager->persist($categorie);
                     $entityManager->flush();
-
                     return $this->redirectToRoute('categorie_index');
                 }
-
                 return $this->render('categorie/new.html.twig', [
                     'categorie' => $categorie,
                     'form' => $form->createView(),

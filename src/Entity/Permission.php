@@ -35,6 +35,11 @@ class Permission
      */
     private $HistoriqueActions;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $label;
+
     public function __construct()
     {
         $this->Role = new ArrayCollection();
@@ -116,6 +121,18 @@ class Permission
     }
     public function __toString()
     {
-        return $this->getPermission();
+        return $this->getLabel();
+    }
+
+    public function getLabel(): ?string
+    {
+        return $this->label;
+    }
+
+    public function setLabel(string $label): self
+    {
+        $this->label = $label;
+
+        return $this;
     }
 }
