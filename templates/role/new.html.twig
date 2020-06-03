@@ -3,6 +3,11 @@
 {% block title %}New Role{% endblock %}
 
 {% block body %}
+    {% for message in app.flashes('fail') %}
+        <div class="alert alert-danger">
+            {{ message }}
+        </div>
+    {% endfor %}
     <h1>Create new Role</h1>
 
     {{ include('role/_form.html.twig') }}

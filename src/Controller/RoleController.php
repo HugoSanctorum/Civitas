@@ -51,14 +51,20 @@ class RoleController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            foreach($request->request->all()["role"]["Permissions"] as $permission){
-                $data = $this->permissionRepository->findOneBy(['id' => (int)$permission]);
-                $data->addRole($role);
+            $roleNom = $this->roleRepository->findOneBy(["role" => $request->request->all()["role"]["role"]]);
+            if($roleNom){
+                $this->addFlash('fail','Ce nom de rôle est déjà utilisé');
+                return $this->redirectToRoute('role_new');
+            }else {
+                foreach ($request->request->all()["role"]["Permissions"] as $permission) {
+                    $data = $this->permissionRepository->findOneBy(['id' => (int)$permission]);
+                    $data->addRole($role);
 
+                }
+                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager->persist($role);
+                $entityManager->flush();
             }
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($role);
-            $entityManager->flush();
 
             return $this->redirectToRoute('role_index');
         }
