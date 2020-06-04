@@ -68,7 +68,7 @@
             </div>
         {% else %}
             <div class="historique border border-primary mb-3">
-                Il n'y a encore aucun compte-rendu pour cette intervention. Cliquez <a class="text-info font-weight-bold" href={{ path('compte_rendu_new') }}>ici</a> pour en ajouter un.
+                Il n'y a encore aucun compte-rendu pour cette intervention. Cliquez <a class="text-info font-weight-bold" href={{ path('compte_rendu_new', {'probleme': intervenir.Probleme.id}) }}>ici</a> pour en ajouter un.
             </div>
         {% endif %}
 

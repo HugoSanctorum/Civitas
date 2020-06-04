@@ -15,7 +15,7 @@ class CompteRenduFixtures extends Fixture implements DependentFixtureInterface
             $compteRendu = new CompteRendu();
             $compteRendu->setUrlDocument('https://picsum.photos/1280');
             $compteRendu->setPersonne($this->getReference("personne_".random_int(0, 9)));
-            $compteRendu->setProbleme($this->getReference("probleme_".random_int(0, 99)));
+            $compteRendu->setProbleme($this->getReference("probleme_".random_int(1, 99)));
             $compteRendu->setIntervenir($this->getReference('intervention_'.$i));
             $compteRendu->setTitre('compte_rendu'.$i);
             $compteRendu->setDate(new \DateTime());
