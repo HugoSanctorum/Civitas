@@ -60,6 +60,7 @@ class PermissionFixtures extends Fixture
         	["POST_INTERVENTION","Creer une intervention"],
         	["UPDATE_SELF_INTERVENTION","Modifier ses interventions"],
         	["UPDATE_OTHER_INTERVENTION","Modifier les interventions des utilisateurs"],
+            ["CAN_DO_INTERVENTION","Être affecté à un problème"],
        /* 	["DELETE_SELF_INTERVENTION","Supprimer ses interventions"],
         	["DELETE_OTHER_INTERVENTION","Supprimer les interventions des autres utilisateurs"],*/
 

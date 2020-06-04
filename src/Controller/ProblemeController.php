@@ -387,7 +387,7 @@ class ProblemeController extends AbstractController
             $this->addFlash('fail','Veuillez vous connectez pour acceder à cette page.');
             return $this->redirectToRoute('app_login');
         }else {
-            if (!$this->permissionChecker->isUserGranted(["EDIT_OTHER_HISTORIQUE_STATUT"])) {
+            if (!$this->permissionChecker->isUserGranted(["UPDATE_OTHER_HISTORIQUE_STATUT"])) {
                 $this->addFlash('fail', 'Vous ne possedez pas les permissions necessaires.');
                 return new RedirectResponse("/");
             } else {
