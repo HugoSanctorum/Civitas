@@ -1,11 +1,16 @@
 {% extends 'base.html.twig' %}
+{% use 'priorite/assets/base.html.twig' %}
 
 {% block title %}New Priorite{% endblock %}
 
 {% block body %}
-    <h1>Create new Priorite</h1>
-
-    {{ include('priorite/_form.html.twig') }}
-
-    <a href="{{ path('priorite_index') }}">back to list</a>
+    <div class="jumbotron jumbotron-fluid">
+		<div class="container">
+			<h1 class="display-4">Créer une nouvelle priorité</h1>
+		</div>
+	</div>
+	<div class="container">
+    	{{ include('priorite/_form.html.twig', {'edit': false}) }}
+    </div>
 {% endblock %}
+{% block moreScript %}{{ parent() }}{% endblock %}

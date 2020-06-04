@@ -1,4 +1,46 @@
 {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+    <div class="form-group">
+    	{{ form_row(form.nom, {'attr': {'class': 'form-control'}}) }}
+    </div>
+    <div class="form-group">
+    	{{ form_widget(form.poids, {'attr': {'class': 'form-control', 'hidden': 'true'}}) }}
+    </div>
+    <div class="mt-4">
+    	<div class="card mb-1">
+			<div class="card-body">
+				Glissez votre nouvelle priorité entre celles déjà existantes pour définir sa prévalence sur les autres.
+			</div>
+		</div>
+	    <ul id="sortable" class="list-group">
+	    {% for p in priorites %}
+	    	{% if loop.index == 2 and not edit %}
+	    		<li id="new_priorite" class="list-group-item list-group-item-info font-weight-bold"><i class="fa fa-arrows-alt handle"></i> Ma nouvelle priorité</li>
+	    	{% endif %}
+	    	{% if p.nom == "Faible" %}
+	    		<li id="{{loop.index}}" class="list-group-item list-group-item-info filtered disabled" data-poids="{{p.poids}}">
+	    	{% elseif p.nom == priorite.nom %}
+	    		<li id="new_priorite" class="list-group-item font-weight-bold"><i class="fa fa-arrows-alt handle"></i>
+	    	{% elseif p.poids > 0 and p.poids < 64 %}
+	    		<li id="{{loop.index}}" class="list-group-item list-group-item-info filtered" data-poids="{{p.poids}}">
+	    	{% elseif p.poids >= 64 and p.poids < 128 %}
+	    		<li id="{{loop.index}}" class="list-group-item list-group-item-warning filtered" data-poids="{{p.poids}}">
+	    	{% elseif p.poids >= 128 %}
+	    		<li id="{{loop.index}}" class="list-group-item list-group-item-danger filtered" data-poids="{{p.poids}}">
+	    	{% else %}
+	    		<li id="{{loop.index}}" class="list-group-item" data-poids="{{p.poids}}"> 
+	    	{% endif %}
+	    		{{p}}
+	    	</li>
+	    {% endfor %}
+		</ul>
+	</div>
+
+    <div class="row section">
+    	<div class="col">
+	    	<a class="btn btn-primary btn-lg btn-block" href="{{ path('commune_index') }}">back to list</a>
+		</div>
+    	<div class="col">
+    		<button class="btn btn-success btn-lg btn-block">{{ button_label|default('Save') }}</button>
+    	</div>
+    </div>
 {{ form_end(form) }}

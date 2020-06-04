@@ -1,0 +1,33 @@
+{% block moreScript %}
+	<script type="text/javascript">
+		$( document ).ready(function(){
+
+			function initialize_li(element){
+				$(element).attr("class", $(element).prev().attr("class").replace(' filtered', '').replace(' disabled', '') + " font-weight-bold");
+				$("#priorite_poids").val($("#new_priorite").prev().data('poids')+1);
+			}
+
+			let list = document.getElementById("sortable");
+
+			new Sortable(list, {
+			    animation: 150,
+			    ghostClass: 'blue-background-class',
+			    filter: '.filtered',
+			    items : ':not(.boundary)',
+			    handle: '.handle',
+			    onChange : function(e){
+			    	initialize_li(e.item);
+			    	console.log($("#priorite_poids").val());
+			    }
+			});
+
+			initialize_li("#new_priorite");
+
+			$("#priorite_nom").change(function(e) {
+				$("#new_priorite").html("<i class='fa fa-arrows-alt handle'></i> " + $("#priorite_nom").val());
+			});
+
+			console.log($("#priorite_poids").val());
+		});
+	</script>
+{% endblock %}

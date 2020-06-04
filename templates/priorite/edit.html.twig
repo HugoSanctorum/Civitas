@@ -1,13 +1,16 @@
 {% extends 'base.html.twig' %}
+{% use 'priorite/assets/base.html.twig' %}
 
-{% block title %}Edit Priorite{% endblock %}
+{% block title %}Editer Priorite{% endblock %}
 
 {% block body %}
-    <h1>Edit Priorite</h1>
-
-    {{ include('priorite/_form.html.twig', {'button_label': 'Update'}) }}
-
-    <a href="{{ path('priorite_index') }}">back to list</a>
-
-    {{ include('priorite/_delete_form.html.twig') }}
+    <div class="jumbotron jumbotron-fluid">
+		<div class="container">
+			<h1 class="display-4">Editer la priorité</h1>
+		</div>
+	</div>
+	<div class="container">
+    	{{ include('priorite/_form.html.twig', {'button_label': 'Modifier', 'edit': true}) }}
+    </div>
 {% endblock %}
+{% block moreScript %}{{ parent() }}{% endblock %}

@@ -53,7 +53,10 @@ class PrioriteController extends AbstractController
     /**
      * @Route("/new", name="priorite_new", methods={"GET","POST"})
      */
-    public function new(Request $request): Response
+    public function new(
+        Request $request,
+        PrioriteRepository $prioriteRepository
+    ): Response
     {
         if(!$this->isGranted('ROLE_USER')){
             $this->addFlash('fail','Veuillez vous connectez pour acceder à cette page.');
@@ -68,6 +71,13 @@ class PrioriteController extends AbstractController
                 $form->handleRequest($request);
 
                 if ($form->isSubmitted() && $form->isValid()) {
+                    $done = false;
+                    $poids = $priorite->getPoids();
+                    while(!$done){
+                        $doublon_poids = $prioriteRepository->findOneBy(['poids' => $poids++]);
+                        if($doublon_poids) $doublon_poids->setPoids($doublon_poids->getPoids()+1);
+                        else $done = true;
+                    }
                     $entityManager = $this->getDoctrine()->getManager();
                     $entityManager->persist($priorite);
                     $entityManager->flush();
@@ -77,6 +87,7 @@ class PrioriteController extends AbstractController
 
                 return $this->render('priorite/new.html.twig', [
                     'priorite' => $priorite,
+                    'priorites' => $prioriteRepository->findBy([], ['poids' => 'ASC']),
                     'form' => $form->createView(),
                 ]);
             }
@@ -106,7 +117,11 @@ class PrioriteController extends AbstractController
     /**
      * @Route("/{id}/edit", name="priorite_edit", methods={"GET","POST"})
      */
-    public function edit(Request $request, Priorite $priorite): Response
+    public function edit(
+        Request $request,
+        Priorite $priorite,
+        PrioriteRepository $prioriteRepository
+    ): Response
     {
         if(!$this->isGranted('ROLE_USER')){
             $this->addFlash('fail','Veuillez vous connectez pour acceder à cette page.');
@@ -120,13 +135,21 @@ class PrioriteController extends AbstractController
                 $form->handleRequest($request);
 
                 if ($form->isSubmitted() && $form->isValid()) {
+                    $done = false;
+                    $poids = $priorite->getPoids();
+                    while(!$done){
+                        $doublon_poids = $prioriteRepository->findOneBy(['poids' => $poids++]);
+                        if($doublon_poids && $doublon_poids != $priorite) $doublon_poids->setPoids($doublon_poids->getPoids()+1);
+                        else $done = true;
+                    }
                     $this->getDoctrine()->getManager()->flush();
-
+                    
                     return $this->redirectToRoute('priorite_index');
                 }
 
                 return $this->render('priorite/edit.html.twig', [
                     'priorite' => $priorite,
+                    'priorites' => $prioriteRepository->findBy([], ['poids' => 'ASC']),
                     'form' => $form->createView(),
                 ]);
             }

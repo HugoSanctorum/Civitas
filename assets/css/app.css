@@ -183,3 +183,7 @@ a.hover-light:hover {
     display: flex;
     align-items: center!important;
 }
+
+.handle:hover{
+    cursor:grab;
+}
