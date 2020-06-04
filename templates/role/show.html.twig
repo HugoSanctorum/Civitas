@@ -15,11 +15,16 @@
                 <th>Role</th>
                 <td>{{ role.role }}</td>
             </tr>
-            <ul>
-                {% for permission in role.Permissions %}
-                    <li> {{ permission }}</li>
-                {% endfor %}
-            </ul>
+            <tr>
+                <th> Permissions </th>
+                <td> <ul>
+                        {% for permission in role.Permissions %}
+                            <li> {{ permission }}</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+            </tr>
+
         </tbody>
     </table>
 

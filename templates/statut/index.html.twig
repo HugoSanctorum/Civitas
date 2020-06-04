@@ -23,7 +23,7 @@
                 <td>{{ statut.couleur }}</td>
                 <td>{{ statut.icone }}</td>
                 <td>
-                    <a href="{{ path('statut_show', {'id': statut.id}) }}">show</a>
+{#                    <a href="{{ path('statut_show', {'id': statut.id}) }}">show</a>#}
                     <a href="{{ path('statut_edit', {'id': statut.id}) }}">edit</a>
                 </td>
             </tr>
@@ -35,5 +35,5 @@
         </tbody>
     </table>
 
-    <a href="{{ path('statut_new') }}">Create new</a>
+{#    <a href="{{ path('statut_new') }}">Create new</a>#}
 {% endblock %}

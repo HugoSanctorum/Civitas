@@ -46,12 +46,14 @@ class ProblemeController extends AbstractController
 
     private $personne;
     private $permissionChecker;
+    private $problemeService;
 
     public function __construct(
-        TokenStorageInterface $tokenStorageInterface, PermissionChecker $permissionChecker )
+        TokenStorageInterface $tokenStorageInterface,ProblemeService $problemeService, PermissionChecker $permissionChecker )
     {
         $this->personne = $tokenStorageInterface->getToken()->getUser();
         $this->permissionChecker = $permissionChecker;
+        $this->problemeService = $problemeService;
     }
 
     /**
@@ -396,13 +398,7 @@ class ProblemeController extends AbstractController
                 }
 
                 $entityManager = $this->getDoctrine()->getManager();
-
-                $hs = new HistoriqueStatut();
-                $hs->setProbleme($probleme);
-                $hs->setStatut($statutRepository->findOneBy(["nom" => "Ouvert"]));
-                $hs->setDate(new \DateTime());
-
-                $entityManager->persist($hs);
+                $this->problemeService->CreateNewHistoriqueStatut($probleme,'Ouvert');
                 $entityManager->flush();
             }
         }
@@ -428,15 +424,8 @@ class ProblemeController extends AbstractController
                 if ($probleme->getHistoriqueStatuts()->last()->getStatut()->getNom() != "Résolu") {
                     return $this->redirectToRoute('probleme_show', ["id" => $probleme->getId()]);
                 }
-
                 $entityManager = $this->getDoctrine()->getManager();
-
-                $hs = new HistoriqueStatut();
-                $hs->setProbleme($probleme);
-                $hs->setStatut($statutRepository->findOneBy(["nom" => "Archivé"]));
-                $hs->setDate(new \DateTime());
-
-                $entityManager->persist($hs);
+                $this->problemeService->CreateNewHistoriqueStatut($probleme,'Archivé');
                 $entityManager->flush();
             }
         }
@@ -464,13 +453,7 @@ class ProblemeController extends AbstractController
                     return $this->redirectToRoute('probleme_show', ["id" => $probleme->getId()]);
                 }
                 $entityManager = $this->getDoctrine()->getManager();
-
-                $hs = new HistoriqueStatut();
-                $hs->setProbleme($probleme);
-                $hs->setStatut($statutRepository->findOneBy(["nom" => "Ouvert"]));
-                $hs->setDate(new \DateTime());
-
-                $entityManager->persist($hs);
+                $this->problemeService->CreateNewHistoriqueStatut($probleme,"Ouvert");
                 $entityManager->flush();
             }
         }

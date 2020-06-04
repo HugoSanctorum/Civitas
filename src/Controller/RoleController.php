@@ -51,7 +51,7 @@ class RoleController extends AbstractController
                 return $this->redirectToRoute('home_index');
             } else {
                 return $this->render('role/index.html.twig', [
-                    'roles' => $roleRepository->findAll(),
+                    'roles' => $roleRepository->findAllRoleExceptAdmin(),
                 ]);
             }
         }
@@ -184,9 +184,14 @@ class RoleController extends AbstractController
                 return $this->redirectToRoute('home_index');
             } else {
                 if ($this->isCsrfTokenValid('delete' . $role->getId(), $request->request->get('_token'))) {
-                    $entityManager = $this->getDoctrine()->getManager();
-                    $entityManager->remove($role);
-                    $entityManager->flush();
+                    if($role->getRole() == "ROLE_ADMIN" || $role->getRole() == "ROLE_TECHNICIEN" || $role->getRole() == "ROLE_GESTIONNAIRE" || $role->getRole() == "ROLE_USER"){
+                        $this->addFlash('fail','Impossible de supprimer ce rôle');
+                        return $this->redirectToRoute('home_index');
+                    }else{
+                        $entityManager = $this->getDoctrine()->getManager();
+                        $entityManager->remove($role);
+                        $entityManager->flush();
+                    }
                 }
             }
         }

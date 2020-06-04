@@ -55,4 +55,11 @@ class RoleRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function findAllRoleExceptAdmin(){
+        return $this->createQueryBuilder('r')
+            ->where("r.role != 'ROLE_ADMIN'")
+            ->getQuery()
+            ->getResult();
+    }
 }
