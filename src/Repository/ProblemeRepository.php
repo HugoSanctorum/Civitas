@@ -245,4 +245,14 @@ class ProblemeRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function findAllProblemeByCategorie(Categorie $categorie){
+        return $this->createQueryBuilder('p')
+            ->join('p.Categorie','c')
+            ->where('c.nom = :categorie')
+            ->setParameter('categorie', $categorie->getNom())
+            ->getQuery()
+            ->getResult();
+
+    }
+
 }
