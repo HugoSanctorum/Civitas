@@ -110,6 +110,8 @@
             $("#probleme_search_element").val("{{active_element}}");
 
             $('[data-toggle="tooltip"]').tooltip();
+
+            $("#button_reset").attr("href", "{{ path('probleme_search_reset', {'redirect': '1'}) }}");
         });
     </script>
 {% endblock %}

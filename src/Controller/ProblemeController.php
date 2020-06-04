@@ -461,10 +461,11 @@ class ProblemeController extends AbstractController
     }
 
     /**
-     *@Route("/search/reset", name="probleme_search_reset", methods={"GET"}, requirements={"id"="\d+"})
+     *@Route("/search/reset/{redirect}", name="probleme_search_reset", methods={"GET"})
      */
     public function problemeResetSearch(
-        SessionInterface $session
+        SessionInterface $session,
+        int $redirect = null
     ) : Response
     {
         $session->remove("search_nom_probleme");
@@ -473,6 +474,17 @@ class ProblemeController extends AbstractController
         $session->remove("search_element");
         $session->remove("search_orderBy");
 
-        return $this->redirectToRoute('probleme_index');
+        switch ($redirect) {
+            case 1:
+                return $this->redirectToRoute('probleme_index');
+            case 2:
+                return $this->redirectToRoute('personne_signalements');
+            case 3:
+                return $this->redirectToRoute('personne_interventions');    
+            default:
+                return $this->redirectToRoute('home_index');
+        }
+
+        
     }
 }
