@@ -99,17 +99,17 @@ class IntervenirController extends AbstractController
                 return $this->redirectToRoute('home_index');
             } else {
                 $intervenir = new Intervenir();
-                $statut = $this->statutRepository->findOneBy(['nom' => 'Affecté']);
                 $form = $this->createForm(IntervenirType::class, $intervenir, ["Probleme" => $probleme]);
                 $form->handleRequest($request);
 
                 if ($form->isSubmitted() && $form->isValid()) {
                     $entityManager = $this->getDoctrine()->getManager();
                     $entityManager->persist($intervenir);
+                    if (!$probleme){
+                        $probleme = $this->problemeRepository->findOneBy(['id' => $request->request->all()['intervenir']['Probleme']]);
+                    }
+                    $this->problemeService->CreateNewHistoriqueStatut($probleme,'Affecté');
                     $technicien = $this->personneRepository->findOneBy(['id' => $request->request->all()['intervenir']['Personne']]);
-
-                    if (!$probleme) $probleme = $this->problemeRepository->findOneBy(['id' => $request->request->all()['intervenir']['Probleme']]);
-                    $this->problemeService->CreateNewHistoriqueStatut($probleme,$statut);
                     $signaleurIntervention = $this->intervenirRepository->findSignaleurByProbleme($probleme);
                     if ($signaleurIntervention) {
                         $signaleur = $signaleurIntervention->getPersonne();
@@ -117,7 +117,6 @@ class IntervenirController extends AbstractController
                         $mailerService->sendMailToSignaleurAffectedProbleme($signaleur, $probleme);
                     }
                     $entityManager->flush();
-
                     return $this->redirectToRoute('probleme_show', ['id' => $probleme->getId()]);
                 }
 

@@ -111,7 +111,7 @@ class ProblemeService extends AbstractController
 
     }
 
-    public function CreateNewHistoriqueStatut(Probleme $probleme, $statut)
+    public function CreateNewHistoriqueStatut(Probleme $probleme, string $statut)
     {
         $statut = $this->statutRepository->findOneBy(['nom' => $statut]);
         $historiqueStatut = new HistoriqueStatut();
