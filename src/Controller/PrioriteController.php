@@ -147,9 +147,14 @@ class PrioriteController extends AbstractController
                 return new RedirectResponse("/");
             } else {
                 if ($this->isCsrfTokenValid('delete' . $priorite->getId(), $request->request->get('_token'))) {
-                    $entityManager = $this->getDoctrine()->getManager();
-                    $entityManager->remove($priorite);
-                    $entityManager->flush();
+                    if ($priorite->getNom() == "Faible" || $priorite->getNom() == "Important" || $priorite->getNom() == "Urgent") {
+                        $this->addFlash('fail', 'Impossible de supprimer cette priorité');
+                        return $this->redirectToRoute('priorite_index');
+                    }else {
+                        $entityManager = $this->getDoctrine()->getManager();
+                        $entityManager->remove($priorite);
+                        $entityManager->flush();
+                    }
                 }
             }
         }

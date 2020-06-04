@@ -5,11 +5,13 @@ namespace App\Controller;
 use App\Entity\Categorie;
 use App\Form\CategorieType;
 use App\Repository\CategorieRepository;
+use App\Repository\ProblemeRepository;
 use App\Services\Personne\PermissionChecker;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -18,10 +20,15 @@ use Symfony\Component\Routing\Annotation\Route;
 class CategorieController extends AbstractController
 {
     private $permissionChecker;
+    /**
+     * @var ProblemeRepository
+     */
+    private $problemeRepository;
 
-    public function __construct(PermissionChecker $permissionChecker)
+    public function __construct(PermissionChecker $permissionChecker, ProblemeRepository $problemeRepository)
     {
         $this->permissionChecker = $permissionChecker;
+        $this->problemeRepository = $problemeRepository;
     }
 
     /**
@@ -130,6 +137,7 @@ class CategorieController extends AbstractController
      */
     public function delete(Request $request, Categorie $categorie): Response
     {
+        $session = new Session();
         if (!$this->isGranted('ROLE_USER')) {
             $this->addFlash('fail', 'Veuillez vous connectez pour acceder à cette page.');
             return $this->redirectToRoute('app_login');
@@ -138,6 +146,14 @@ class CategorieController extends AbstractController
                 $this->addFlash('fail', 'Vous ne possedez pas les permissions necessaires.');
                 return new RedirectResponse("/");
             }else {
+                $problemes = $this->problemeRepository->findAllProblemeByCategorie($categorie);
+                if($problemes){
+                    $this->addFlash('fail','Cette categorie est affectée à un ou plusieurs problème. Si vous voulez la supprimer, changez la catégorie des problèmes concernés.');
+//                    foreach ($problemes as $probleme){
+//                        $this->addFlash('warning',$probleme->getTitre().' ('.$probleme->getReference().') ');
+//                    }
+                    return $this->redirectToRoute('categorie_index');
+                }
                 if ($this->isCsrfTokenValid('delete' . $categorie->getId(), $request->request->get('_token'))) {
                     $entityManager = $this->getDoctrine()->getManager();
                     $entityManager->remove($categorie);

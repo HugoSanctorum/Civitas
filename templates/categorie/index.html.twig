@@ -3,6 +3,16 @@
 {% block title %}Categorie index{% endblock %}
 
 {% block body %}
+    {% for message in app.flashes('fail') %}
+        <div class="alert alert-danger">
+            {{ message }}
+        </div>
+    {% endfor %}
+{#    <div class="modal-body">#}
+{#        {% for message in app.flashes('warning') %}#}
+{#            {{ message }} <br>#}
+{#        {% endfor %}#}
+{#    </div>#}
     <h1>Categorie index</h1>
 
     <table class="table">
