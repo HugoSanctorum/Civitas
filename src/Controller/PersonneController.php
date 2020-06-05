@@ -377,27 +377,32 @@ class PersonneController extends AbstractController
      */
     public function profile(Request $request): Response
     {
-        $form = $this->createForm(ProfileType::class, $this->personne);
-        $form->handleRequest($request);
+        if(!$this->isGranted('ROLE_USER')){
+            $this->addFlash('fail','Veuillez vous connectez pour acceder à cette page.');
+            return $this->redirectToRoute('app_login');
+        }else {
+            $form = $this->createForm(ProfileType::class, $this->personne);
+            $form->handleRequest($request);
 
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            if(key_exists('subscribeToken',$request->request->all()['profile'])){
-                $subscribeToken = $this->tokenGenerator->generateToken();
-                $this->personne->setSubscribeToken($subscribeToken);
-            }else{
-                $this->personne->setSubscribeToken(null);
+            if ($form->isSubmitted() && $form->isValid()) {
+                if (key_exists('subscribeToken', $request->request->all()['profile'])) {
+                    $subscribeToken = $this->tokenGenerator->generateToken();
+                    $this->personne->setSubscribeToken($subscribeToken);
+                } else {
+                    $this->personne->setSubscribeToken(null);
+                }
+                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager->persist($this->personne);
+                $entityManager->flush();
+                return $this->redirectToRoute('personne_index');
             }
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($this->personne);
-            $entityManager->flush();
-            return $this->redirectToRoute('personne_index');
-        }
 
-        return $this->render('personne/new.html.twig', [
-            'personne' => $this->personne,
-            'form' => $form->createView(),
-        ]);
+            return $this->render('personne/new.html.twig', [
+                'personne' => $this->personne,
+                'form' => $form->createView(),
+            ]);
+        }
     }
 
     /**
