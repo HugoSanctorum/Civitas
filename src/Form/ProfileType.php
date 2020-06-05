@@ -35,18 +35,20 @@ class ProfileType extends AbstractType
         $entity = $event->getData();
 
         $form->add('Commune');
-        if($entity->getSubscribeToken() == null){
-            $form->add('subscribeToken',CheckboxType::class,[
-                'label' => 'Recevoir les notifications par mails',
-                'required' => false,
-            ]);
+        if($entity) {
+            if ($entity->getSubscribeToken() == null) {
+                $form->add('subscribeToken', CheckboxType::class, [
+                    'label' => 'Recevoir les notifications par mails',
+                    'required' => false,
+                ]);
 
-        }else{
-            $form->add('subscribeToken',CheckboxType::class,[
-                'label' => 'Recevoir les notifications par mails',
-                'required' => false,
-                'data' => true
-            ]);
+            } else {
+                $form->add('subscribeToken', CheckboxType::class, [
+                    'label' => 'Recevoir les notifications par mails',
+                    'required' => false,
+                    'data' => true
+                ]);
+            }
         }
 
     }
