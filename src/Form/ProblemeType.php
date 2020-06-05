@@ -10,6 +10,7 @@ use App\Entity\Image;
 use Doctrine\DBAL\Types\StringType;
 use Doctrine\DBAL\Types\TextType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
@@ -46,6 +47,10 @@ class  ProblemeType extends AbstractType
             ->add('Priorite', EntityType::class,[
                 "class" => Priorite::class,
                 "required" => true,
+                "query_builder" => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('p')
+                        ->orderBy('p.poids', 'ASC');
+                }
             ]);
         $builder->addEventListener(
             FormEvents::PRE_SET_DATA,

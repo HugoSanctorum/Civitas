@@ -1,16 +1,30 @@
 {% extends 'base.html.twig' %}
 {% use 'priorite/assets/base.html.twig' %}
 
+{% set modal_delete %}
+    {% include 'priorite/assets/modal_delete.html.twig' %} 
+{% endset %}
+
 {% block title %}Editer Priorite{% endblock %}
 
 {% block body %}
     <div class="jumbotron jumbotron-fluid">
-		<div class="container">
-			<h1 class="display-4">Editer la priorité</h1>
-		</div>
-	</div>
-	<div class="container">
-    	{{ include('priorite/_form.html.twig', {'button_label': 'Modifier', 'edit': true}) }}
+        <div class="container">
+            <div class="row">
+                <div class="col-11">
+                    <h1 class="display-4">Editer la priorité</h1>
+                </div>
+                <div class="col-1 text-right p-3">
+                    <button id="delete_button" type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#modal_delete" title="Supprimer le probleme">
+                        <i class="fa fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
+	<div class="container">
+    	{{ include('priorite/forms/_form.html.twig', {'button_label': 'Modifier', 'edit': true}) }}
+    </div>
+    {{modal_delete}}
 {% endblock %}
 {% block moreScript %}{{ parent() }}{% endblock %}

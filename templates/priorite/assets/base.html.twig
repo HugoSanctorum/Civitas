@@ -17,7 +17,6 @@
 			    handle: '.handle',
 			    onChange : function(e){
 			    	initialize_li(e.item);
-			    	console.log($("#priorite_poids").val());
 			    }
 			});
 
@@ -26,8 +25,6 @@
 			$("#priorite_nom").change(function(e) {
 				$("#new_priorite").html("<i class='fa fa-arrows-alt handle'></i> " + $("#priorite_nom").val());
 			});
-
-			console.log($("#priorite_poids").val());
 		});
 	</script>
 {% endblock %}
