@@ -42,7 +42,7 @@
                                 <span class="li-text">{{ p.nom }}</span>
                             </div>
                             <div class="col-md-2 text-right">
-                                <a href="{{ path('priorite_edit', {'id': p.id}) }}" class="btn btn-link self_edit_button">
+                                <a href="{{ path('priorite_edit', {'id': p.id}) }}" class="btn btn-link self_edit_button" data-name="{{ p.nom }}">
                                     <i class="fa fa-pen"></i>
                                 </a>
                             </div>
@@ -84,7 +84,8 @@
                     initialize_li();
                     if(!modif){
                         $(".self_edit_button").each(function(e){
-                            $(this).attr("hidden", false);
+                            if (!["Faible", "Important", "Urgent"].includes($(this).data("name")))
+                                $(this).attr("hidden", false);
                         });
                     }
                 }
@@ -107,6 +108,10 @@
             }
 
             function initialize_li(showHandle=false){
+                $(".self_edit_button").each(function(e){
+                    if (["Faible", "Important", "Urgent"].includes($(this).data("name")))
+                        $(this).attr("hidden", true);
+                });
                 $("#sortable").children().each(function(e){
                     if ($(this).data("name") == "Faible")
                         $(this).toggleClass("list-group-item-info filtered disabled", true);
