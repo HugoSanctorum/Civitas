@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Panneau de gestion{% endblock %}
+
+{% block body %}
+	<div class="jumbotron jumbotron-fluid">
+		<div class="container">
+			<h1 class="display-4">Panneau de gestion</h1>
+		</div>
+	</div>
+	<div class="container">
+		<div>
+			<h4><i class="far fa-clipboard text-info"></i> Gestion des problèmes</h4>
+			<div class="list-group mb-3">
+				<a class="list-group-item list-group-item-action list-group-item-info" href="{{ path('probleme_index') }}"><i class="fa fa-list"></i> Liste des problèmes de la commune</a>
+				<a class="list-group-item list-group-item-action list-group-item-info" href="{{ path('probleme_index', {'tri': 'true', 'statuts': 'nouveau'}) }}"><i class="fa fa-bell"></i> Liste des nouveaux problèmes de la commune</a>
+			</div>
+		</div>
+		<div>
+			<h4><i class="fa fa-tasks text-warning"></i> Gestion des attributs d'un problème</h4>
+			<div class="list-group mb-3">
+				<a class="list-group-item list-group-item-action list-group-item-warning" href="{{ path('categorie_index') }}"><i class="fa fa-star"></i> Ajouter / Modifier / Supprimer une catégorie de problème</a>
+				<a class="list-group-item list-group-item-action list-group-item-warning" href="{{ path('priorite_index') }}"><i class="fa fa-exclamation-triangle"></i> Ajouter / Modifier / Supprimer une priorité</a>
+			</div>
+		</div>
+		<div>
+			<h4><i class="fa fa-city text-primary"></i> Gestion de la commune</h4>
+			<div class="list-group mb-3">
+				<a class="list-group-item list-group-item-action list-group-item-primary" href="{{ path('commune_edit', {'id': app.user.Commune.id}) }}"><i class="fa fa-image"></i> Changer l'image de la commune</a>
+				<a class="list-group-item list-group-item-action list-group-item-primary" href="{{ path('personne_index') }}"><i class="fa fa-users"></i> Gérer les utilisateurs de la commune</a>
+			</div>
+		</div>
+	</div>
+	
+{% endblock %}

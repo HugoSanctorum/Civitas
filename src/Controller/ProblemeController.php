@@ -22,6 +22,7 @@ use App\Services\Geocoder\GeocoderService;
 use App\Services\Mailer\MailerService;
 use App\Services\Personne\PermissionChecker;
 use App\Services\Probleme\ProblemeService;
+use App\Services\Probleme\ProblemeSearchInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use PhpParser\Node\Stmt\Label;
 use Psr\Log\LoggerInterface;
@@ -65,6 +66,7 @@ class ProblemeController extends AbstractController
         SessionInterface $session,
         ProblemeRepository $problemeRepository,
         CategorieRepository $categorieRepository,
+        ProblemeSearchInterface $problemeSearchInterface,
         int $page = 1
     ): Response
     {
@@ -78,6 +80,8 @@ class ProblemeController extends AbstractController
             } else {
                 $form = $this->createForm(ProblemeSearchType::class);
                 $form->handleRequest($request);
+
+                $problemeSearchInterface->searchInApp($request->query->all());
 
                 if ($form->isSubmitted() && $form->isValid()) {
                     $tab = $request->request->get("probleme_search");
@@ -464,15 +468,11 @@ class ProblemeController extends AbstractController
      *@Route("/search/reset/{redirect}", name="probleme_search_reset", methods={"GET"})
      */
     public function problemeResetSearch(
-        SessionInterface $session,
+        ProblemeSearchInterface $problemeSearchInterface,
         int $redirect = null
     ) : Response
     {
-        $session->remove("search_nom_probleme");
-        $session->remove("search_categories");
-        $session->remove("search_statuts");
-        $session->remove("search_element");
-        $session->remove("search_orderBy");
+        $problemeSearchInterface->clearSession();
 
         switch ($redirect) {
             case 1:
@@ -483,8 +483,6 @@ class ProblemeController extends AbstractController
                 return $this->redirectToRoute('personne_interventions');    
             default:
                 return $this->redirectToRoute('home_index');
-        }
-
-        
+        }        
     }
 }

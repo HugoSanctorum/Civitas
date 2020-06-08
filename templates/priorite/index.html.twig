@@ -19,7 +19,7 @@
             <div class="card mb-1">
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-md-10">
+                        <div class="col-md">
                             <p>
                                 Vous pouvez cliquer sur <i class="fa fa-edit"></i> pour organiser l'ordre des priorités et sur <i class="fa fa-plus"></i> pour en ajouter une.
                             </p>
@@ -27,7 +27,7 @@
                                 Pour chaque priorité, si vous cliquez sur <i class="fa fa-pen"></i>, vous pourrez la modifier individuellement.
                             </p>
                         </div>
-                        <div class="col-md-2 text-right">
+                        <div class="col-md text-right">
                             <a href={{ path('priorite_new') }} class="btn btn-outline-success"><i class="fa fa-plus"></i></a>
                             <button id="edit_button" class="btn btn-outline-primary"><i class="fa fa-edit"></i></button>
                         </div>
@@ -38,10 +38,10 @@
                 {% for p in priorites %}
                     <li class="list-group-item" data-id={{ p.id }} data-poids={{ p.poids }} data-name="{{ p.nom }}">
                         <div class="row">
-                            <div class="col-md-10 flex-center">
+                            <div class="col flex-center">
                                 <span class="li-text">{{ p.nom }}</span>
                             </div>
-                            <div class="col-md-2 text-right">
+                            <div class="col text-right">
                                 <a href="{{ path('priorite_edit', {'id': p.id}) }}" class="btn btn-link self_edit_button" data-name="{{ p.nom }}">
                                     <i class="fa fa-pen"></i>
                                 </a>
