@@ -20,7 +20,7 @@ class UserControllerTest extends WebTestCase
         $client->request('POST','/login', ['_csrf_token' => $csrfToken, 'mail' => 'hugo_duporge@ens.univ-artois.fr', 'password' => 'hugo']);
         $this->assertResponseRedirects('/','302');
 
-        $client->request('POST','/login', ['_csrf_token' => $csrfToken, 'mail' => 'hugo_duporge@ens.univfffff-artois.fr', 'password' => 'hugo']);
+        $client->request('POST','/login', ['_csrf_token' => $csrfToken, 'maffil' => 'hugo_duporge@ens.univfffff-artois.fr', 'password' => 'hugo']);
         $this->assertResponseRedirects('/login','302');
     }
 }

@@ -201,7 +201,7 @@ class ProblemeController extends AbstractController
                     'titre' => $probleme->getTitre(),
                 ]);
             }
-
+            dd($request->request->all());
             return new RedirectResponse("/probleme");
         }
 

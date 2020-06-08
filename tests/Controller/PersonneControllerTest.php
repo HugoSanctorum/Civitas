@@ -18,13 +18,14 @@ class PersonneControllerTest extends WebTestCase
     private $entityManager;
     private $client = null;
 
+
     public function setUp()
     {
         $this->client = static::createClient();
         $this->entityManager = $this->client->getContainer()->get('doctrine.orm.entity_manager');
     }
 
-    public function testProfile(){
+    public function testSuccessProfileAuthenticated(){
         $this->login();
         $this->client->request('GET','/profile');
         $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
