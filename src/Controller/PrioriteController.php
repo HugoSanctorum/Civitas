@@ -44,7 +44,7 @@ class PrioriteController extends AbstractController
                 return new RedirectResponse("/");
             } else {
                 return $this->render('priorite/index.html.twig', [
-                    'priorites' => $prioriteRepository->findAll(),
+                    'priorites' => $prioriteRepository->findBy([], ['poids' => 'ASC']),
                 ]);
             }
         }
@@ -97,7 +97,7 @@ class PrioriteController extends AbstractController
     /**
      * @Route("/{id}", name="priorite_show", methods={"GET"})
      */
-    public function show(Priorite $priorite): Response
+    /*public function show(Priorite $priorite): Response
     {
         if(!$this->isGranted('ROLE_USER')){
             $this->addFlash('fail','Veuillez vous connectez pour acceder à cette page.');
@@ -112,10 +112,10 @@ class PrioriteController extends AbstractController
                 ]);
             }
         }
-    }
+    }*/
 
     /**
-     * @Route("/{id}/edit", name="priorite_edit", methods={"GET","POST"})
+     * @Route("/{id}/edit", name="priorite_edit", methods={"GET","POST"}, requirements={"id"="\d+"})
      */
     public function edit(
         Request $request,
@@ -131,6 +131,10 @@ class PrioriteController extends AbstractController
                 $this->addFlash('fail', 'Vous ne possedez pas les permissions necessaires.');
                 return new RedirectResponse("/");
             } else {
+                if ($priorite->getNom() == "Faible" || $priorite->getNom() == "Important" || $priorite->getNom() == "Urgent") {
+                    $this->addFlash('fail', 'Vous ne pouvez pas éditer ou supprimer cette priorité.');
+                    return new RedirectResponse("/priorite");
+                }
                 $form = $this->createForm(PrioriteType::class, $priorite);
                 $form->handleRequest($request);
 
@@ -157,7 +161,7 @@ class PrioriteController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="priorite_delete", methods={"DELETE"})
+     * @Route("/{id}", name="priorite_delete", methods={"DELETE"}, requirements={"id"="\d+"})
      */
     public function delete(Request $request, Priorite $priorite): Response
     {
@@ -181,6 +185,31 @@ class PrioriteController extends AbstractController
                 }
             }
         }
+
+        return $this->redirectToRoute('priorite_index');
+    }
+
+    /**
+     * @Route("/arrange", name="priorite_arrange", methods={"GET", "POST"})
+     */
+    public function arrangeOrder(
+        Request $request,
+        PrioriteRepository $prioriteRepository
+    ): Response
+    {
+        $values = json_decode($request->request->get('values'));
+        foreach ($values as $key => $value) {
+            $priorite = $prioriteRepository->findOneBy(['id'=> $key]);
+            $priorite->setPoids($value);
+        }
+        $done = false;
+        $poids = $priorite->getPoids();
+        while(!$done){
+            $doublon_poids = $prioriteRepository->findOneBy(['poids' => $poids++]);
+            if($doublon_poids && $doublon_poids != $priorite) $doublon_poids->setPoids($doublon_poids->getPoids()+1);
+            else $done = true;
+        }
+        $this->getDoctrine()->getManager()->flush();
 
         return $this->redirectToRoute('priorite_index');
     }

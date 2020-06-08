@@ -13,6 +13,8 @@ use Symfony\Component\Routing\Annotation\Route;
 
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+
 class HomeController extends AbstractController
 {
 
@@ -77,6 +79,28 @@ class HomeController extends AbstractController
             "contour" => $contour,
             "commune" => $commune->getNom(),
             "problemes" => $infos_problemes
+        ]);
+    }
+
+    /**
+     * @Route("/pannel_gestionnaire", name="pannel_gestionnaire")
+     * @IsGranted("ROLE_USER")
+     */
+    public function pannel_gestionnaire()
+    {
+        return $this->render('home/pannel/gestionnaire.html.twig', [
+            
+        ]);
+    }
+
+    /**
+     * @Route("/pannel_technicien", name="pannel_technicien")
+     * @IsGranted("ROLE_USER")
+     */
+    public function pannel_technicien()
+    {
+        return $this->render('home/pannel/technicien.html.twig', [
+            
         ]);
     }
 }

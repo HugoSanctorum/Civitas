@@ -1,42 +1,153 @@
 {% extends 'base.html.twig' %}
+{% use 'priorite/assets/base.html.twig' %}
 
 {% block title %}Priorite index{% endblock %}
 
 {% block body %}
     {% for message in app.flashes('fail') %}
-        <div class="alert alert-danger">
-            {{ message }}
+        <div class="alert alert-danger my-2 mx-1 text-center">
+            <h4>{{ message }}</h4>
         </div>
     {% endfor %}
-    <h1>Priorite index</h1>
+    <div class="jumbotron jumbotron-fluid">
+        <div class="container">
+            <h1 class="display-4">Liste des priorités</h1>
+        </div>
+    </div>
+    <div class="page-center-container">
+        <div class="content fill">
+            <div class="card mb-1">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md">
+                            <p>
+                                Vous pouvez cliquer sur <i class="fa fa-edit"></i> pour organiser l'ordre des priorités et sur <i class="fa fa-plus"></i> pour en ajouter une.
+                            </p>
+                            <p>
+                                Pour chaque priorité, si vous cliquez sur <i class="fa fa-pen"></i>, vous pourrez la modifier individuellement.
+                            </p>
+                        </div>
+                        <div class="col-md text-right">
+                            <a href={{ path('priorite_new') }} class="btn btn-outline-success"><i class="fa fa-plus"></i></a>
+                            <button id="edit_button" class="btn btn-outline-primary"><i class="fa fa-edit"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <ul id="sortable" class="list-group mb-3">
+                {% for p in priorites %}
+                    <li class="list-group-item" data-id={{ p.id }} data-poids={{ p.poids }} data-name="{{ p.nom }}">
+                        <div class="row">
+                            <div class="col flex-center">
+                                <span class="li-text">{{ p.nom }}</span>
+                            </div>
+                            <div class="col text-right">
+                                <a href="{{ path('priorite_edit', {'id': p.id}) }}" class="btn btn-link self_edit_button" data-name="{{ p.nom }}">
+                                    <i class="fa fa-pen"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+            <form id="arrange_priorite" action="{{ path('priorite_arrange') }}" method="POST">
+                <input id="values_input" type="hidden" name="values">
+                <button id="submit_button" type="submit" class="btn btn-success btn-block" hidden="true"> <i class="fa fa-check"></i> Valider les modifications </button>
+            </form>
+        </div>
+    </div>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Nom</th>
-                <th>Poids</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for priorite in priorites %}
-            <tr>
-                <td>{{ priorite.id }}</td>
-                <td>{{ priorite.nom }}</td>
-                <td>{{ priorite.poids }}</td>
-                <td>
-                    <a href="{{ path('priorite_show', {'id': priorite.id}) }}">show</a>
-                    <a href="{{ path('priorite_edit', {'id': priorite.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="4">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+{% endblock %}
+{% block moreScript %}
+    <script type="text/javascript">
+        $( document ).ready(function(){
 
-    <a href="{{ path('priorite_new') }}">Create new</a>
+            let trigger = true;
+            let modif = false;
+
+            let values = {};
+
+            $("#edit_button").click(function(e){
+                //Tri actif
+                if (trigger) {
+                    sortable.option("disabled", false);
+                    trigger = false;
+                    initialize_li(true);
+                    $(".self_edit_button").each(function(e){
+                        $(this).attr("hidden", true);
+                    });
+                }
+                // Tri inactif
+                else {
+                    sortable.option("disabled", true);
+                    trigger = true;
+                    initialize_li();
+                    if(!modif){
+                        $(".self_edit_button").each(function(e){
+                            if (!["Faible", "Important", "Urgent"].includes($(this).data("name")))
+                                $(this).attr("hidden", false);
+                        });
+                    }
+                }
+            });
+
+            function appendStyle(element, showHandle){
+                span = $(element).find('span');
+                $(element).attr("class", $(element).prev().attr("class").replace(' filtered', '').replace(' disabled', ''));
+                $(span).html($(element).data("name"));
+                if(showHandle) {
+                    $(span).html("<i class='fa fa-arrows-alt handle'></i> " + $(element).data("name"));
+                    $(element).addClass("font-weight-bold");
+                }
+            }
+
+            function updatePoids(element){
+                $(element).data("poids", $(element).prev().data('poids') + 1);
+                values[$(element).data("id")] = $(element).data("poids");
+                $("#values_input").val(JSON.stringify(values));
+            }
+
+            function initialize_li(showHandle=false){
+                $(".self_edit_button").each(function(e){
+                    if (["Faible", "Important", "Urgent"].includes($(this).data("name")))
+                        $(this).attr("hidden", true);
+                });
+                $("#sortable").children().each(function(e){
+                    if ($(this).data("name") == "Faible")
+                        $(this).toggleClass("list-group-item-info filtered disabled", true);
+                    else if ($(this).data("name") == "Important")
+                        $(this).toggleClass("list-group-item-warning filtered", true);
+                    else if ($(this).data("name") == "Urgent")
+                        $(this).toggleClass("list-group-item-danger filtered", true);
+                    else {
+                        appendStyle($(this), showHandle);
+                    }
+                });   
+            }
+
+            function triggerModif(){
+                modif = true;
+                $("#submit_button").attr("hidden", false);
+            }
+
+            let list = document.getElementById("sortable");
+
+            let sortable = new Sortable(list, {
+                animation: 150,
+                ghostClass: 'blue-background-class',
+                filter: '.filtered',
+                items : ':not(.boundary)',
+                handle: '.handle',
+                disabled: true,
+                onChange : function(e){
+                    if (!modif) triggerModif();
+                    appendStyle(e.item, true);
+                    updatePoids(e.item);
+                }
+            });
+
+            initialize_li();
+
+        });
+    </script>
 {% endblock %}
