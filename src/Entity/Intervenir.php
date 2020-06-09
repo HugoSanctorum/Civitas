@@ -51,9 +51,16 @@ class Intervenir
      */
     private $description;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\HistoriqueStatutIntervention", mappedBy="Intervenir")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $HistoriqueStatutInterventions;
+
     public function __construct()
     {
         $this->CompteRendus = new ArrayCollection();
+        $this->HistoriqueStatutInterventions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -158,5 +165,36 @@ class Intervenir
 
     public function getLabel(): string{
         return $this->getCreatedAt()->format('Y-m-d H:i:s');
+    }
+
+    /**
+     * @return Collection|HistoriqueStatutIntervention[]
+     */
+    public function getHistoriqueStatutInterventions(): Collection
+    {
+        return $this->HistoriqueStatutInterventions;
+    }
+
+    public function addHistoriqueStatutIntervention(HistoriqueStatutIntervention $historiqueStatutIntervention): self
+    {
+        if (!$this->HistoriqueStatutInterventions->contains($historiqueStatutIntervention)) {
+            $this->HistoriqueStatutInterventions[] = $historiqueStatutIntervention;
+            $historiqueStatutIntervention->setIntervenir($this);
+        }
+
+        return $this;
+    }
+
+    public function removeHistoriqueStatutIntervention(HistoriqueStatutIntervention $historiqueStatutIntervention): self
+    {
+        if ($this->HistoriqueStatutInterventions->contains($historiqueStatutIntervention)) {
+            $this->HistoriqueStatutInterventions->removeElement($historiqueStatutIntervention);
+            // set the owning side to null (unless already changed)
+            if ($historiqueStatutIntervention->getIntervenir() === $this) {
+                $historiqueStatutIntervention->setIntervenir(null);
+            }
+        }
+
+        return $this;
     }
 }

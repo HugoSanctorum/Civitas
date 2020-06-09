@@ -205,8 +205,7 @@ class ProblemeController extends AbstractController
                     'titre' => $probleme->getTitre(),
                 ]);
             }
-            dd($request->request->all());
-            return new RedirectResponse("/probleme");
+            return $this->redirectToRoute('probleme_index');
         }
 
         $lng && $lat ? $adresse = $geocoderService->getAdressFromCoordinate($lat, $lng) : $adresse = null;
@@ -371,7 +370,7 @@ class ProblemeController extends AbstractController
             $entityManager->flush();
             $session->clear();
 
-            return $this->redirectToRoute('probleme_index');
+            return $this->redirectToRoute('home_index');
         }else{
 /*             $problemeService->DeleteThosesImages($tabUrl);*/
         }
