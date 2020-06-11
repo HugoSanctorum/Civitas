@@ -56,11 +56,13 @@
                                         </h4>
                                         <p>{{cr.description ? cr.description : "Pas de description pour ce compte-rendu" }}</p>
                                     </div>
+                                    {% if cr.urlDocument %}
                                     <div class="col-md-4 flex-center">
                                         <a class="btn btn-link" href={{ path('download_file', {'urlFile': cr.urlDocument}) }}>
                                             <i class="fa fa-link"></i> Télécharger le compte-rendu
                                         </a>
                                     </div>
+                                    {% endif %}
                                 </div>
                             </li>
                         {% endfor %}

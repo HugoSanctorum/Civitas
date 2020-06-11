@@ -30,7 +30,11 @@ class RoleType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('role')
+            ->add('role', null, [
+                "attr" =>  [
+                    'value' => 'ROLE_'
+                ]
+            ])
             ->add('Permissions',null,[
                 "required" => true,
                 "multiple" => true,

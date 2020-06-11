@@ -258,7 +258,7 @@ class PersonneController extends AbstractController
                 $entityManager->persist($personne);
                 $mailerService->sendMailActivatedAccount($personne, $activatedToken);
                 $entityManager->flush();
-                return $this->redirectToRoute('personne_index');
+                return $this->redirectToRoute('app_login');
             } elseif (!$personneMail->getPassword()) {
                 $nom = $request->request->all()['personne']['nom'];
                 $prenom = $request->request->all()['personne']['prenom'];
@@ -285,10 +285,10 @@ class PersonneController extends AbstractController
                 $mailerService->sendMailActivatedAccount($personneMail, $activatedToken);
 
                 $entityManager->flush();
-                return $this->redirectToRoute('personne_index');
+                return $this->redirectToRoute('app_login');
             } else {
-                $this->addFlash("fail", "Cette adresse mail est déjà utilisé.");
-                return $this->redirectToRoute('/senregistrer');
+                $this->addFlash("fail", "Cette adresse mail est déjà utilisé. Vous pouvez réinitialiser votre mot de passe en cliquant sur 'mot de passe oublié'");
+                return $this->redirectToRoute('app_login');
             }
         }
 
