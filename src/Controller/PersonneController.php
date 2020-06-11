@@ -398,7 +398,7 @@ class PersonneController extends AbstractController
                 return $this->redirectToRoute('personne_index');
             }
 
-            return $this->render('personne/new.html.twig', [
+            return $this->render('profile/new.html.twig', [
                 'personne' => $this->personne,
                 'form' => $form->createView(),
             ]);
@@ -422,10 +422,10 @@ class PersonneController extends AbstractController
 
             if($this->encoder->isPasswordValid($this->personne,$oldPassword)){
                 $this->personne->setPassword($newEncoded);
-                $this->addFlash('success','Votre mot de passe a bien été modifié :)');
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($this->personne);
                 $em->flush();
+                $this->addFlash('success','Votre mot de passe a bien été modifié.');
                 return $this->redirectToRoute('home_index');
             }else{
                 $this->addFlash('fail','Mot de passe incorrect');
