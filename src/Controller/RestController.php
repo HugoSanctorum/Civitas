@@ -15,7 +15,9 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
+use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\Serializer;
+
 
 
 
@@ -28,8 +30,8 @@ class RestController extends AbstractController
 	private $normalizers;
 
 	public function __construct(){
-		$encoders = [new JsonEncoder()];
-		$normalizers = [new ObjectNormalizer()];
+		$this->encoders = [new JsonEncoder()];
+		$this->normalizers = [new DateTimeNormalizer('d/m/Y'), new ObjectNormalizer()];
 	}
 
 	/**
@@ -52,7 +54,7 @@ class RestController extends AbstractController
 			$params["orderBy"]
 		);
 		
-		$serializer = new Serializer([new ObjectNormalizer()]);
+		$serializer = new Serializer($this->normalizers, $this->encoders);
 		$data = [];
 
 		foreach($problemes as $probleme){
@@ -65,9 +67,10 @@ class RestController extends AbstractController
 			 		'description',
 			 		'localisation',
 			 		'reference',
-			 		'Commune' => ['nom'],
+			 		'Commune' => ['nom', 'codesPostaux', 'codeRegion', 'codeDepartement', 'codeInsee'],
 			 		'Categorie' => ['nom'],
-			 		'Priorite' => ['nom'],
+			 		'Priorite' => ['nom', 'poids'],
+			 		'HistoriqueStatuts' => ['date', 'description', 'Statut' => ['nom']]
 			 	]]
 			 );
 			array_push($data, $jsonValue);

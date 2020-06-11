@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Pannel Technicien{% endblock %}
+
+{% block body %}
+	<div class="jumbotron jumbotron-fluid">
+		<div class="container">
+			<h1 class="display-4">Gestion de vos interventions</h1>
+		</div>
+	</div>
+	<div class="container">
+		<div>
+			<h4><i class="fa fa-calendar-plus text-danger"></i> Nouvelles interventions</h4>
+			<div class="historique border border-primary">
+				<div class="row">
+					<div class="col-md-8">
+						
+					</div>
+					<div class="col-md-4 btn-group" role="group">
+						<a class="btn btn-success" href=""><i class="fa fa-check"></i> Accepter</a>
+					
+						<a class="btn btn-danger" href=""><i class="fa fa-times"></i> Refuser</a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="section">
+			<h4><i class="fa fa-hourglass-half text-info"></i> Intervention en cours</h4>
+			<div class="historique border border-primary">
+
+			</div>
+		</div>
+
+		<div class="section">
+			<h4><i class="far fa-clipboard text-primary"></i> Intervention acceptée</h4>
+			<div class="historique border border-primary">
+
+			</div>
+		</div>
+
+		<div class="section">
+			<h4><i class="far fa-clipboard text-primary"></i> Boutons</h4>
+			<div class="list-group mb-3">
+				<a class="list-group-item list-group-item-action list-group-item-info" href="{{ path('probleme_index') }}"><i class="fa fa-list"></i> Liste des problèmes de la commune</a>
+				<a class="list-group-item list-group-item-action list-group-item-info" href="{{ path('probleme_index', {'tri': 'true', 'statuts': 'nouveau'}) }}"><i class="fa fa-bell"></i> Liste des nouveaux problèmes de la commune</a>
+			</div>
+		</div>
+		
+	</div>
+	
+{% endblock %}
