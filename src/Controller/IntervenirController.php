@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\HistoriqueStatut;
+use App\Entity\HistoriqueStatutIntervention;
 use App\Entity\Intervenir;
 use App\Entity\Probleme;
 use App\Form\IntervenirType;
@@ -10,10 +11,12 @@ use App\Repository\HistoriqueStatutRepository;
 use App\Repository\IntervenirRepository;
 use App\Repository\PersonneRepository;
 use App\Repository\ProblemeRepository;
+use App\Repository\StatutInterventionRepository;
 use App\Repository\StatutRepository;
 use App\Services\Mailer\MailerService;
 use App\Services\Personne\PermissionChecker;
 use App\Services\Probleme\ProblemeService;
+use Doctrine\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -36,7 +39,7 @@ class IntervenirController extends AbstractController
     private $permissionChecker;
     private $problemeService;
     private $personne;
-
+    private $statutInterventionRepository;
 
 
     public function __construct(TokenStorageInterface $tokenStorage,
@@ -47,7 +50,8 @@ class IntervenirController extends AbstractController
         IntervenirRepository $intervenirRepository,
         PermissionChecker $permissionChecker,
         ProblemeService $problemeService,
-        TokenStorageInterface $tokenStorageInterface
+        TokenStorageInterface $tokenStorageInterface,
+        StatutInterventionRepository $statutInterventionRepository
     )
     {
         $this->tokenStorage = $tokenStorage; // le token utilisateur
@@ -59,7 +63,7 @@ class IntervenirController extends AbstractController
         $this->permissionChecker = $permissionChecker;
         $this->problemeService = $problemeService;
         $this->personne = $tokenStorageInterface->getToken()->getUser();
-
+        $this->statutInterventionRepository = $statutInterventionRepository;
     }
     /**
      * @Route("/", name="intervenir_index", methods={"GET"})
@@ -115,6 +119,13 @@ class IntervenirController extends AbstractController
                         $signaleur = $signaleurIntervention->getPersonne();
                         $mailerService->sendMailToTechnicienAffectedProbleme($technicien, $probleme);
                         $mailerService->sendMailToSignaleurAffectedProbleme($signaleur, $probleme);
+
+                        $historiqueStatutIntervention = new HistoriqueStatutIntervention();
+                        $historiqueStatutIntervention->setIntervenir($intervenir);
+                        $historiqueStatutIntervention->setDate(new \DateTime());
+                        $statutIntervention = $this->statutInterventionRepository->findOneBy(["nom" => "En attente de révision"]);
+                        $historiqueStatutIntervention->setStatutIntervention($statutIntervention);
+                        $entityManager->persist($historiqueStatutIntervention);
                     }
                     $entityManager->flush();
                     return $this->redirectToRoute('probleme_show', ['id' => $probleme->getId()]);

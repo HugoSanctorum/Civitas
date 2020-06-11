@@ -3,6 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\HistoriqueStatut;
+use App\Entity\HistoriqueStatutIntervention;
 use App\Entity\Intervenir;
 use App\Entity\Probleme;
 use App\Entity\Statut;
@@ -37,13 +38,22 @@ class HistoriqueStatutFixtures extends Fixture implements DependentFixtureInterf
         return $inter;
     }
 
-    public function createIntervenirTechnicien(Probleme $probleme){
+    public function createHistoriqueStatutIntervention(ObjectManager $manager, Intervenir $intervenir){
+        $historiqueStatutIntervention = new HistoriqueStatutIntervention();
+        $historiqueStatutIntervention->setIntervenir($intervenir);
+        $historiqueStatutIntervention->setDate(new \DateTime());
+        $historiqueStatutIntervention->setStatutIntervention($this->getReference('En attente de révision'));
+        $manager->persist($historiqueStatutIntervention);
+    }
+
+    public function createIntervenirTechnicien(ObjectManager $manager, Probleme $probleme){
         $inter = new Intervenir();
         $inter->setProbleme($probleme);
         $inter->setPersonne($this->getReference("personne_".random_int(0, 9)));
         $inter->setTypeIntervention($this->getReference("Technicien"));
         $inter->setCreatedAt(new \DateTime());
         $this->addReference('intervention_'.$this->cpt++, $inter);
+        $this->createHistoriqueStatutIntervention($manager, $inter);
         return $inter;
     }
 
@@ -75,20 +85,20 @@ class HistoriqueStatutFixtures extends Fixture implements DependentFixtureInterf
             } else if ($statut->getNom() == "Affecté") {
                 $manager->persist($this->createHistoriqueStatut("Ouvert", $probleme));
                 $manager->persist($this->createHistoriqueStatut("Affecté", $probleme));
-                $manager->persist($this->createIntervenirTechnicien($probleme));
+                $manager->persist($this->createIntervenirTechnicien($manager, $probleme));
                 $manager->persist($this->createIntervenirSignaleur($probleme));
             } else if ($statut->getNom() == "En cours de traitement") {
                 $manager->persist($this->createHistoriqueStatut("Ouvert", $probleme));
                 $manager->persist($this->createHistoriqueStatut("Affecté", $probleme));
                 $manager->persist($this->createHistoriqueStatut("En cours de traitement", $probleme));
-                $manager->persist($this->createIntervenirTechnicien($probleme));
+                $manager->persist($this->createIntervenirTechnicien($manager, $probleme));
                 $manager->persist($this->createIntervenirSignaleur($probleme));
             } else if ($statut->getNom() == "Résolu") {
                 $manager->persist($this->createHistoriqueStatut("Ouvert", $probleme));
                 $manager->persist($this->createHistoriqueStatut("Affecté", $probleme));
                 $manager->persist($this->createHistoriqueStatut("En cours de traitement", $probleme));
                 $manager->persist($this->createHistoriqueStatut("Résolu", $probleme));
-                $manager->persist($this->createIntervenirTechnicien($probleme));
+                $manager->persist($this->createIntervenirTechnicien($manager, $probleme));
                 $manager->persist($this->createIntervenirSignaleur($probleme));
             }
         }
@@ -106,7 +116,8 @@ class HistoriqueStatutFixtures extends Fixture implements DependentFixtureInterf
         return array(
             PersonneFixtures::class,
             ProblemeFixtures::class,
-            StatutFixtures::class
+            StatutFixtures::class,
+            StatutInterventionFixtures::class
         );
     }
 }
