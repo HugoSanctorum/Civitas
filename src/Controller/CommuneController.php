@@ -7,6 +7,7 @@ use App\Form\CommuneType;
 use App\Repository\CommuneRepository;
 use App\Repository\HistoriqueStatutRepository;
 use App\Repository\CategorieRepository;
+use App\Repository\ProblemeRepository;
 use App\Repository\StatutRepository;
 use App\Services\Commune\CommuneService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -29,13 +30,16 @@ class CommuneController extends AbstractController
 {
     private $permissionChecker;
     private $user;
+    private $problemeRepository;
 
     public function __construct(
         PermissionChecker $permissionChecker,
-        TokenStorageInterface $tokenStorageInterface
+        TokenStorageInterface $tokenStorageInterface,
+        ProblemeRepository $problemeRepository
     ){
         $this->permissionChecker = $permissionChecker;
         $this->user = $tokenStorageInterface->getToken()->getUser();
+        $this->problemeRepository = $problemeRepository;
     }
 
     /**
@@ -157,6 +161,11 @@ class CommuneController extends AbstractController
                 $this->addFlash('fail', 'Vous ne possedez pas les permissions necessaires.');
                 return new RedirectResponse("/");
             } else {
+                $data = $this->problemeRepository->findAllProblemeByCommune($commune);
+                if($data){
+                    $this->addFlash('fail','Cette commune contient des problèmes. Impossible de la supprimer.');
+                    return $this->redirectToRoute('commune_index');
+                }
                 if ($this->isCsrfTokenValid('delete' . $commune->getId(), $request->request->get('_token'))) {
                     $entityManager = $this->getDoctrine()->getManager();
                     $entityManager->remove($commune);

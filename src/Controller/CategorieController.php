@@ -137,7 +137,6 @@ class CategorieController extends AbstractController
      */
     public function delete(Request $request, Categorie $categorie): Response
     {
-        $session = new Session();
         if (!$this->isGranted('ROLE_USER')) {
             $this->addFlash('fail', 'Veuillez vous connectez pour acceder à cette page.');
             return $this->redirectToRoute('app_login');
