@@ -258,7 +258,7 @@ class PersonneController extends AbstractController
                 $entityManager->persist($personne);
                 $mailerService->sendMailActivatedAccount($personne, $activatedToken);
                 $entityManager->flush();
-                return $this->redirectToRoute('personne_index');
+                return $this->redirectToRoute('app_login');
             } elseif (!$personneMail->getPassword()) {
                 $nom = $request->request->all()['personne']['nom'];
                 $prenom = $request->request->all()['personne']['prenom'];
@@ -285,10 +285,10 @@ class PersonneController extends AbstractController
                 $mailerService->sendMailActivatedAccount($personneMail, $activatedToken);
 
                 $entityManager->flush();
-                return $this->redirectToRoute('personne_index');
+                return $this->redirectToRoute('app_login');
             } else {
-                $this->addFlash("fail", "Cette adresse mail est déjà utilisé.");
-                return $this->redirectToRoute('/senregistrer');
+                $this->addFlash("fail", "Cette adresse mail est déjà utilisé. Vous pouvez réinitialiser votre mot de passe en cliquant sur 'mot de passe oublié'");
+                return $this->redirectToRoute('app_login');
             }
         }
 
@@ -398,7 +398,7 @@ class PersonneController extends AbstractController
                 return $this->redirectToRoute('personne_index');
             }
 
-            return $this->render('personne/new.html.twig', [
+            return $this->render('profile/new.html.twig', [
                 'personne' => $this->personne,
                 'form' => $form->createView(),
             ]);
@@ -422,10 +422,10 @@ class PersonneController extends AbstractController
 
             if($this->encoder->isPasswordValid($this->personne,$oldPassword)){
                 $this->personne->setPassword($newEncoded);
-                $this->addFlash('success','Votre mot de passe a bien été modifié :)');
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($this->personne);
                 $em->flush();
+                $this->addFlash('success','Votre mot de passe a bien été modifié.');
                 return $this->redirectToRoute('home_index');
             }else{
                 $this->addFlash('fail','Mot de passe incorrect');

@@ -172,25 +172,25 @@ class IntervenirController extends AbstractController
         }
     }
 
-//    /**
-//     * @Route("/{id}/edit", name="intervenir_edit", methods={"GET","POST"})
-//     */
-//    public function edit(Request $request, Intervenir $intervenir): Response
-//    {
-//        $form = $this->createForm(IntervenirType::class, $intervenir);
-//        $form->handleRequest($request);
-//
-//        if ($form->isSubmitted() && $form->isValid()) {
-//            $this->getDoctrine()->getManager()->flush();
-//
-//            return $this->redirectToRoute('intervenir_index');
-//        }
-//
-//        return $this->render('intervenir/edit.html.twig', [
-//            'intervenir' => $intervenir,
-//            'form' => $form->createView(),
-//        ]);
-//    }
+    /**
+     * @Route("/{id}/edit", name="intervenir_edit", methods={"GET","POST"})
+     */
+    public function edit(Request $request, Intervenir $intervenir): Response
+    {
+        $form = $this->createForm(IntervenirType::class, $intervenir);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->getDoctrine()->getManager()->flush();
+
+            return $this->redirectToRoute('intervenir_index');
+        }
+
+        return $this->render('intervenir/edit.html.twig', [
+            'intervenir' => $intervenir,
+            'form' => $form->createView(),
+        ]);
+    }
 
 //    /**
 //     * @Route("/{id}", name="intervenir_delete", methods={"DELETE"})

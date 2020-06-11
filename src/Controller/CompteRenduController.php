@@ -131,7 +131,6 @@ class CompteRenduController extends AbstractController
 
                 if ($form->isSubmitted() && $form->isValid()) {
                     $document = $form->get('urlDocument')->getData();
-                    dd($document);
                     $compteRenduService->PersistCompteRendu($compteRendu, $pb, $document);
                     $entityManager = $this->getDoctrine()->getManager();
                     $entityManager->persist($compteRendu);

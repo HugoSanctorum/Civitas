@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Personne{% endblock %}
+{% block title %}edit profile{% endblock %}
 
 {% block body %}
 
@@ -11,11 +11,11 @@
     {% endfor %}
     <div class="jumbotron jumbotron-fluid">
         <div class="container">
-            <h1 class="display-4">Créer un compte Civitas</h1>
+            <h1 class="display-4">Mon profil</h1>
         </div>
     </div>
     <div class="container">
-        {{ include('personne/_form.html.twig') }}
+        {{ include('profile/_form.html.twig') }}
     </div>
 {% endblock %}
 {% block moreScript %} {{ parent() }} {% endblock %}

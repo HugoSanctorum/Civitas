@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Commune;
 use App\Entity\HistoriqueAction;
 use App\Entity\Personne;
 use App\Entity\Probleme;
@@ -250,6 +251,14 @@ class ProblemeRepository extends ServiceEntityRepository
             ->join('p.Categorie','c')
             ->where('c.nom = :categorie')
             ->setParameter('categorie', $categorie->getNom())
+            ->getQuery()
+            ->getResult();
+
+    }
+    public function findAllProblemeByCommune(Commune $commune){
+        return $this->createQueryBuilder('p')
+            ->where('p.Commune = :commune')
+            ->setParameter('commune', $commune)
             ->getQuery()
             ->getResult();
 

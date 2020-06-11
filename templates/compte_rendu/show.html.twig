@@ -13,7 +13,11 @@
             </tr>
             <tr>
                 <th>UrlDocument</th>
-                <td>{{ compte_rendu.urlDocument }}</td>
+                <img class="img-thumbnail" src="{{ asset('/document/'~compte_rendu.urlDocument) }}">
+            </tr>
+            <tr>
+                <th>Description</th>
+                <td>{{ compte_rendu.description }}</td>
             </tr>
             <tr>
                 <th>Probleme</th>

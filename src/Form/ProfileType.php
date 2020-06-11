@@ -20,9 +20,7 @@ class ProfileType extends AbstractType
         $builder
             ->add('nom')
             ->add('prenom')
-            ->add('mail')
-            ->add('username',TextType::class,[
-                'label' => 'Pseudo']);
+            ->add('mail');
         $builder->addEventListener(
             FormEvents::PRE_SET_DATA,
             [$this, 'onPreSetData']

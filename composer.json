@@ -25,6 +25,7 @@
         "symfony/security-bundle": "4.4.*",
         "symfony/serializer": "4.4.*",
         "symfony/swiftmailer-bundle": "^3.4",
+        "symfony/test-pack": "^1.0",
         "symfony/twig-pack": "^1.0",
         "symfony/validator": "4.4.*",
         "symfony/web-server-bundle": "4.4.*",
@@ -39,8 +40,7 @@
         "symfony/css-selector": "4.4.*",
         "symfony/maker-bundle": "^1.15",
         "symfony/phpunit-bridge": "^5.1",
-        "symfony/profiler-pack": "^1.0",
-        "symfony/test-pack": "^1.0"
+        "symfony/profiler-pack": "^1.0"
     },
     "config": {
         "preferred-install": {

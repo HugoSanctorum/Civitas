@@ -2,7 +2,9 @@
 
 namespace App\Form;
 
+use App\Entity\Commune;
 use App\Entity\Personne;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -23,7 +25,10 @@ class PersonneType extends AbstractType
             ->add('CreatedAt')
             ->add('password',PasswordType::class)
             ->add('username')
-            ->add('Commune')
+            ->add('Commune', EntityType::class,[
+                'class' => Commune::class,
+                "required" => true
+            ])
         ;
         $builder->addEventListener(
             FormEvents::PRE_SET_DATA,
