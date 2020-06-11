@@ -464,6 +464,22 @@ class ProblemeController extends AbstractController
     }
 
     /**
+     *@Route("/view-on-map/{id}", name="probleme_viewmap", methods={"GET"}, requirements={"id"="\d+"})
+     */
+    public function viewProblemOnMap(
+        Probleme $probleme,
+        GeocoderService $geocoderService
+    ) : Response
+    {
+        if($probleme) return $this->render('probleme/assets/map.html.twig',[
+            'probleme' => $probleme,
+            'coordonnees' => $geocoderService->getCoordinateFromAdress($probleme->getLocalisation()),
+            'commune' => $probleme->getCommune()
+        ]);
+        return $this->redirectToRoute('probleme_index');  
+    }
+
+    /**
      *@Route("/search/reset/{redirect}", name="probleme_search_reset", methods={"GET"})
      */
     public function problemeResetSearch(

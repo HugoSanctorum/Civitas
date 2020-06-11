@@ -187,3 +187,13 @@ a.hover-light:hover {
 .handle:hover{
     cursor:grab;
 }
+
+.behind{
+    position: relative;
+    z-index: 1;
+}
+
+.in-front{
+    position: relative;
+    z-index: 2;
+}

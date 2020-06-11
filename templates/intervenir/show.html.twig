@@ -19,9 +19,9 @@
                 </div>
             </div>
             <p class="lead">
-                <a class="text-info" href={{ path('personne_show', {'id': intervenir.Personne.id}) }} data-toggle="tooltip" data-placement="bottom" title="Technicien chargé du problème"><i class="fa fa-user"></i> {{ intervenir.Personne.username }}</a>
+                <a class="text-info" href={{ path('personne_show', {'id': intervenir.Personne.id}) }} data-toggle="tooltip" data-placement="bottom" title="Technicien lié à l'intervention"><i class="fa fa-user"></i> {{ intervenir.Personne.username }}</a>
                 <i class="fa fa-arrow-right"></i>
-                <a class="text-info" href={{ path('probleme_show', {'id': intervenir.Probleme.id}) }} data-toggle="tooltip" data-placement="bottom" title="Problème sur lequel travaille le technicien"><i class="fa fa-clipboard"></i> {{ intervenir.Probleme.titre }}</a>
+                <a class="text-info" href={{ path('probleme_show', {'id': intervenir.Probleme.id}) }} data-toggle="tooltip" data-placement="bottom" title="Problème lié à l'intervention"><i class="fa fa-clipboard"></i> {{ intervenir.Probleme.titre }}</a>
             </p>
         </div>
     </div>

@@ -83,7 +83,7 @@
 {% endmacro %}
 
 {% macro style_categorie(categorie, color, icone) %}
-    <span class="badge badge-pill badge-light" style=
+    <span style=
     {% if color is same as("red") %}
         "color:#d63e2a;" > <i class="fa fa-{{icone}}"></i> {{categorie}}
     {% elseif color is same as("darkred") %}

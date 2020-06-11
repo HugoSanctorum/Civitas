@@ -12,16 +12,28 @@
 		<div>
 			<h4><i class="fa fa-calendar-plus text-danger"></i> Nouvelles interventions</h4>
 			<div class="historique border border-primary">
-				<div class="row">
-					<div class="col-md-8">
+				{% for intervention in new_interventions %}
+					<div class="row">
+						<div class="col-md-8 flex-center">
+							<span class="badge badge-secondary date_hs mr-1">
+                            	{{ (intervention.HistoriqueStatutInterventions|last).date ? (intervention.HistoriqueStatutInterventions|last).date|date('d-m-Y H\\hi') : '' }}
+                        	</span>
+                        	<i class="fa fa-arrow-right text-primary mr-1"></i>
+							<a href="{{ path('intervenir_show', {'id': intervention.id}) }}">
+								{{ intervention.Probleme.titre }}
+							</a>
+						</div>
+						<div class="col-md-4 btn-group" role="group">
+							<a class="btn btn-success" href=""><i class="fa fa-check"></i> Accepter</a>
 						
+							<a class="btn btn-danger" href=""><i class="fa fa-times"></i> Refuser</a>
+						</div>
 					</div>
-					<div class="col-md-4 btn-group" role="group">
-						<a class="btn btn-success" href=""><i class="fa fa-check"></i> Accepter</a>
-					
-						<a class="btn btn-danger" href=""><i class="fa fa-times"></i> Refuser</a>
+				{% else %}
+					<div class="row">
+						Pas de nouvelle intervention pour le moment <i class="fa fa-hourglass"></i>
 					</div>
-				</div>
+				{% endfor %}
 			</div>
 		</div>
 

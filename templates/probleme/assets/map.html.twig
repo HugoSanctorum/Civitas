@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Sur la carte{% endblock %}
+
+{% block body %}
+
+<div id="mapid" class="fill" data-centre="{{ commune.centre|json_encode|e('html_attr') }}" data-contour="{{ commune.contour|json_encode|e('html_attr') }}" data-coordonnees="{{ coordonnees|json_encode|e('html_attr') }}"></div>
+
+{% endblock %}
+
+{% block map %}
+    <script type="text/javascript">
+
+        let addmarker = "";
+
+        let map = L.map('mapid');
+        L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+            maxZoom: 18,
+            id: 'mapbox/streets-v11',
+            tileSize: 512,
+            zoomOffset: -1,
+            accessToken: 'pk.eyJ1IjoiYW5hY29tYiIsImEiOiJjazltdG82d2EwMnp5M21scGc1cWdtOGM3In0.WbSl0RvM9KcZkU3C4EDrug'
+        }).addTo(map);
+        
+        let centre = JSON.parse(document.getElementById("mapid").dataset.centre).reverse();
+        map.setView(centre, 13);
+
+        let contour = JSON.parse(document.getElementById("mapid").dataset.contour);
+
+        let coordonnees = JSON.parse(document.getElementById("mapid").dataset.coordonnees);
+
+        let feature = {
+            "type": "Feature",
+            "geometry": {
+                "type": "Polygon",
+                "coordinates": contour
+            }
+        };
+
+        let featureStyle = {
+            "color": "#000",
+            "weight": 0.8,
+            "opacity": 0.8,
+            "fillOpacity": 0.1
+        };
+
+        L.geoJSON(feature, {
+            style: featureStyle      
+        }).addTo(map);
+
+        let markerstyle = L.AwesomeMarkers.icon({
+            prefix: 'fa',
+            icon: "bullseye",
+            markerColor: "red"
+        });
+
+        let marker = L.marker(coordonnees, {icon: markerstyle}).addTo(map);
+            marker.bindPopup('<b>' + '{{probleme.titre}}' + '</b></br><a href="/probleme/'+ '{{probleme.id}}' +'/show">Voir le problème</a>');
+    </script>
+{% endblock %}

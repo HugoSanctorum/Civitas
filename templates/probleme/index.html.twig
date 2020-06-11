@@ -29,10 +29,17 @@
             {% endif %}
                 {% set cpt = cpt + 1 %}
                 <div class="col col-fill">
-                    <div class="card {{ macros.border_priorite(probleme.Priorite, probleme.Priorite.poids) }} mb-4 mx-2">
-                        <div class="card-header">
+                    <div class="card {{ macros.border_priorite(probleme.Priorite, probleme.Priorite.poids) }} behind mb-4 mx-2">
+                        <div class="card-header mb-1">
                             <h3>{{ probleme.titre }}</h3>
-                            <p class="card-subtitle">{{ macros.color_statut((probleme.HistoriqueStatuts|last).Statut.nom, (probleme.HistoriqueStatuts|last).Statut.couleur, (probleme.HistoriqueStatuts|last).Statut.icone) }}</p>
+                            <p class="card-subtitle mb-2">
+                                {{ macros.color_statut((probleme.HistoriqueStatuts|last).Statut.nom, (probleme.HistoriqueStatuts|last).Statut.couleur, (probleme.HistoriqueStatuts|last).Statut.icone) }}
+                            </p>
+                            <p class="card-subtitle">
+                                <a class="btn btn-link font-italic in-front" href="{{ path('probleme_viewmap', {'id': probleme.id}) }}">
+                                    <i class="fa fa-map-marker"></i> {{ probleme.localisation }}
+                                </a>  
+                            </p>
                         </div>
                         <div class="card-body">
                             <h5 class="card-title">{{ probleme.description }}</h5>

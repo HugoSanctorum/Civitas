@@ -29,8 +29,21 @@
                     </button>
                 </div>
             </div>
-            <p class="lead">{{ macros.style_categorie(probleme.categorie, probleme.categorie.couleur, probleme.categorie.icone) }}</p>
-            <p>{{ probleme.description }}</p>
+            <p class="lead">
+                <a data-toggle="tooltip" data-placement="right" data-html="true" title="<i class='fa fa-map-marked'></i> Voir le problème sur la carte" href="{{ path('probleme_viewmap', {'id': probleme.id}) }}">
+                    <i class="fa fa-map-marker"></i> {{ probleme.localisation }}
+                </a>
+            </p>
+            <p id="category">
+                <span data-toggle="tooltip" data-placement="right" data-html="true" title="<i class='fa fa-filter'></i> Catégorie du problème<br><br>Clic pour voir tout les problèmes de cette catégorie">
+                    <a class="nounderline" href="{{ path('probleme_index', {'tri': 'true', 'categories': probleme.categorie.nom}) }}">{{ macros.style_categorie(probleme.categorie, probleme.categorie.couleur, probleme.categorie.icone) }}</a>
+                </span>
+            </p>
+            <p>
+                <span data-toggle="tooltip" data-placement="right" data-html="true" title="<i class='fa fa-comment-dots'></i> Description du problème">
+                    {{ probleme.description|capitalize }}
+                </span>
+            </p>
         </div>
     </div>
     <div class="container">

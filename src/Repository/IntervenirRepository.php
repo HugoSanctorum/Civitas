@@ -109,4 +109,17 @@ class IntervenirRepository extends ServiceEntityRepository
         if($sql) return true;
         else return false;
     }
+
+    public function getNewIntervenirByTechnician(Personne $personne){
+        return $this->createQueryBuilder('i')
+            ->join('i.HistoriqueStatutInterventions', 'hsi')
+            ->join('i.TypeIntervention', 'ti')
+            ->join('hsi.StatutIntervention', 'si')
+            ->where("ti.nom = 'Technicien'")
+            ->andwhere("i.Personne = :personne")
+            ->andwhere("si.nom = 'En attente de révision'")
+            ->setParameter('personne', $personne)
+            ->getQuery()
+            ->getResult();
+    }
 }

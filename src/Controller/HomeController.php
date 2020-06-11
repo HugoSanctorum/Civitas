@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Repository\HistoriqueStatutRepository;
 use App\Repository\StatutRepository;
+use App\Repository\IntervenirRepository;
 
 use App\Services\Geocoder\GeocoderService;
 
@@ -97,10 +98,16 @@ class HomeController extends AbstractController
      * @Route("/pannel_technicien", name="pannel_technicien")
      * @IsGranted("ROLE_USER")
      */
-    public function pannel_technicien()
+    public function pannel_technicien(
+        TokenStorageInterface $tokenStorageInterface,
+        IntervenirRepository $intervenirRepository
+    )
     {
+        $personne = $tokenStorageInterface->getToken()->getUser();
         return $this->render('home/pannel/technicien.html.twig', [
-            
+            "new_interventions" => $intervenirRepository->getNewIntervenirByTechnician($personne),
+            //"in_progress_intervention" =>$intervenirRepository->getInProgressIntervenirByTechnician($personne),
+            //"affected_intervention" => $intervenirRepository->getAffectedIntervenirByTechnician($personne) 
         ]);
     }
 }
