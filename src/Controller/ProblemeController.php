@@ -14,6 +14,7 @@ use App\Form\RedirectProblemeType;
 use App\Repository\CategorieRepository;
 use App\Repository\CommuneRepository;
 use App\Repository\ImageRepository;
+use App\Repository\IntervenirRepository;
 use App\Repository\PersonneRepository;
 use App\Repository\PrioriteRepository;
 use App\Repository\ProblemeRepository;
@@ -385,7 +386,9 @@ class ProblemeController extends AbstractController
      */
     public function validateProblem(
         Probleme $probleme,
-        StatutRepository $statutRepository
+        StatutRepository $statutRepository,
+        MailerService $mailerService,
+        IntervenirRepository $intervenirRepository
     ) : Response
     {
         if(!$this->isGranted('ROLE_USER')){
@@ -399,8 +402,11 @@ class ProblemeController extends AbstractController
                 if ($probleme->getHistoriqueStatuts()->last()->getStatut()->getNom() != "Nouveau") {
                     return $this->redirectToRoute('probleme_show', ["id" => $probleme->getId()]);
                 }
-
                 $entityManager = $this->getDoctrine()->getManager();
+                $signaleur = $intervenirRepository->findSignaleurByProbleme($probleme);
+                if($signaleur->getPersonne()) {
+                    $mailerService->sendMailSignaleurProblemeOuvert($signaleur->getPersonne(), $probleme);
+                }
                 $this->problemeService->CreateNewHistoriqueStatut($probleme,'Ouvert');
                 $entityManager->flush();
             }

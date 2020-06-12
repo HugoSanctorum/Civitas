@@ -1,0 +1,8 @@
+{% include 'email/style.html.twig' %}
+{% block body %}
+
+    Bonjour {{ signaleur }}, le probleme "{{ probleme }}" vient d'être ouvert, il a été validé par un gestionnaire et va être traité dans les plus brefs delais.
+{% endblock %}
+{% block footer %}
+    {% include 'email/unsubscribeMail.html.twig' %}
+{% endblock %}

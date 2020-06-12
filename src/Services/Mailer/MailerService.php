@@ -3,6 +3,7 @@
 namespace App\Services\Mailer;
 
 use App\Entity\Personne;
+use App\Entity\Probleme;
 use Swift_Mailer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -17,7 +18,7 @@ class MailerService extends AbstractController
 
     public function sendMailToSignaleurNewProbleme(Personne $destinataire, $probleme){
         if($destinataire->getSubscribeToken() != null) {
-            $message = (new \Swift_Message('Nouveau probleme'))
+            $message = (new \Swift_Message('Votre problème a été signalé !'))
                 ->setFrom('CivitasNotification@gmail.com')
                 ->setTo($destinataire->getMail())
                 ->addPart(
@@ -42,7 +43,8 @@ class MailerService extends AbstractController
                         'email/notifNouvelleIntervention.html.twig',
                         [
                             "probleme" => $probleme,
-                            "technicien" => $destinataire
+                            "technicien" => $destinataire,
+                            "subscribeToken" => $destinataire->getSubscribeToken()
                         ]),
                     'text/html'
                 );
@@ -59,7 +61,7 @@ class MailerService extends AbstractController
                         [
                             "probleme" => $probleme,
                             "signaleur" => $destinataire,
-                            "unsubscribeToken" => $destinataire->getSubscribeToken(),
+                            "subscribeToken" => $destinataire->getSubscribeToken(),
                         ]),
                     'text/html'
                 );
@@ -107,5 +109,22 @@ class MailerService extends AbstractController
                 'text/html'
             );
         $this->mailer->send($message);
+    }
+    public function sendMailSignaleurProblemeOuvert(Personne $signaleur, Probleme $probleme){
+        if($signaleur->getSubscribeToken() != null) {
+            $message = (new \Swift_Message('Votre probleme a été validé !'))
+                ->setFrom('civitasnotification@gmail.com')
+                ->setTo($signaleur->getMail())
+                ->addPart(
+                    $this->renderView('email/notifProblemeOuvert.html.twig',
+                        [
+                            "probleme" => $probleme,
+                            "signaleur" => $signaleur,
+                            "subscribeToken" => $signaleur->getSubscribeToken(),
+                        ]),
+                    'text/html'
+                );
+            $this->mailer->send($message);
+        }
     }
 }

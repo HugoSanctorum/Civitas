@@ -130,5 +130,11 @@
     <orderEntry type="library" name="jasny-bootstrap" level="application" />
     <orderEntry type="library" name="leaflet.awesome-markers" level="application" />
     <orderEntry type="library" name="fontawesome-iconpicker" level="application" />
+    <orderEntry type="library" name="bootstrap-table" level="application" />
+    <orderEntry type="library" name="defaults-fr_FR" level="application" />
+    <orderEntry type="library" name="bootstrap-select" level="application" />
+    <orderEntry type="library" name="places" level="application" />
+    <orderEntry type="library" name="huebee.pkgd" level="application" />
+    <orderEntry type="library" name="bootstrap-switch" level="application" />
   </component>
 </module>

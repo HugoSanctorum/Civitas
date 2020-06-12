@@ -18,4 +18,10 @@
         {{ include('profile/_form.html.twig') }}
     </div>
 {% endblock %}
-{% block moreScript %} {{ parent() }} {% endblock %}
+{% block moreScript %}
+    <script>
+        $(document).ready(function () {
+            $("#profile_subscribeToken").bootstrapSwitch();
+        });
+    </script>
+{% endblock %}
