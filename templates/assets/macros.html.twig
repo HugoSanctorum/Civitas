@@ -163,3 +163,21 @@
         border-danger
     {% endif %}
 {% endmacro %}
+
+{% macro historiqueStatutInterventionStyle(nom, description) %}
+    <span data-toggle="tooltip" data-placement="right" class=
+    {% if nom == "En attente de révision" %}
+        "text-primary" title="{{description}}"> <i class="fa fa-hourglass-half"></i>
+    {% elseif nom == "Acceptée" %}
+        "text-success" title="{{description}}"> <i class="fa fa-calendar-check"></i>
+    {% elseif nom == "En traitement" %}
+        "text-info" title="{{description}}"> <i class="fa fa-tools"></i>
+    {% elseif nom == "Suspendue" %}
+        "text-warning" title="{{description}}"> <i class="fa fa-ban"></i>
+    {% elseif nom == "Terminée" %}
+        "text-success" title="{{description}}"> <i class="fa fa-check-double"></i>
+    {% elseif nom == "Annulée" %}
+        "text-danger" title="{{description}}"> <i class="fa fa-window-close"></i>
+    {% endif %}
+     {{nom}}</span>
+{% endmacro %}

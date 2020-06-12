@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Pannel Technicien{% endblock %}
+{% block title %}Interface Technicien{% endblock %}
 
 {% block body %}
 	<div class="jumbotron jumbotron-fluid">
@@ -24,9 +24,9 @@
 							</a>
 						</div>
 						<div class="col-md-4 btn-group" role="group">
-							<a class="btn btn-success" href=""><i class="fa fa-check"></i> Accepter</a>
+							<a class="btn btn-success" href="{{ path('intervenir_accept', {'id': intervention.id, 'choice': 1}) }}"><i class="fa fa-check"></i> Accepter</a>
 						
-							<a class="btn btn-danger" href=""><i class="fa fa-times"></i> Refuser</a>
+							<a class="btn btn-danger" href="{{ path('intervenir_accept', {'id': intervention.id, 'choice': 0}) }}"><i class="fa fa-times"></i> Refuser</a>
 						</div>
 					</div>
 				{% else %}

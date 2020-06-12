@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\HistoriqueStatutIntervention;
+use App\Entity\Intervenir;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -22,19 +23,27 @@ class HistoriqueStatutInterventionRepository extends ServiceEntityRepository
     // /**
     //  * @return HistoriqueStatutIntervention[] Returns an array of HistoriqueStatutIntervention objects
     //  */
-    /*
-    public function findByExampleField($value)
+    
+    public function getLatestByIntervention(Intervenir $intervenir)
     {
-        return $this->createQueryBuilder('h')
-            ->andWhere('h.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('h.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+        $conn = $this->getEntityManager()->getConnection();
+
+        $sql = '
+            SELECT *
+            FROM historique_statut_intervention
+            WHERE intervenir_id = :intervenir and date = (
+                SELECT MAX(date)
+                FROM historique_statut_intervention
+            )
+            ';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute(['intervenir' => $intervenir->getId()]);
+
+        $result = $stmt->fetch();
+        if($result) return $this->findOneBy(['id' => $result['id']]);
+        else return null;
     }
-    */
+    
 
     /*
     public function findOneBySomeField($value): ?HistoriqueStatutIntervention
