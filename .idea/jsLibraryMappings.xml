@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="JavaScriptLibraryMappings">
-    <file url="PROJECT" libraries="{Sortable, chartist, dropzone, fontawesome-iconpicker, jasny-bootstrap, leaflet.awesome-markers, typeit}" />
+    <file url="PROJECT" libraries="{Sortable, bootstrap-select, bootstrap-switch, bootstrap-table, chartist, defaults-fr_FR, dropzone, fontawesome-iconpicker, huebee.pkgd, jasny-bootstrap, leaflet.awesome-markers, places, typeit}" />
   </component>
 </project>

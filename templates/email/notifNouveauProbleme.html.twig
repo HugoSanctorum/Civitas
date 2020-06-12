@@ -1,8 +1,33 @@
 {% include 'email/style.html.twig' %}
 {% block body %}
-
-    Merci {{ personne.nom }} {{ personne.prenom }} vous venez de signaler le probleme "{{ probleme }}".
+    <div class="card-display">
+        <div class="card card-center-content">
+            <div class="title">
+                SIGNALEMENT DE PROBLÈME !
+            </div>
+            <div class="card-body">
+                <div>
+                    Bonjour <b>{{ personne.nom }} {{ personne.prenom }}</b>.
+                </div>
+                <div style="margin-top: 1%" ²>
+                   Merci d'avoir signaler le probleme:
+                </div>
+                <div>
+                    <b>"{{ probleme }}"</b>.
+                </div>
+                <div style="margin-top: 1%" >
+                    À l'addresse :
+                </div>
+                <div>
+                    <b>{{ probleme.localisation }}</b>.
+                </div>
+                <div style="margin-top: 1%">
+                    La mairie de <b>{{ probleme.Commune }}</b> s'en occupera très prochainement !
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 {% block footer %}
-{% include 'email/unsubscribeMail.html.twig' %}
+    {% include 'email/unsubscribeMail.html.twig' %}
 {% endblock %}

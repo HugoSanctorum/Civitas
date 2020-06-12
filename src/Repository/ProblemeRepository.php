@@ -35,7 +35,7 @@ class ProblemeRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Probleme::class);
         $this->historiqueStatutRepository = $historiqueStatutRepository;
-        $this->personne = $tokenStorageInterface->getToken()->getUser();
+        if($tokenStorageInterface->getToken()) $this->personne = $tokenStorageInterface->getToken()->getUser();
     }
 
     public function formatValues($query)
