@@ -1,0 +1,128 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Interface Technicien{% endblock %}
+
+{% block body %}
+	<div class="jumbotron jumbotron-fluid">
+		<div class="container">
+			<h1 class="display-4">Gestion de vos interventions</h1>
+		</div>
+	</div>
+	<div class="container">
+		<div>
+			<h4>
+				<i class="fa fa-calendar-plus text-danger"></i>
+				 Nouvelles interventions
+				{% if new_interventions|length > 0 %} 
+					<span class="badge badge-pill badge-danger font-weight-light align-middle date_hs">
+						{{new_interventions|length }}
+					</span>
+				{% endif %}
+			</h4>
+			<div class="historique border border-primary list-group list-group-flush">
+				{% for intervention in new_interventions %}
+					<div class="row list-group-item mx-1">
+						<div class="col-md flex-center">
+							<span class="badge badge-secondary date_hs mr-1">
+                            	{{ (intervention.HistoriqueStatutInterventions|last).date ? (intervention.HistoriqueStatutInterventions|last).date|date('d-m-Y H\\hi') : '' }}
+                        	</span>
+                        	<i class="fa fa-arrow-right text-primary mr-1"></i>
+							<a href="{{ path('intervenir_show', {'id': intervention.id}) }}">
+								{{ intervention.Probleme.titre }}
+							</a>
+						</div>
+						<div class="col-md btn-group" role="group">
+							<a class="btn btn-success" href="{{ path('intervenir_accept', {'id': intervention.id, 'choice': 1}) }}"><i class="fa fa-check"></i> Accepter</a>
+						
+							<a class="btn btn-danger" href="{{ path('intervenir_accept', {'id': intervention.id, 'choice': 0}) }}"><i class="fa fa-times"></i> Refuser</a>
+						</div>
+					</div>
+				{% else %}
+					<div class="row">
+						<div class="col-md text-primary">
+							Pas de nouvelle intervention pour le moment <i class="fa fa-hourglass-half"></i>
+						</div>
+					</div>
+				{% endfor %}
+			</div>
+		</div>
+
+		<div class="section">
+			<h4><i class="fa fa-hourglass-half text-info"></i> Interventions en cours</h4>
+			<div class="historique border border-primary">
+				{% for intervention in in_progress_interventions %}
+					<div class="row list-group-item mx-1">
+						<div class="col-md-6 flex-center mb-3 pt-3">
+							<span class="badge badge-secondary date_hs mr-1">
+                            	{{ (intervention.HistoriqueStatutInterventions|last).date ? (intervention.HistoriqueStatutInterventions|last).date|date('d-m-Y H\\hi') : '' }}
+                        	</span>
+                        	<i class="fa fa-arrow-right text-primary mr-1"></i>
+							<a href="{{ path('intervenir_show', {'id': intervention.id}) }}">
+								{{ intervention.Probleme.titre }}
+							</a>
+						</div>
+						<div class="col-md flex-center col-fill px-1 mb-1">
+							<a class="btn btn-warning btn-block flex-center justify-center" href="{{ path('intervenir_suspend', {'id': intervention.id}) }}"><i class="fa fa-pause-circle mr-1"></i>Suspendre</a>
+						</div>
+						<div class="col-md flex-center col-fill px-1 mb-1">
+							<a class="btn btn-secondary btn-block flex-center justify-center" href="{{ path('compte_rendu_new', {'probleme': intervention.Probleme.id}) }}"><i class="fa fa-plus-circle mr-1"></i> Ajouter un compte rendu</a>
+						</div>
+						<div class="col-md flex-center col-fill px-1 mb-1">
+							<a class="btn btn-success btn-block flex-center justify-center" href="{{ path('intervenir_resolve', {'id': intervention.id}) }}"><i class="fa fa-check-circle mr-1"></i> Terminer l'intervention</a>
+						</div>
+					</div>
+				{% else %}
+					<div class="row">
+						<div class="col-md text-primary">
+							Pas d'intervention en cours pour le moment <i class="fa fa-hourglass-half"></i>
+						</div>
+					</div>
+				{% endfor %}
+			</div>
+		</div>
+
+		<div class="section">
+			<h4><i class="far fa-clipboard text-primary"></i> Interventions acceptées</h4>
+			<div class="historique border border-primary list-group list-group-flush">
+				{% for intervention in affected_interventions %}
+					{% set statut = (intervention.HistoriqueStatutInterventions|last).StatutIntervention.nom %}
+					<div class="row list-group-item mx-1">
+						<div class="col-md flex-center">
+							<span class="badge badge-secondary date_hs mr-1">
+                            	{{ (intervention.HistoriqueStatutInterventions|last).date ? (intervention.HistoriqueStatutInterventions|last).date|date('d-m-Y H\\hi') : '' }}
+                        	</span>
+                        	<i class="fa fa-arrow-right text-primary mr-1"></i>
+							<a href="{{ path('intervenir_show', {'id': intervention.id}) }}">
+								{{ intervention.Probleme.titre }}
+							</a>
+						</div>
+						<div class="col-md btn-group" role="group">
+							{% if statut == "Acceptée" %}
+								<a class="btn btn-success" href="{{ path('intervenir_run', {'id': intervention.id}) }}"><i class="fa fa-tools"></i> Effectuer l'intervention</a>
+							{% else %}
+								<a class="btn btn-warning" href="{{ path('intervenir_run', {'id': intervention.id}) }}"><i class="fa fa-play-circle"></i> Reprendre l'intervention</a>
+							{% endif %}
+							<a class="btn btn-danger" href="{{ path('intervenir_abort', {'id': intervention.id}) }}"><i class="fa fa-power-off"></i> Annuler l'intervention</a>
+						</div>
+					</div>
+				{% else %}
+					<div class="row">
+						<div class="col-md text-primary">
+							Pas d'intervention acceptée pour le moment <i class="fa fa-hourglass-half"></i>
+						</div>
+					</div>
+				{% endfor %}
+			</div>
+		</div>
+
+		<div class="section">
+			<h4><i class="far fa-clipboard text-primary"></i> Boutons</h4>
+			<div class="list-group mb-3">
+				<a class="list-group-item list-group-item-action list-group-item-info" href="{{ path('probleme_index') }}"><i class="fa fa-list"></i> Liste des problèmes de la commune</a>
+				<a class="list-group-item list-group-item-action list-group-item-info" href="{{ path('probleme_index', {'tri': 'true', 'statuts': 'nouveau'}) }}"><i class="fa fa-bell"></i> Liste des nouveaux problèmes de la commune</a>
+			</div>
+		</div>
+		
+	</div>
+	
+{% endblock %}

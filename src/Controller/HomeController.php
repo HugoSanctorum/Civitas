@@ -84,18 +84,18 @@ class HomeController extends AbstractController
     }
 
     /**
-     * @Route("/pannel_gestionnaire", name="pannel_gestionnaire")
+     * @Route("/panel_gestionnaire", name="panel_gestionnaire")
      * @IsGranted("ROLE_USER")
      */
     public function pannel_gestionnaire()
     {
-        return $this->render('home/pannel/gestionnaire.html.twig', [
+        return $this->render('home/panel/gestionnaire.html.twig', [
             
         ]);
     }
 
     /**
-     * @Route("/pannel_technicien", name="pannel_technicien")
+     * @Route("/panel_technicien", name="panel_technicien")
      * @IsGranted("ROLE_USER")
      */
     public function pannel_technicien(
@@ -104,10 +104,10 @@ class HomeController extends AbstractController
     )
     {
         $personne = $tokenStorageInterface->getToken()->getUser();
-        return $this->render('home/pannel/technicien.html.twig', [
+        return $this->render('home/panel/technicien.html.twig', [
             "new_interventions" => $intervenirRepository->getNewIntervenirByTechnician($personne),
-            //"in_progress_intervention" =>$intervenirRepository->getInProgressIntervenirByTechnician($personne),
-            //"affected_intervention" => $intervenirRepository->getAffectedIntervenirByTechnician($personne) 
+            "in_progress_interventions" =>$intervenirRepository->getInProgressIntervenirByTechnician($personne),
+            "affected_interventions" => $intervenirRepository->getAffectedIntervenirByTechnician($personne) 
         ]);
     }
 }
