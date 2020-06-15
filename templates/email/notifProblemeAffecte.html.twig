@@ -1,8 +1,36 @@
 {% include 'email/style.html.twig' %}
 {% block body %}
-
-    Bonjour {{ signaleur }}, le probleme "{{ probleme }}" vient d'être affecté à un technicien.
+    <div class="card-display">
+        <div class="card card-center-content">
+            <div class="title">
+                AFFECTATION DE VOTRE PROBLÈME !
+            </div>
+            <div class="card-body">
+                <div>
+                    Bonjour <b>{{ signaleur.nom }} {{ signaleur.prenom }}</b>.
+                </div>
+                <div style="margin-top: 1%" ²>
+                    Votre probleme :
+                </div>
+                <div>
+                    <b>"{{ probleme }}"</b>.
+                </div>
+                <div style="margin-top: 1%" >
+                    À l'adresse :
+                </div>
+                <div>
+                    <b>{{ probleme.localisation }}</b>.
+                </div>
+                <div style="margin-top: 1%">
+                    Vient d'être affecté à un technicien !
+                </div>
+                <div style="margin-top: 1%">
+                    La mairie de <b>{{ probleme.Commune }}</b> s'en occupe actuellement !
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 {% block footer %}
-{% include 'email/unsubscribeMail.html.twig' %}
+    {% include 'email/unsubscribeMail.html.twig' %}
 {% endblock %}

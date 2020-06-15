@@ -1,5 +1,5 @@
 {% block footer %}
     {% if subscribeToken is not null %}
-    <p class="text-center"><a style="margin-top: 3%" class="btn btn-warning" href="{{ absolute_url(path('unsubscribe', {'subscribeToken': subscribeToken})) }}"> Me désabonner </a></p>
+    <p class="text-center"><a style="margin-top: 3%; color:#2C3E50; background-color:#fed843" class="btn " href="{{ absolute_url(path('unsubscribe', {'subscribeToken': subscribeToken})) }}"> Me désabonner </a></p>
     {% endif %}
 {% endblock %}

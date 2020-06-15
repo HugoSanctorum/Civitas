@@ -1,7 +1,35 @@
 {% include 'email/style.html.twig' %}
 {% block body %}
-
-    Bonjour {{ signaleur }}, le probleme "{{ probleme }}" vient d'être ouvert, il a été validé par un gestionnaire et va être traité dans les plus brefs delais.
+    <div class="card-display">
+        <div class="card card-center-content">
+            <div class="title">
+                VALIDATION DE VOTRE PROBLÈME !
+            </div>
+            <div class="card-body">
+                <div>
+                    Bonjour <b>{{ signaleur.nom }} {{ signaleur.prenom }}</b>.
+                </div>
+                <div style="margin-top: 1%" ²>
+                    Votre probleme :
+                </div>
+                <div>
+                    <b>"{{ probleme }}"</b>.
+                </div>
+                <div style="margin-top: 1%" >
+                    À l'adresse :
+                </div>
+                <div>
+                    <b>{{ probleme.localisation }}</b>.
+                </div>
+                <div style="margin-top: 1%">
+                    Vient d'être validé par la mairie de <b>{{ probleme.Commune }}</b> !
+                </div>
+                <div style="margin-top: 1%">
+                    Il sera affecté à un technicien dans les plus brefs délais.
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 {% block footer %}
     {% include 'email/unsubscribeMail.html.twig' %}

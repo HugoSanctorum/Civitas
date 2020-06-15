@@ -1,6 +1,22 @@
 {% include 'email/style.html.twig' %}
 {% block body %}
-    Bonjour {{ personne.nom }} {{ personne.prenom }}, pour activer votre compte, veuillez cliquer sur ce lien.
-
-    <p><a href="{{ absolute_url(path('activation', {'token': token})) }}">Activer mon compte</a></p>
+    <div class="card-display">
+        <div class="card card-center-content">
+            <div class="title">
+                Activation de votre compte Civitas
+            </div>
+            <div class="card-body">
+                <div>
+                    Bonjour <b>{{ personne.nom }} {{ personne.prenom }}</b>,
+                </div>
+                <div style="margin-top: 1%">
+                    pour activer votre compte,  veuillez cliquer sur ce lien :
+                </div>
+                <div style="margin-top: 1%">
+                    <b><a href="{{ absolute_url(path('activation', {'token': token})) }}">Activer mon compte</a></b>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
+

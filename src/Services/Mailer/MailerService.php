@@ -35,7 +35,7 @@ class MailerService extends AbstractController
         }
     }
     public function sendMailToTechnicienAffectedProbleme(Personne $destinataire,$probleme){
-            $message = (new \Swift_Message('Probleme affecté'))
+            $message = (new \Swift_Message('Vous avez été affecté à un problème !'))
                 ->setFrom('civitasnotification@gmail.com')
                 ->setTo($destinataire->getMail())
                 ->addPart(
@@ -53,7 +53,7 @@ class MailerService extends AbstractController
     public function sendMailToSignaleurAffectedProbleme(Personne $destinataire, $probleme)
     {
         if($destinataire->getSubscribeToken() != null) {
-            $message = (new \Swift_Message('Probleme affecté'))
+            $message = (new \Swift_Message('Votre problème a été affecté à un technicien'))
                 ->setFrom('civitasnotification@gmail.com')
                 ->setTo($destinataire->getMail())
                 ->addPart(
