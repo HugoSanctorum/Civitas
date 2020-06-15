@@ -106,8 +106,8 @@ class HomeController extends AbstractController
         $personne = $tokenStorageInterface->getToken()->getUser();
         return $this->render('home/panel/technicien.html.twig', [
             "new_interventions" => $intervenirRepository->getNewIntervenirByTechnician($personne),
-            //"in_progress_intervention" =>$intervenirRepository->getInProgressIntervenirByTechnician($personne),
-            //"affected_intervention" => $intervenirRepository->getAffectedIntervenirByTechnician($personne) 
+            "in_progress_interventions" =>$intervenirRepository->getInProgressIntervenirByTechnician($personne),
+            "affected_interventions" => $intervenirRepository->getAffectedIntervenirByTechnician($personne) 
         ]);
     }
 }

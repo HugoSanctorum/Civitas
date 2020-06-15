@@ -201,7 +201,7 @@ class IntervenirController extends AbstractController
     }
 
     /**
-     * @Route("/accept/{id}/{choice}", name="intervenir_accept", methods={"GET"}, requirements={"intervenir": "\d+", "choice": "\d+"})
+     * @Route("/accept/{id}/{choice}", name="intervenir_accept", methods={"GET"}, requirements={"id": "\d+", "choice": "\d+"})
      *
      * Accepte l'intervention et la refuse si $choice = false
      */
@@ -213,16 +213,44 @@ class IntervenirController extends AbstractController
         $entityManager = $this->getDoctrine()->getManager();
         $hsi = new HistoriqueStatutIntervention();
 
-        if($choice){
-            $statut = $this->statutInterventionRepository->findOneBy(['nom' => "Acceptée"]);
-            $hsi->setStatutIntervention($statut);        
-        }
-        else{   
-            $statut = $this->statutInterventionRepository->findOneBy(['nom' => "Refusée"]);
-            $hsi->setStatutIntervention($statut);   
+        if(!$choice){
+            $this->problemeService->CreateNewHistoriqueStatut($intervenir->getProbleme(), 'Ouvert', "L'intervention a été refusé par le technicien");
+            $entityManager->remove($intervenir);
+            $entityManager->flush();
+            return $this->redirectToRoute('panel_technicien');
+        } // SUPRESSION QUI MARCHE PAS HELP
 
-            $this->problemeService->CreateNewHistoriqueStatut($intervenir->getProbleme(), 'Ouvert');
+        $statut = $this->statutInterventionRepository->findOneBy(['nom' => "Acceptée"]);
+        $hsi->setStatutIntervention($statut);
+        $hsi->setIntervenir($intervenir);
+        $hsi->setDate(new \DateTime());
+        $entityManager->persist($hsi);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('panel_technicien');
+    }
+
+    /**
+     * @Route("/run/{id}", name="intervenir_run", methods={"GET"}, requirements={"id": "\d+"})
+     *
+     * Démarre l'intervention et la reprend si elle était suspendue
+     */
+    public function runIntervenir(
+        Intervenir $intervenir
+    ): Response
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $hsi = new HistoriqueStatutIntervention();
+
+        $hstatut = $this->historiqueStatutInterventionRepository->getLatestByIntervention($intervenir);
+        if (!($hstatut->getStatutIntervention()->getNom() == "Acceptée" || $hstatut->getStatutIntervention()->getNom() == "Suspendue")){
+            return $this->redirectToRoute('panel_technicien');
         }
+
+        $statut = $this->statutInterventionRepository->findOneBy(['nom' => "En traitement"]);
+        $hsi->setStatutIntervention($statut);   
+
+        $this->problemeService->CreateNewHistoriqueStatut($intervenir->getProbleme(), 'En cours de traitement');
 
         $hsi->setIntervenir($intervenir);
         $hsi->setDate(new \DateTime());
@@ -233,9 +261,87 @@ class IntervenirController extends AbstractController
     }
 
     /**
-    * @Route("/{id}", name="intervenir_delete", methods={"DELETE"})
+     * @Route("/suspend/{id}", name="intervenir_suspend", methods={"GET"}, requirements={"id": "\d+"})
+     *
+     * Suspend l'intervention
+     */
+    public function suspendIntervenir(
+        Intervenir $intervenir
+    ): Response
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $hsi = new HistoriqueStatutIntervention();
+
+        $hstatut = $this->historiqueStatutInterventionRepository->getLatestByIntervention($intervenir);
+        if (!$hstatut->getStatutIntervention()->getNom() == "En traitement"){
+            return $this->redirectToRoute('panel_technicien');
+        }
+
+        $statut = $this->statutInterventionRepository->findOneBy(['nom' => "Suspendue"]);
+        $hsi->setStatutIntervention($statut);   
+
+        $this->problemeService->CreateNewHistoriqueStatut($intervenir->getProbleme(), 'Affecté');
+
+        $hsi->setIntervenir($intervenir);
+        $hsi->setDate(new \DateTime());
+        $entityManager->persist($hsi);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('panel_technicien');
+    }
+
+    /**
+     * @Route("/abort/{id}", name="intervenir_abort", methods={"GET"}, requirements={"id": "\d+"})
+     *
+     * Annule l'intervention
+     */
+    public function abortIntervenir(
+        Intervenir $intervenir
+    ): Response
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $hsi = new HistoriqueStatutIntervention();
+
+        $statut = $this->statutInterventionRepository->findOneBy(['nom' => "Annulée"]);
+        $hsi->setStatutIntervention($statut);   
+
+        $this->problemeService->CreateNewHistoriqueStatut($intervenir->getProbleme(), 'Affecté', "La dernière intervention a été annulé par le technicien");
+
+        $hsi->setIntervenir($intervenir);
+        $hsi->setDate(new \DateTime());
+        $entityManager->persist($hsi);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('panel_technicien');
+    }
+
+    /**
+     * @Route("/resolve/{id}", name="intervenir_resolve", methods={"GET"}, requirements={"id": "\d+"})
+     *
+     * Résoud l'intervention
+     */
+    public function resolveIntervenir(
+        Intervenir $intervenir
+    ): Response
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $hsi = new HistoriqueStatutIntervention();
+
+        $statut = $this->statutInterventionRepository->findOneBy(['nom' => "Terminée"]);
+        $hsi->setStatutIntervention($statut);
+
+        $hsi->setIntervenir($intervenir);
+        $hsi->setDate(new \DateTime());
+        $entityManager->persist($hsi);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('panel_technicien');
+    }
+
+    /**
+    * @Route("/{id}", name="intervenir_delete", methods={"DELETE"}, requirements={"id": "\d+"})
     */
-    /*public function delete(Request $request, Intervenir $intervenir): Response
+    public function delete(Request $request, Intervenir $intervenir): Response
     {
        if ($this->isCsrfTokenValid('delete'.$intervenir->getId(), $request->request->get('_token'))) {
            $entityManager = $this->getDoctrine()->getManager();
@@ -244,6 +350,6 @@ class IntervenirController extends AbstractController
        }
 
        return $this->redirectToRoute('intervenir_index');
-    }*/
+    }
 
 }

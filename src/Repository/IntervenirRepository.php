@@ -139,4 +139,64 @@ class IntervenirRepository extends ServiceEntityRepository
         }
         return $interventions;
     }
+
+    public function getAffectedIntervenirByTechnician(Personne $personne){
+
+        $conn = $this->getEntityManager()->getConnection();
+
+        $sql = "
+        SELECT intervenir.*
+        FROM historique_statut_intervention as t1
+        LEFT OUTER JOIN 
+        (
+            SELECT intervenir_id, MAX(date) as maxdate
+            FROM historique_statut_intervention
+            GROUP BY intervenir_id
+        )AS t2 USING(intervenir_id)
+        INNER JOIN intervenir ON intervenir.id = t1.intervenir_id
+        INNER JOIN type_intervention ON intervenir.type_intervention_id = type_intervention.id
+        INNER JOIN statut_intervention ON t1.statut_intervention_id = statut_intervention.id
+        WHERE t1.date = t2.maxdate AND intervenir.personne_id = :id AND type_intervention.nom = 'Technicien' AND (statut_intervention.nom = 'Acceptée' OR statut_intervention.nom = 'Suspendue')
+        ";
+
+        $stmt = $conn->prepare($sql);
+        $stmt->execute(["id" => $personne->getId()]);
+        $values = $stmt->fetchAll();
+
+        $interventions = [];
+        foreach ($values as $value) {
+            array_push($interventions, $this->findOneBy(['id' => $value['id']]));
+        }
+        return $interventions;
+    }
+
+    public function getInProgressIntervenirByTechnician(Personne $personne){
+
+        $conn = $this->getEntityManager()->getConnection();
+
+        $sql = "
+        SELECT intervenir.*
+        FROM historique_statut_intervention as t1
+        LEFT OUTER JOIN 
+        (
+            SELECT intervenir_id, MAX(date) as maxdate
+            FROM historique_statut_intervention
+            GROUP BY intervenir_id
+        )AS t2 USING(intervenir_id)
+        INNER JOIN intervenir ON intervenir.id = t1.intervenir_id
+        INNER JOIN type_intervention ON intervenir.type_intervention_id = type_intervention.id
+        INNER JOIN statut_intervention ON t1.statut_intervention_id = statut_intervention.id
+        WHERE t1.date = t2.maxdate AND intervenir.personne_id = :id AND type_intervention.nom = 'Technicien' AND statut_intervention.nom = 'En traitement'
+        ";
+
+        $stmt = $conn->prepare($sql);
+        $stmt->execute(["id" => $personne->getId()]);
+        $values = $stmt->fetchAll();
+
+        $interventions = [];
+        foreach ($values as $value) {
+            array_push($interventions, $this->findOneBy(['id' => $value['id']]));
+        }
+        return $interventions;
+    }
 }

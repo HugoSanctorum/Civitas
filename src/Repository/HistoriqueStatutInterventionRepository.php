@@ -34,6 +34,7 @@ class HistoriqueStatutInterventionRepository extends ServiceEntityRepository
             WHERE intervenir_id = :intervenir and date = (
                 SELECT MAX(date)
                 FROM historique_statut_intervention
+                WHERE intervenir_id = :intervenir
             )
             ';
         $stmt = $conn->prepare($sql);

@@ -197,3 +197,8 @@ a.hover-light:hover {
     position: relative;
     z-index: 2;
 }
+
+.justify-center{
+    display: flex;
+    justify-content: center;
+}
