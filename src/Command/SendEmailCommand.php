@@ -35,7 +35,14 @@ class SendEmailCommand extends Command
     {
         $probleme = $this->problemeRepository->findOneBy(['id' => 1]);
         $personne = $this->personneRepository->findOneBy(['id' => 1]);
-        $this->mailerService->sendMailToSignaleurNewProbleme($personne,$probleme);
+        $token=156165156156;
+        $this->mailerService->sendMailResetPassword($personne, $token);
+        $this->mailerService->sendMailActivatedAccount($personne, $token);
+        $this->mailerService->sendMailPasswordChanged($personne);
+        $this->mailerService->sendMailToTechnicienAffectedProbleme($personne,$probleme);
+        $this->mailerService->sendMailSignaleurProblemeOuvert($personne, $probleme);
+        $this->mailerService->sendMailToSignaleurAffectedProbleme($personne, $probleme);
+        $this->mailerService->sendMailToSignaleurNewProbleme($personne, $probleme);
         return 0;
     }
 }
