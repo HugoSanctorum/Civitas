@@ -52,7 +52,7 @@ class Intervenir
     private $description;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\HistoriqueStatutIntervention", mappedBy="Intervenir")
+     * @ORM\OneToMany(targetEntity="App\Entity\HistoriqueStatutIntervention", mappedBy="Intervenir", cascade={"persist", "remove"})
      * @ORM\JoinColumn(nullable=true)
      */
     private $HistoriqueStatutInterventions;

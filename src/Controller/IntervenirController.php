@@ -218,7 +218,7 @@ class IntervenirController extends AbstractController
             $entityManager->remove($intervenir);
             $entityManager->flush();
             return $this->redirectToRoute('panel_technicien');
-        } // SUPRESSION QUI MARCHE PAS HELP
+        }
 
         $statut = $this->statutInterventionRepository->findOneBy(['nom' => "Acceptée"]);
         $hsi->setStatutIntervention($statut);

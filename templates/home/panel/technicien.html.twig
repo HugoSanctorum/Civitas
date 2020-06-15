@@ -116,6 +116,40 @@
 		</div>
 
 		<div class="section">
+			<a class="text-primary" data-toggle="collapse" href="#historique_intervention"aria-expanded="false" aria-controls="historique_intervention">
+			    <h4><i id="drop-icon" class="fa fa-chevron-circle-up"></i> Historique des interventions</h4>
+			</a>
+			<div class="collapse" id="historique_intervention">
+				<div class="card card-body">
+					<div class="list-group">
+						{% for intervention in others_interventions %}
+							{% set statut = (intervention.HistoriqueStatutInterventions|last).StatutIntervention.nom %}
+							<div class="list-group-item">
+								<span class="badge badge-secondary date_hs mr-1">
+                            		{{ (intervention.HistoriqueStatutInterventions|last).date ? (intervention.HistoriqueStatutInterventions|last).date|date('d-m-Y H\\hi') : '' }}
+                        		</span>
+								{% if statut == "Terminée" %}
+									<span class="badge badge-success mr-1">
+								{% else %}
+									<span class="badge badge-danger mr-1">
+								{% endif %}
+                            	{{ statut }}
+                        		</span>
+								<a class="stretched-link" href="{{ path('intervenir_show', {'id': intervention.id}) }}">
+									{{ intervention.Probleme.titre }}
+								</a>
+							</div>
+						{% else %}
+							<div class="list-group-item">
+								<i class="fa fa-times-circle"></i> Pas d'intervention dans l'historique
+							</div>
+						{% endfor %}
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="section">
 			<h4><i class="far fa-clipboard text-primary"></i> Boutons</h4>
 			<div class="list-group mb-3">
 				<a class="list-group-item list-group-item-action list-group-item-info" href="{{ path('probleme_index') }}"><i class="fa fa-list"></i> Liste des problèmes de la commune</a>
@@ -125,4 +159,16 @@
 		
 	</div>
 	
+{% endblock %}
+{% block moreScript %}
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$('#historique_intervention').on('shown.bs.collapse', function () {
+			  	$('#drop-icon').attr('class', 'fa fa-chevron-circle-down');
+			});
+			$('#historique_intervention').on('hidden.bs.collapse', function () {
+			  	$('#drop-icon').attr('class', 'fa fa-chevron-circle-up');
+			});
+		});
+	</script>
 {% endblock %}
