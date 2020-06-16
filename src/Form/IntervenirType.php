@@ -50,13 +50,13 @@ class IntervenirType extends AbstractType{
                 "class" => Personne::class,
                 "choices"=>$this->personneRepository->getPersonneByPermission('CAN_DO_INTERVENTION'),
                 'choice_label' => 'Label',
-
             ])
             ->add('Probleme', EntityType::class,[
                 "class" => Probleme::class,
                 "choices"=>$this->problemeStatutRepository->findAllUnresolvedProblem(),
                 'choice_label' => 'Label',
             ])
+            ->add('description')
         ;
         $builder->addEventListener(
             FormEvents::PRE_SET_DATA,
