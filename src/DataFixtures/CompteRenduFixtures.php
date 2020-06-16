@@ -11,12 +11,12 @@ class CompteRenduFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager)
     {
-        for($i = 0; $i < 4; $i++){
+        for($i = 1; $i <= 10; $i++){
             $compteRendu = new CompteRendu();
-            $compteRendu->setUrlDocument('https://picsum.photos/1280');
-            $compteRendu->setPersonne($this->getReference("personne_".random_int(0, 9)));
-            $compteRendu->setProbleme($this->getReference("probleme_".random_int(1, 99)));
-            $compteRendu->setIntervenir($this->getReference('intervention_'.$i));
+            $compteRendu->setUrlDocument('');
+            $compteRendu->setPersonne($this->getReference("RogerDupont@ens.univ-artois.fr"));
+            $compteRendu->setProbleme($this->getReference("probleme_".$i));
+            $compteRendu->setIntervenir($this->getReference('intervention_1'));
             $compteRendu->setTitre('compte_rendu'.$i);
             $compteRendu->setDate(new \DateTime());
             $manager->persist($compteRendu);

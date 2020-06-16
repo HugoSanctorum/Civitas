@@ -11,7 +11,7 @@ class Servicefixtures extends Fixture
 {
     public function load(ObjectManager $manager)
     {
-        $services = ["Comptabilité", "Logistique", "Administratif", "Voierie", "Assainissement"];
+        $services = ["Comptabilité", "Logistique", "Administratif", "Voierie", "Assainissement","Entretien"];
 
         foreach ($services as $service){
             $entity = new Service();

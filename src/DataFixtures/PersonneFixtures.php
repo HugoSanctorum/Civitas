@@ -35,7 +35,7 @@ class PersonneFixtures extends Fixture implements DependentFixtureInterface
 
         $faker = Faker\Factory::create('fr_FR');
 
-        for($i = 0; $i < 10; $i++){
+        for($i = 0; $i <= 7; $i++){
             $personne = new Personne();
             $personne->setPrenom($faker->firstName());
             $personne->setNom($faker->lastName());
@@ -47,11 +47,7 @@ class PersonneFixtures extends Fixture implements DependentFixtureInterface
             $this->addReference('personne_'.$i, $personne);
             $personne->setCommune($communes[array_rand($communes)]);
             $personne->setCreatedAt(new \DateTime('now'));
-            if($i % 7 == 0){
-                $personne->addRole($this->getReference('ROLE_TECHNICIEN'));
-            }else{
-                $personne->addRole($this->getReference('ROLE_USER'));
-            }
+            $personne->addRole($this->getReference('ROLE_USER'));
             if($i % 2 == 0 ){
                 $tokenSub = $this->tokenGenerator->generateToken();
                 $personne->setSubscribeToken($tokenSub);
@@ -71,7 +67,6 @@ class PersonneFixtures extends Fixture implements DependentFixtureInterface
         $personne->setMail("hugo_duporge@ens.univ-artois.fr");
         $personne->setUsername($personne->getNom().'_'.$personne->getPrenom());
         $personne->addRole($this->getReference("ROLE_ADMIN"));
-        $personne->addRole($this->getReference("ROLE_GESTIONNAIRE"));
         $plainPassword = "hugo";
         $encoded = $this->encoder->encodePassword($personne, $plainPassword);
         $personne->setPassword($encoded);
@@ -83,18 +78,32 @@ class PersonneFixtures extends Fixture implements DependentFixtureInterface
         $personne2 = new Personne();
         $tokenSub = $this->tokenGenerator->generateToken();
         $personne2->setSubscribeToken($tokenSub);
-        $personne2->setPrenom("Hugo");
-        $personne2->setNom("Sanctorum");
-        $personne2->setMail("hugo_sanctorum@ens.univ-artois.fr");
+        $personne2->setPrenom("Giovanna");
+        $personne2->setNom("Giarusso");
+        $personne2->setMail("GiovannaGiarusso@ens.univ-artois.fr");
         $personne2->setUsername($personne2->getNom().'_'.$personne2->getPrenom());
         $personne2->addRole($this->getReference("ROLE_GESTIONNAIRE"));
-        $plainPassword = "hugo";
-        $encoded = $this->encoder->encodePassword($personne2, $plainPassword);
+        $encoded = $this->encoder->encodePassword($personne2, $personne2->getPrenom());
         $personne2->setPassword($encoded);
         $this->addReference($personne2->getMail(),$personne2);
-        $personne2->setCommune($this->getReference("Lille"));
+        $personne2->setCommune($this->getReference("Lens"));
         $personne2->setCreatedAt(new \DateTime('now'));
         $manager->persist($personne2);
+
+        $personne3 = new Personne();
+        $tokenSub = $this->tokenGenerator->generateToken();
+        $personne3->setSubscribeToken($tokenSub);
+        $personne3->setPrenom("Roger");
+        $personne3->setNom("Dupont");
+        $personne3->setMail("RogerDupont@ens.univ-artois.fr");
+        $personne3->setUsername($personne3->getNom().'_'.$personne3->getPrenom());
+        $personne3->addRole($this->getReference("ROLE_TECHNICIEN"));
+        $encoded = $this->encoder->encodePassword($personne3, $personne3->getPrenom());
+        $personne3->setPassword($encoded);
+        $this->addReference($personne3->getMail(),$personne3);
+        $personne3->setCommune($this->getReference("Lens"));
+        $personne3->setCreatedAt(new \DateTime('now'));
+        $manager->persist($personne3);
 
 
 

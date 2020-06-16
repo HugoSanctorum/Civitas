@@ -43,8 +43,13 @@ class CommuneFixtures extends Fixture implements DependentFixtureInterface
                     "nom" => "Lievin",
                     "code" => "62800",
                     "Service" => "Assainissement"
+                ],
+                [
+                    "nom" => "Calonne-Ricouart",
+                    "code" => "62470",
+                    "Service" => "Entretien"
                 ]
-        ];
+            ];
 
         foreach($communes as $commune){
             $entity = new Commune();
