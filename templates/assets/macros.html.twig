@@ -55,27 +55,27 @@
 {% endmacro %}
 
 {% macro style_statut(statut, color, icone, description, decoration) %}
-    <span class="{{decoration}}" style=
+    <span data-toggle="tooltip" data-placement="left" class="{{decoration}}" style=
     {% if color is same as("red") %}
-        "color:#d63e2a;" > <i class="fa fa-{{icone}}"></i> {{statut}} <span class="text-secondary">({{description}})</span>
+        "color:#d63e2a;" title="{{ description }}"> <i class="fa fa-{{icone}}"></i> {{statut}}</span>
     {% elseif color is same as("darkred") %}
-        "color:#a13336;" > <i class="fa fa-{{icone}}"></i> {{statut}} <span class="text-secondary">({{description}})</span>
+        "color:#a13336;" title="{{ description }}"> <i class="fa fa-{{icone}}"></i> {{statut}}</span>
     {% elseif color is same as("orange") %}
-        "color:#f0932f;" > <i class="fa fa-{{icone}}"></i> {{statut}} <span class="text-secondary">({{description}})</span>
+        "color:#f0932f;" title="{{ description }}"> <i class="fa fa-{{icone}}"></i> {{statut}}</span>
     {% elseif color is same as("green") %}
-        "color:#72af26;" > <i class="fa fa-{{icone}}"></i> {{statut}} <span class="text-secondary">({{description}})</span>
+        "color:#72af26;" title="{{ description }}"> <i class="fa fa-{{icone}}"></i> {{statut}}</span>
     {% elseif color is same as("darkgreen") %}
-        "color:#728224;" > <i class="fa fa-{{icone}}"></i> {{statut}} <span class="text-secondary">({{description}})</span>
+        "color:#728224;" title="{{ description }}"> <i class="fa fa-{{icone}}"></i> {{statut}}</span>
     {% elseif color is same as("blue") %}
-        "color:#38aadd;" > <i class="fa fa-{{icone}}"></i> {{statut}} <span class="text-secondary">({{description}})</span>
+        "color:#38aadd;" title="{{ description }}"> <i class="fa fa-{{icone}}"></i> {{statut}}</span>
     {% elseif color is same as("purple") %}
-        "color:#d252b9;" > <i class="fa fa-{{icone}}"></i> {{statut}} <span class="text-secondary">({{description}})</span>
+        "color:#d252b9;" title="{{ description }}"> <i class="fa fa-{{icone}}"></i> {{statut}}</span>
     {% elseif color is same as("darkpurple") %}
-        "color:#5b396b;" > <i class="fa fa-{{icone}}"></i> {{statut}} <span class="text-secondary">({{description}})</span>
+        "color:#5b396b;" title="{{ description }}"> <i class="fa fa-{{icone}}"></i> {{statut}}</span>
     {% elseif color is same as("cadetblue") %}
-        "color:#436978;" > <i class="fa fa-{{icone}}"></i> {{statut}} <span class="text-secondary">({{description}})</span>
+        "color:#436978;" title="{{ description }}"> <i class="fa fa-{{icone}}"></i> {{statut}}</span>
     {% elseif color is same as("darkblue") %}
-        "color:#0067a3;" > <i class="fa fa-{{icone}}"></i> {{statut}} <span class="text-secondary">({{description}})</span>
+        "color:#0067a3;" title="{{ description }}"> <i class="fa fa-{{icone}}"></i> {{statut}}</span>
     {% else %}
         ""> {{statut}}
     {% endif %}
@@ -167,17 +167,17 @@
 {% macro historiqueStatutInterventionStyle(nom, description) %}
     <span data-toggle="tooltip" data-placement="right" class=
     {% if nom == "En attente de révision" %}
-        "text-primary" title="{{description}}"> <i class="fa fa-hourglass-half"></i>
+        "text-primary" title="{{description}}"> <i class="fa fa-hourglass-half mr-1"></i>
     {% elseif nom == "Acceptée" %}
-        "text-success" title="{{description}}"> <i class="fa fa-calendar-check"></i>
+        "text-success" title="{{description}}"> <i class="fa fa-calendar-check mr-1"></i>
     {% elseif nom == "En traitement" %}
-        "text-info" title="{{description}}"> <i class="fa fa-tools"></i>
+        "text-info" title="{{description}}"> <i class="fa fa-tools mr-1"></i>
     {% elseif nom == "Suspendue" %}
-        "text-warning" title="{{description}}"> <i class="fa fa-ban"></i>
+        "text-warning" title="{{description}}"> <i class="fa fa-ban mr-1"></i>
     {% elseif nom == "Terminée" %}
-        "text-success" title="{{description}}"> <i class="fa fa-check-double"></i>
+        "text-success" title="{{description}}"> <i class="fa fa-check-double mr-1"></i>
     {% elseif nom == "Annulée" %}
-        "text-danger" title="{{description}}"> <i class="fa fa-window-close"></i>
+        "text-danger" title="{{description}}"> <i class="fa fa-window-close mr-1"></i>
     {% endif %}
-     {{nom}}</span>
+    {{nom}}</span>
 {% endmacro %}
