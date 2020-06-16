@@ -70,7 +70,7 @@ class HistoriqueStatutFixtures extends Fixture implements DependentFixtureInterf
         ];
 
         $problemes = [];
-        for($i = 1; $i <= 100; $i++){
+        for($i = 1; $i <= 5; $i++){
             array_push($problemes, $this->getReference("probleme_".$i));
         }
 
@@ -102,7 +102,7 @@ class HistoriqueStatutFixtures extends Fixture implements DependentFixtureInterf
                 $manager->persist($this->createIntervenirSignaleur($probleme));
             }
         }
-        $manager->persist($this->createHistoriqueStatut("Nouveau", $this->getReference('123456789')));
+        $manager->persist($this->createHistoriqueStatut("Nouveau", $this->getReference('probleme_1')));
         $manager->flush();
     }
     /**

@@ -13,7 +13,7 @@ class ImageFixtures extends Fixture implements DependentFixtureInterface
     {
         for($i = 0; $i < 25 ; $i++){
             $image = new Image();
-            $image->setProbleme($this->getReference("probleme_".random_int(1, 99)));
+            $image->setProbleme($this->getReference("probleme_".random_int(1, 5)));
             $image->setURL("https://picsum.photos/1280");
             $manager->persist($image);
         }

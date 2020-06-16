@@ -32,6 +32,11 @@ class CategorieFixtures extends Fixture
                 "icone" => "car-crash",
             ),
             array(
+                "nom" => "Nuisance sonore",
+                "couleur" => "red",
+                "icone" => "angry",
+            ),
+            array(
                 "nom" => "Vandalisme",
                 "couleur" => "purple",
                 "icone" => "angry",
