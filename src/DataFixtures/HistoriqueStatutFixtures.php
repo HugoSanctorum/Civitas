@@ -31,7 +31,7 @@ class HistoriqueStatutFixtures extends Fixture implements DependentFixtureInterf
     public function createIntervenirSignaleur(Probleme $probleme){
         $inter = new Intervenir();
         $inter->setProbleme($probleme);
-        $inter->setPersonne($this->getReference("personne_".random_int(0, 9)));
+        $inter->setPersonne($this->getReference("personne_".random_int(0, 7)));
         $inter->setTypeIntervention($this->getReference("Signaleur"));
         $inter->setCreatedAt(new \DateTime());
         $this->addReference('intervention_'.$this->cpt++, $inter);
@@ -49,7 +49,7 @@ class HistoriqueStatutFixtures extends Fixture implements DependentFixtureInterf
     public function createIntervenirTechnicien(ObjectManager $manager, Probleme $probleme){
         $inter = new Intervenir();
         $inter->setProbleme($probleme);
-        $inter->setPersonne($this->getReference("personne_".random_int(0, 9)));
+        $inter->setPersonne($this->getReference("RogerDupont@ens.univ-artois.fr"));
         $inter->setTypeIntervention($this->getReference("Technicien"));
         $inter->setCreatedAt(new \DateTime());
         $this->addReference('intervention_'.$this->cpt++, $inter);
