@@ -107,7 +107,8 @@ class HomeController extends AbstractController
         return $this->render('home/panel/technicien.html.twig', [
             "new_interventions" => $intervenirRepository->getNewIntervenirByTechnician($personne),
             "in_progress_interventions" =>$intervenirRepository->getInProgressIntervenirByTechnician($personne),
-            "affected_interventions" => $intervenirRepository->getAffectedIntervenirByTechnician($personne) 
+            "affected_interventions" => $intervenirRepository->getAffectedIntervenirByTechnician($personne),
+            "others_interventions" => $intervenirRepository->getOthersIntervenirByTechnician($personne)
         ]);
     }
 }
