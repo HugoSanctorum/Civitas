@@ -39,8 +39,9 @@
                     <a class="nounderline" href="{{ path('probleme_index', {'tri': 'true', 'categories': probleme.categorie.nom}) }}">{{ macros.style_categorie(probleme.categorie, probleme.categorie.couleur, probleme.categorie.icone) }}</a>
                 </span>
             </p>
-            <p>
+            <p class="mb-0">
                 <span data-toggle="tooltip" data-placement="right" data-html="true" title="<i class='fa fa-comment-dots'></i> Description du problème">
+                    <span class="badge badge-pill badge-info">Description</span>
                     {{ probleme.description|capitalize }}
                 </span>
             </p>
@@ -92,20 +93,31 @@
 	            </div>
             </div>
             <div class="historique border border-primary">
-                {% for hs in probleme.HistoriqueStatuts %}
-                    <div>
-                        {% if loop.last %}
-                            {% set style_latest, decoration = "badge-success", "font-weight-bold" %}
-                        {% else %}
-                            {% set style_latest, decoration = "badge-secondary", "font-weight-normal" %}
-                        {% endif %}
-                        <span class="badge {{style_latest}} date_hs">
-                            {{ hs.date ? hs.date|date('d-m-Y H\\hi') : '' }}
-                        </span>
-                        <i class="fa fa-arrow-right text-primary"></i>
-                        {{ macros.style_statut(hs.statut, hs.statut.couleur, hs.statut.icone, hs.statut.description, decoration) }} 
-                    </div>
-                {% endfor %}
+                <div id="scroll-1" class="scroll position-relative list-group list-group-flush">
+                    {% for hs in probleme.HistoriqueStatuts %}
+                        <div class="list-group-item">
+                            {% if loop.last %}
+                                {% set style_latest, decoration = "badge-success", "font-weight-bold" %}
+                            {% else %}
+                                {% set style_latest, decoration = "badge-secondary", "font-weight-normal" %}
+                            {% endif %}
+                            <p class="mb-0">
+                                {{ macros.style_statut(hs.statut, hs.statut.couleur, hs.statut.icone, hs.statut.description, decoration) }} 
+                                <span class="badge {{style_latest}} date_hs">
+                                    {{ hs.date ? hs.date|date('d-m-Y H\\hi') : '' }}
+                                </span>
+                            </p>
+                            {% if hs.description %}
+                                <p class="mb-1 mt-2">
+                                    <span class="badge badge-info date_hs">
+                                        Information supplémentaire
+                                    </span>
+                                    {{ hs.description }}
+                                </p>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
             </div>
             
             <div class="row section">
@@ -124,24 +136,33 @@
                 </div>
             </div>
             {% if intervention %}
-                <div class="historique border border-primary">
-                    {% for inter in probleme.Intervenirs %}
-                        {% if inter.TypeIntervention == "Technicien" %}
-                            <div>
-                                <span class="badge badge-secondary date_hs">
-                                    {{ inter.createdAt ? inter.createdAt|date('d-m-Y H\\hi') : '' }}
-                                </span>
-                                <i class="fa fa-arrow-right text-primary"></i>
-                                <a href={{ path('intervenir_show', {'id': inter.id}) }}>{{ inter.Personne.username }}
-                                {% if inter.CompteRendus|length == 1 %}
-                                    <span class="badge badge-pill badge-danger" data-toggle="tooltip" data-placement="right" title="{{inter.CompteRendus|length}} compte-rendu consultable">{{inter.CompteRendus|length}}</span>
-                                {% elseif inter.CompteRendus|length > 0 %}
-                                    <span class="badge badge-pill badge-danger" data-toggle="tooltip" data-placement="right" title="{{inter.CompteRendus|length}} comptes-rendus consultables">{{inter.CompteRendus|length}}</span>
-                                {% endif %}
-                                </a>
-                            </div>
-                        {% endif %}
-                    {% endfor %}
+                <div class="historique border border-primary position-relative">
+                    <div id="scroll-2" class="scroll position-relative list-group list-group-flush">
+                        {% for inter in probleme.Intervenirs %}
+                            {% if inter.TypeIntervention == "Technicien" %}
+                                <div class="list-group-item behind">
+                                    <p>
+                                        <a class="stretched-link" href={{ path('intervenir_show', {'id': inter.id}) }}>Intervention n°{{ inter.id }}</a>
+                                        <span class="badge badge-light date_hs align-middle in-front">
+                                            {{ macros.historiqueStatutInterventionStyle((inter.HistoriqueStatutInterventions|last).StatutIntervention.nom, (inter.HistoriqueStatutInterventions|last).StatutIntervention.description) }}
+                                        </span>
+                                    </p>
+                                    <p class="mb-1">
+                                        <span class="badge badge-info date_hs align-middle">
+                                            Technicien
+                                        </span>
+                                        {{ inter.Personne.username }}
+                                        {% if inter.CompteRendus|length == 1 %}
+                                            <span class="badge badge-pill badge-danger" data-toggle="tooltip" data-placement="right" title="{{inter.CompteRendus|length}} compte-rendu consultable">{{inter.CompteRendus|length}}</span>
+                                        {% elseif inter.CompteRendus|length > 0 %}
+                                            <span class="badge badge-pill badge-danger" data-toggle="tooltip" data-placement="right" title="{{inter.CompteRendus|length}} comptes-rendus consultables">{{inter.CompteRendus|length}}</span>
+                                        {% endif %}
+                                        </a>
+                                    </p>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
                 </div>
             {% else %}
             	<div class="historique border border-primary">

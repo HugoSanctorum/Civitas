@@ -26,6 +26,14 @@
         $('#delete_probleme_button').tooltip({ 
             placement: 'right'
         });
+        const ps1 = new PerfectScrollbar('#scroll-1', {
+            wheelPropagation: false,
+            minScrollbarLength: 20
+        });
+        const ps2 = new PerfectScrollbar('#scroll-2', {
+            wheelPropagation: false,
+            minScrollbarLength: 20
+        });
     </script>
 {% endblock %}
 
