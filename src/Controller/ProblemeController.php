@@ -443,6 +443,30 @@ class ProblemeController extends AbstractController
     }
 
     /**
+     *@Route("/resolve/{id}", name="probleme_resolve", methods={"GET","POST"}, requirements={"id"="\d+"})
+     */
+    public function resolveProblem(
+        Probleme $probleme
+    ) : Response
+    {
+        if(!$this->isGranted('ROLE_USER')){
+            $this->addFlash('fail','Veuillez vous connectez pour acceder à cette page.');
+            return $this->redirectToRoute('app_login');
+        }else {
+            if (!$this->permissionChecker->isUserGranted(["UPDATE_OTHER_HISTORIQUE_STATUT"])) {
+                $this->addFlash('fail', 'Vous ne possedez pas les permissions necessaires.');
+                return new RedirectResponse("/");
+            } else {
+                $entityManager = $this->getDoctrine()->getManager();
+                $this->problemeService->CreateNewHistoriqueStatut($probleme, 'Résolu');
+                $entityManager->flush();
+            }
+        }
+
+        return $this->redirectToRoute('probleme_show', ["id" => $probleme->getId()]);
+    }
+
+    /**
      *@Route("/restore/{id}", name="probleme_restore", methods={"GET","POST"}, requirements={"id"="\d+"})
      */
     public function restoreProblem(

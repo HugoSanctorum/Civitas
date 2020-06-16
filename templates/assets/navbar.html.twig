@@ -1,38 +1,25 @@
 {% block navbar %}
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-    <a href="/"> <img style="
-	width: 60px;
-;" src="{{ asset("/images/logoCouleurTitreBlanc.png") }}"></a>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary" style="font-size:20px;">
+  <a class="mr-5 my-2" href="/"> <img style="width: 60px;" src="{{ asset("/images/logoCouleurTitreBlanc.png") }}"></a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
 
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Personne
-        </a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="/personne">Index</a>
-        </div>
+      <li class="nav-item mx-3">
+        <a class="nav-link" href="{{ path('home_carte') }}"><i class="fa fa-map-marked-alt mr-1"></i>Carte</a>
+      </li>
+      <li class="nav-item mx-3">
+        <a class="nav-link" href="{{ path('probleme_index') }}"><i class="fa fa-clipboard mr-1"></i>Problème</a>
       </li>
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Commune
+          <i class="fa fa-columns mr-1"></i>Panel
         </a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="/commune">Index</a>
-          <a class="dropdown-item" href="/commune/new">New</a>
-        </div>
-      </li>
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Problème
-        </a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="/probleme">Index</a>
-          <a class="dropdown-item" href="/probleme/new">New</a>
+        <div class="dropdown-menu bg-primary text-center" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item text-light" href="{{ path('panel_technicien') }}"><i class="fa fa-tools mr-1"></i>Technicien</a>
+          <a class="dropdown-item text-light" href="{{ path('panel_gestionnaire') }}"><i class="fa fa-tasks mr-1"></i>Gestionnaire</a>
         </div>
       </li>
     </ul>
@@ -42,14 +29,14 @@
 		        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 		          {{ app.user }}
 		        </a>
-		        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-		          <a class="dropdown-item" href={{ path('personne_profile') }}>Profil</a>
-		          <a class="dropdown-item" href="/logout">Déconnexion</a>
+		        <div class="dropdown-menu bg-primary text-center" aria-labelledby="navbarDropdown">
+		          <a class="dropdown-item text-light" href={{ path('personne_profile') }}><i class="fa fa-user mr-1"></i>Profil</a>
+		          <a class="dropdown-item text-light" href="/logout"><i class="fa fa-sign-out-alt mr-1"></i>Déconnexion</a>
 		        </div>
-		    </span>
-		{% else %}
-            <a class="nav-link" href="{{ path('personne_new') }}"> S'enregistrer</a>
-			<a class="nav-link" href="/login">Connexion</a>
+		      </span>
+		    {% else %}
+          <a class="nav-link" href="{{ path('personne_new') }}"> S'enregistrer</a>
+			    <a class="nav-link" href="/login">Connexion</a>
         {% endif %}
   </div>
 </nav>

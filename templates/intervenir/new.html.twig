@@ -1,11 +1,17 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Intervenir{% endblock %}
+{% block title %}Nouvelle intervention{% endblock %}
 
 {% block body %}
-    <h1>Create new Intervenir</h1>
 
-    {{ include('intervenir/_form.html.twig') }}
+	<div class="jumbotron jumbotron-fluid">
+		<div class="container">
+			<h1 class="display-4">Créer une nouvelle intervention</h1>
+		</div>
+	</div>
+	<div class="container">
+    	{{ include('intervenir/_form.html.twig') }}
+    </div>
 
-    <a href="{{ path('intervenir_index') }}">back to list</a>
 {% endblock %}
+{% block moreScript %} {{ parent() }} {% endblock %}

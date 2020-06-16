@@ -15,7 +15,7 @@
     <div class="jumbotron jumbotron-fluid">
         <div class="container">
             <div class="row">
-                <div class="col-11">
+                <div class="col-10">
                     <h1 class="display-4">
                         {{ probleme.titre|capitalize }}
                         <span class="reference_num">
@@ -23,7 +23,7 @@
                         </span>
                     </h1>
                 </div>
-                <div class="col-1 text-right p-3">
+                <div class="col-2 text-right p-3">
                     <button id="delete_probleme_button" type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#modal_delete" title="Supprimer le probleme">
                         <i class="fa fa-trash"></i>
                     </button>
@@ -63,13 +63,32 @@
             {% endif %}
         {% endfor %}
         {% set intervention = false %}
+        {% set can_be_resolved = false %}
         {% for inter in probleme.Intervenirs %}
             {% if inter.TypeIntervention == "Technicien" %}
                 {% set intervention = true %}
+                {% if (inter.HistoriqueStatutInterventions|last).StatutIntervention.nom == "Terminée" %}
+                    {% set can_be_resolved = true %}
+                {% endif %}
             {% endif %}
         {% endfor %}
 
         {% if not nouveau %}
+            {% if not resolved and not archived and can_be_resolved %}
+                <div class="alert alert-success" role="alert">
+                    <h4 class="alert-heading">
+                        <i class="fa fa-check-double"></i> Résoudre le problème ?
+                    </h4>
+                    <p class="mb-0">
+                        Ce problème a été marqué comme "résolu" par un technicien. Vous pouvez le marquer comme "résolu" à votre tour pour qu'il apparaisse comme tel pour tous les utilisateurs.
+                    </p>
+                    <p class="mb-0 mt-3">
+                        <a href={{ path('probleme_resolve', {'id': probleme.id}) }} class="btn btn-light btn-outline-success text-success text-right nounderline hover-light">
+                            <i class="fa fa-check"></i> Résoudre le problème
+                        </a>
+                    </p>
+                </div>
+            {% endif %}
             {% if (canUpdateStatut is not defined) or (canUpdateStatut == true) %}
                 {{ macros.alert_priorite_probleme(probleme.priorite.poids, probleme.priorite.nom, resolved, archived, probleme.id) }}
             {% endif %}
@@ -102,10 +121,10 @@
                                 {% set style_latest, decoration = "badge-secondary", "font-weight-normal" %}
                             {% endif %}
                             <p class="mb-0">
-                                {{ macros.style_statut(hs.statut, hs.statut.couleur, hs.statut.icone, hs.statut.description, decoration) }} 
-                                <span class="badge {{style_latest}} date_hs">
+                                <span class="badge {{style_latest}} date_hs mr-1">
                                     {{ hs.date ? hs.date|date('d-m-Y H\\hi') : '' }}
                                 </span>
+                                {{ macros.style_statut(hs.statut, hs.statut.couleur, hs.statut.icone, hs.statut.description, decoration) }}                               
                             </p>
                             {% if hs.description %}
                                 <p class="mb-1 mt-2">
@@ -121,7 +140,7 @@
             </div>
             
             <div class="row section">
-                <div class="col"> 
+                <div class="col-10"> 
                     <h4 class="text-primary">
                         <span class="text-warning">
                             <i class="fa fa-hard-hat"></i>
@@ -129,7 +148,7 @@
                         Liste des interventions
                     </h4>
                 </div>
-                <div class="col text-right">
+                <div class="col-2 text-right">
                     <h4 class="text-primary ">
                         <a href={{ path('intervenir_new', {'id': probleme.id}) }} data-toggle="tooltip" data-placement="right" title="Créer une intervention"><i class="fa fa-plus-circle text-primary"></a></i>
                     </h4>
@@ -141,13 +160,13 @@
                         {% for inter in probleme.Intervenirs %}
                             {% if inter.TypeIntervention == "Technicien" %}
                                 <div class="list-group-item behind">
-                                    <p>
+                                    <p class="mb-2">
                                         <a class="stretched-link" href={{ path('intervenir_show', {'id': inter.id}) }}>Intervention n°{{ inter.id }}</a>
                                         <span class="badge badge-light date_hs align-middle in-front">
                                             {{ macros.historiqueStatutInterventionStyle((inter.HistoriqueStatutInterventions|last).StatutIntervention.nom, (inter.HistoriqueStatutInterventions|last).StatutIntervention.description) }}
                                         </span>
                                     </p>
-                                    <p class="mb-1">
+                                    <p class="mb-0">
                                         <span class="badge badge-info date_hs align-middle">
                                             Technicien
                                         </span>
@@ -158,6 +177,12 @@
                                             <span class="badge badge-pill badge-danger" data-toggle="tooltip" data-placement="right" title="{{inter.CompteRendus|length}} comptes-rendus consultables">{{inter.CompteRendus|length}}</span>
                                         {% endif %}
                                         </a>
+                                    </p>
+                                    <p class="mb-1">
+                                        <span class="badge badge-info date_hs align-middle">
+                                            Instructions
+                                        </span>
+                                        {{ inter.description ? inter.description|capitalize : "Pas d'instruction disponible pour cette intervention." }}
                                     </p>
                                 </div>
                             {% endif %}

@@ -34,6 +34,11 @@
             wheelPropagation: false,
             minScrollbarLength: 20
         });
+
+        let scrollbar1 = document.querySelector('#scroll-1');
+        let scrollbar2 = document.querySelector('#scroll-2');
+        scrollbar1.scrollTop = scrollbar1.scrollHeight;
+        scrollbar2.scrollTop = scrollbar2.scrollHeight;
     </script>
 {% endblock %}
 
