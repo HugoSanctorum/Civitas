@@ -99,12 +99,12 @@ class ProblemeFixtures extends Fixture implements DependentFixtureInterface
                 "reference" => "probleme_2"
             ],
             [
-                "Commune" => "Lille",
+                "Commune" => "Lens",
                 "Categorie" => "Dégradation",
                 "Priorité" => "Urgent",
                 "titre" => "Vitre brisée",
                 "description" => "Vitre brisée sur le mur du magasin",
-                "localisation" => "4 Place Gentil Muiron, 59800 Lille",
+                "localisation" => "33 Rue Des Mouettes, 62300 Lens",
                 "reference" => "probleme_3"
             ],
             [
@@ -113,8 +113,188 @@ class ProblemeFixtures extends Fixture implements DependentFixtureInterface
                 "Priorité" => "Urgent",
                 "titre" => "Route inonndée",
                 "description" => "Route innondée",
-                "localisation" => "Boulevard Du Maréchal Leclerc De Hauteclocque, 62800 Liévin",
+                "localisation" => "146 Avenue Alfred Van Pelt, 62300 Lens",
                 "reference" => "probleme_4"
+            ],
+            [
+                "Commune" => "Lens",
+                "Categorie" => "Dégradation",
+                "Priorité" => "Important",
+                "titre" => "Poteau electrique tombé",
+                "description" => "Poteau electrique tombé",
+                "localisation" => "7 Rue Gustave Eiffel, 62300 Lens",
+                "reference" => "probleme_5"
+            ],
+            [
+                "Commune" => "Lens",
+                "Categorie" => "Nuisance sonore",
+                "Priorité" => "Urgent",
+                "titre" => "Voisin trop bruyant",
+                "description" => "Pollution sonore quotidienne",
+                "localisation" => "142 Rue Arthur Fauqueur, 62300 Lens",
+                "reference" => "probleme_6"
+            ],
+            [
+                "Commune" => "Lens",
+                "Categorie" => "Incendie",
+                "Priorité" => "Urgent",
+                "titre" => "Incendie",
+                "description" => "début d'incendie dans le parc",
+                "localisation" => "13 Rue Marius Lateur, 62300 Lens",
+                "reference" => "probleme_7"
+            ],
+            [
+                "Commune" => "Lens",
+                "Categorie" => "Vandalisme",
+                "Priorité" => "Faible",
+                "titre" => "Arret de bus détruit",
+                "description" => "Arret de bus détruit",
+                "localisation" => "3 Rue Du Pourquoi Pas, 62300 Lens",
+                "reference" => "probleme_8"
+            ],
+            [
+                "Commune" => "Lens",
+                "Categorie" => "Dégradation",
+                "Priorité" => "Faible",
+                "titre" => "Conteneur de vêtement brulé",
+                "description" => "Conteneur de vêtement brulé à l'intérieur et à l'extérieur",
+                "localisation" => "261 Avenue Alfred Maës, 62300 Lens",
+                "reference" => "probleme_9"
+            ],
+            [
+                "Commune" => "Lens",
+                "Categorie" => "Vandalisme",
+                "Priorité" => "Urgent",
+                "titre" => "Maison cambriolée ",
+                "description" => "Trâces d'effraction visible sur la maison (fenêtres brisées, serrure de porte cassée",
+                "localisation" => "67 Rue D'artois, 62300 Lens",
+                "reference" => "probleme_10"
+            ],
+            [
+                "Commune" => "Lille",
+                "Categorie" => "Dégradation",
+                "Priorité" => "Faible",
+                "titre" => "Tag de peinture",
+                "description" => "Tag sur un mur",
+                "localisation" => "227 Boulevard De La Liberté, 59800 Lille",
+                "reference" => "probleme_11"
+            ],
+            [
+                "Commune" => "Lille",
+                "Categorie" => "Accident de voiture",
+                "Priorité" => "Important",
+                "titre" => "Accident de voiture",
+                "description" => "Collision entre une moto et une voiture",
+                "localisation" => "11 Rue Guillaume Apollinaire, 59000 Lille",
+                "reference" => "probleme_12"
+            ],
+            [
+                "Commune" => "Lille",
+                "Categorie" => "Dégradation",
+                "Priorité" => "Urgent",
+                "titre" => "Vitre brisée",
+                "description" => "Vitre brisée sur le mur du magasin",
+                "localisation" => "51 Rue Philippe-Laurent Roland, 59800 Lille",
+                "reference" => "probleme_13"
+            ],
+            [
+                "Commune" => "Lille",
+                "Categorie" => "Innondation",
+                "Priorité" => "Urgent",
+                "titre" => "Route inonndée",
+                "description" => "Route innondée",
+                "localisation" => "169 Rue D'arras, 59000 Lille",
+                "reference" => "probleme_14"
+            ],
+            [
+                "Commune" => "Lille",
+                "Categorie" => "Dégradation",
+                "Priorité" => "Important",
+                "titre" => "Poteau electrique tombé",
+                "description" => "Poteau electrique tombé",
+                "localisation" => "120 Rue D'isly, 59000 Lille",
+                "reference" => "probleme_15"
+            ],
+            [
+                "Commune" => "Lille",
+                "Categorie" => "Nuisance sonore",
+                "Priorité" => "Urgent",
+                "titre" => "Voisin trop bruyant",
+                "description" => "Pollution sonore quotidienne",
+                "localisation" => "Cité Brehart, 59000 Lille",
+                "reference" => "probleme_16"
+            ],
+            [
+                "Commune" => "Lille",
+                "Categorie" => "Incendie",
+                "Priorité" => "Urgent",
+                "titre" => "Incendie",
+                "description" => "début d'incendie dans le parc",
+                "localisation" => "4 Residence Sainte Marie, 59000 Lille",
+                "reference" => "probleme_17"
+            ],
+            [
+                "Commune" => "Lille",
+                "Categorie" => "Vandalisme",
+                "Priorité" => "Faible",
+                "titre" => "Arret de bus détruit",
+                "description" => "Arret de bus détruit",
+                "localisation" => "Rue Du Chai, 59000 Lille",
+                "reference" => "probleme_18"
+            ],
+            [
+                "Commune" => "Lille",
+                "Categorie" => "Dégradation",
+                "Priorité" => "Faible",
+                "titre" => "Conteneur de vêtement brulé",
+                "description" => "Conteneur de vêtement brulé à l'intérieur et à l'extérieur",
+                "localisation" => "21b Rue Porret, 59800 Lille",
+                "reference" => "probleme_19"
+            ],
+            [
+                "Commune" => "Lille",
+                "Categorie" => "Vandalisme",
+                "Priorité" => "Urgent",
+                "titre" => "Maison cambriolée ",
+                "description" => "Trâces d'effraction visible sur la maison (fenêtres brisées, serrure de porte cassée",
+                "localisation" => "73 Boulevard De La Moselle, 59000 Lille",
+                "reference" => "probleme_20"
+            ],
+            [
+                "Commune" => "Liévin",
+                "Categorie" => "Dégradation",
+                "Priorité" => "Faible",
+                "titre" => "Tag de peinture",
+                "description" => "Tag sur un mur",
+                "localisation" => "29 Rue Danton, 62800 Liévin",
+                "reference" => "probleme_21"
+            ],
+            [
+                "Commune" => "Liévin",
+                "Categorie" => "Accident de voiture",
+                "Priorité" => "Important",
+                "titre" => "Accident de voiture",
+                "description" => "Collision entre une moto et une voiture",
+                "localisation" => "12 Rue Clodion, 62800 Liévin",
+                "reference" => "probleme_22"
+            ],
+            [
+                "Commune" => "Liévin",
+                "Categorie" => "Dégradation",
+                "Priorité" => "Urgent",
+                "titre" => "Vitre brisée",
+                "description" => "Vitre brisée sur le mur du magasin",
+                "localisation" => "79 Rue Montgolfier, 62800 Liévin",
+                "reference" => "probleme_23"
+            ],
+            [
+                "Commune" => "Liévin",
+                "Categorie" => "Innondation",
+                "Priorité" => "Urgent",
+                "titre" => "Route inonndée",
+                "description" => "Route innondée",
+                "localisation" => "4 Avenue De La Résistance, 62800 Liévin",
+                "reference" => "probleme_24"
             ],
             [
                 "Commune" => "Liévin",
@@ -122,17 +302,17 @@ class ProblemeFixtures extends Fixture implements DependentFixtureInterface
                 "Priorité" => "Important",
                 "titre" => "Poteau electrique tombé",
                 "description" => "Poteau electrique tombé",
-                "localisation" => "41 Rue François Courtin, 62800 Liévin",
-                "reference" => "probleme_5"
+                "localisation" => "55 Rue René Cassin, 62800 Liévin",
+                "reference" => "probleme_25"
             ],
             [
-                "Commune" => "Bruay-la-Buissière",
+                "Commune" => "Liévin",
                 "Categorie" => "Nuisance sonore",
                 "Priorité" => "Urgent",
                 "titre" => "Voisin trop bruyant",
                 "description" => "Pollution sonore quotidienne",
-                "localisation" => "5 Rue Henri Cadot, 62700 Bruay-la-Buissière",
-                "reference" => "probleme_6"
+                "localisation" => "5 Rue Hayez, 62800 Liévin",
+                "reference" => "probleme_26"
             ],
             [
                 "Commune" => "Liévin",
@@ -140,8 +320,98 @@ class ProblemeFixtures extends Fixture implements DependentFixtureInterface
                 "Priorité" => "Urgent",
                 "titre" => "Incendie",
                 "description" => "début d'incendie dans le parc",
-                "localisation" => "16 Rue De Caen, 62800 Liévin",
-                "reference" => "probleme_7"
+                "localisation" => "5 Rue Vincent Van Gogh, 62800 Liévin",
+                "reference" => "probleme_27"
+            ],
+            [
+                "Commune" => "Liévin",
+                "Categorie" => "Vandalisme",
+                "Priorité" => "Faible",
+                "titre" => "Arret de bus détruit",
+                "description" => "Arret de bus détruit",
+                "localisation" => "20 Rue Edgard Sellier, 62800 Liévin",
+                "reference" => "probleme_28"
+            ],
+            [
+                "Commune" => "Liévin",
+                "Categorie" => "Dégradation",
+                "Priorité" => "Faible",
+                "titre" => "Conteneur de vêtement brulé",
+                "description" => "Conteneur de vêtement brulé à l'intérieur et à l'extérieur",
+                "localisation" => "175 Rue Des Marichelles, 62800 Liévin",
+                "reference" => "probleme_29"
+            ],
+            [
+                "Commune" => "Liévin",
+                "Categorie" => "Vandalisme",
+                "Priorité" => "Urgent",
+                "titre" => "Maison cambriolée ",
+                "description" => "Trâces d'effraction visible sur la maison (fenêtres brisées, serrure de porte cassée",
+                "localisation" => "1 Rue Du Conseil De L'europe, 62800 Liévin",
+                "reference" => "probleme_30"
+            ],
+            [
+                "Commune" => "Bruay-la-Buissière",
+                "Categorie" => "Dégradation",
+                "Priorité" => "Faible",
+                "titre" => "Tag de peinture",
+                "description" => "Tag sur un mur",
+                "localisation" => "37 Rue Gaston Blot, 62700 Bruay-la-Buissière",
+                "reference" => "probleme_31"
+            ],
+            [
+                "Commune" => "Bruay-la-Buissière",
+                "Categorie" => "Accident de voiture",
+                "Priorité" => "Important",
+                "titre" => "Accident de voiture",
+                "description" => "Collision entre une moto et une voiture",
+                "localisation" => "39 Rue Pierre Bérégovoy, 62700 Bruay-la-Buissière",
+                "reference" => "probleme_32"
+            ],
+            [
+                "Commune" => "Bruay-la-Buissière",
+                "Categorie" => "Dégradation",
+                "Priorité" => "Urgent",
+                "titre" => "Vitre brisée",
+                "description" => "Vitre brisée sur le mur du magasin",
+                "localisation" => "323 Rue Augustin Caron, 62700 Bruay-la-Buissière",
+                "reference" => "probleme_33"
+            ],
+            [
+                "Commune" => "Bruay-la-Buissière",
+                "Categorie" => "Innondation",
+                "Priorité" => "Urgent",
+                "titre" => "Route inonndée",
+                "description" => "Route innondée",
+                "localisation" => "34 Rue Des Sports, 62700 Bruay-la-Buissière",
+                "reference" => "probleme_34"
+            ],
+            [
+                "Commune" => "Bruay-la-Buissière",
+                "Categorie" => "Dégradation",
+                "Priorité" => "Important",
+                "titre" => "Poteau electrique tombé",
+                "description" => "Poteau electrique tombé",
+                "localisation" => "113 Rue De L'esplanade, 62700 Bruay-la-Buissière",
+                "reference" => "probleme_35"
+            ],
+            [
+                "Commune" => "Bruay-la-Buissière",
+                "Categorie" => "Nuisance sonore",
+                "Priorité" => "Urgent",
+                "titre" => "Voisin trop bruyant",
+                "description" => "Pollution sonore quotidienne",
+                "localisation" => "107 Rue Des Martyrs, 62700 Bruay-la-Buissière",
+                "reference" => "probleme_36"
+            ],
+            [
+                "Commune" => "Bruay-la-Buissière",
+                "Categorie" => "Incendie",
+                "Priorité" => "Urgent",
+                "titre" => "Incendie",
+                "description" => "début d'incendie dans le parc",
+                "localisation" => "5 Rue Vincent Van Gogh, 62800 Liévin",
+                "reference" => "probleme_37"
             ],
             [
                 "Commune" => "Bruay-la-Buissière",
@@ -149,8 +419,188 @@ class ProblemeFixtures extends Fixture implements DependentFixtureInterface
                 "Priorité" => "Faible",
                 "titre" => "Arret de bus détruit",
                 "description" => "Arret de bus détruit",
-                "localisation" => "Rue Télésphore Et Florent Caudron, 62700 Bruay-la-Buissière",
-                "reference" => "probleme_8"
+                "localisation" => "177 Rue De Philippeville, 62700 Bruay-la-Buissière",
+                "reference" => "probleme_38"
+            ],
+            [
+                "Commune" => "Bruay-la-Buissière",
+                "Categorie" => "Dégradation",
+                "Priorité" => "Faible",
+                "titre" => "Conteneur de vêtement brulé",
+                "description" => "Conteneur de vêtement brulé à l'intérieur et à l'extérieur",
+                "localisation" => "2 Cite Léon Blum, 62700 Bruay-la-Buissière",
+                "reference" => "probleme_39"
+            ],
+            [
+                "Commune" => "Bruay-la-Buissière",
+                "Categorie" => "Vandalisme",
+                "Priorité" => "Urgent",
+                "titre" => "Maison cambriolée ",
+                "description" => "Trâces d'effraction visible sur la maison (fenêtres brisées, serrure de porte cassée",
+                "localisation" => "47 Rue D'alsace, 62700 Bruay-la-Buissière",
+                "reference" => "probleme_40"
+            ],
+            [
+                "Commune" => "Béthune",
+                "Categorie" => "Dégradation",
+                "Priorité" => "Faible",
+                "titre" => "Tag de peinture",
+                "description" => "Tag sur un mur",
+                "localisation" => "795 Rue Du Pré Des Sœurs, 62400 Béthune",
+                "reference" => "probleme_41"
+            ],
+            [
+                "Commune" => "Béthune",
+                "Categorie" => "Accident de voiture",
+                "Priorité" => "Important",
+                "titre" => "Accident de voiture",
+                "description" => "Collision entre une moto et une voiture",
+                "localisation" => "296 Rue Des Bruyères, 62400 Béthune",
+                "reference" => "probleme_42"
+            ],
+            [
+                "Commune" => "Béthune",
+                "Categorie" => "Dégradation",
+                "Priorité" => "Urgent",
+                "titre" => "Vitre brisée",
+                "description" => "Vitre brisée sur le mur du magasin",
+                "localisation" => "6 Boulevard Des États Unis, 62400 Béthune",
+                "reference" => "probleme_43"
+            ],
+            [
+                "Commune" => "Béthune",
+                "Categorie" => "Innondation",
+                "Priorité" => "Urgent",
+                "titre" => "Route inonndée",
+                "description" => "Route innondée",
+                "localisation" => "210 Rue De Lille, 62400 Béthune",
+                "reference" => "probleme_44"
+            ],
+            [
+                "Commune" => "Béthune",
+                "Categorie" => "Dégradation",
+                "Priorité" => "Important",
+                "titre" => "Poteau electrique tombé",
+                "description" => "Poteau electrique tombé",
+                "localisation" => "225 Rue Bernard Palissy, 62400 Béthune",
+                "reference" => "probleme_45"
+            ],
+            [
+                "Commune" => "Béthune",
+                "Categorie" => "Nuisance sonore",
+                "Priorité" => "Urgent",
+                "titre" => "Voisin trop bruyant",
+                "description" => "Pollution sonore quotidienne",
+                "localisation" => "268 Rue Paul Doumer, 62400 Béthune",
+                "reference" => "probleme_46"
+            ],
+            [
+                "Commune" => "Béthune",
+                "Categorie" => "Incendie",
+                "Priorité" => "Urgent",
+                "titre" => "Incendie",
+                "description" => "début d'incendie dans le parc",
+                "localisation" => "1 Rue De Saint-Pol, 62400 Béthune",
+                "reference" => "probleme_47"
+            ],
+            [
+                "Commune" => "Béthune",
+                "Categorie" => "Vandalisme",
+                "Priorité" => "Faible",
+                "titre" => "Arret de bus détruit",
+                "description" => "Arret de bus détruit",
+                "localisation" => "33 Rue Du Moulin Masclef, 62400 Béthune",
+                "reference" => "probleme_48"
+            ],
+            [
+                "Commune" => "Béthune",
+                "Categorie" => "Dégradation",
+                "Priorité" => "Faible",
+                "titre" => "Conteneur de vêtement brulé",
+                "description" => "Conteneur de vêtement brulé à l'intérieur et à l'extérieur",
+                "localisation" => "288 Avenue De Bruay, 62400 Béthune",
+                "reference" => "probleme_49"
+            ],
+            [
+                "Commune" => "Béthune",
+                "Categorie" => "Vandalisme",
+                "Priorité" => "Urgent",
+                "titre" => "Maison cambriolée ",
+                "description" => "Trâces d'effraction visible sur la maison (fenêtres brisées, serrure de porte cassée",
+                "localisation" => "404 Rue Du Faubourg D'arras, 62400 Béthune",
+                "reference" => "probleme_50"
+            ],
+            [
+                "Commune" => "Calonne-Ricouart",
+                "Categorie" => "Dégradation",
+                "Priorité" => "Faible",
+                "titre" => "Tag de peinture",
+                "description" => "Tag sur un mur",
+                "localisation" => "Rue Du Mont Saint-Éloi, 62470 Calonne-Ricouart",
+                "reference" => "probleme_51"
+            ],
+            [
+                "Commune" => "Calonne-Ricouart",
+                "Categorie" => "Accident de voiture",
+                "Priorité" => "Important",
+                "titre" => "Accident de voiture",
+                "description" => "Collision entre une moto et une voiture",
+                "localisation" => "55 Rue De Champagne, 62470 Calonne-Ricouart",
+                "reference" => "probleme_52"
+            ],
+            [
+                "Commune" => "Calonne-Ricouart",
+                "Categorie" => "Dégradation",
+                "Priorité" => "Urgent",
+                "titre" => "Vitre brisée",
+                "description" => "Vitre brisée sur le mur du magasin",
+                "localisation" => "2 Boulevard De La Paix, 62470 Calonne-Ricouart",
+                "reference" => "probleme_53"
+            ],
+            [
+                "Commune" => "Calonne-Ricouart",
+                "Categorie" => "Innondation",
+                "Priorité" => "Urgent",
+                "titre" => "Route inonndée",
+                "description" => "Route innondée",
+                "localisation" => "12 Rue Du Parc, 62470 Calonne-Ricouart",
+                "reference" => "probleme_54"
+            ],
+            [
+                "Commune" => "Calonne-Ricouart",
+                "Categorie" => "Dégradation",
+                "Priorité" => "Important",
+                "titre" => "Poteau electrique tombé",
+                "description" => "Poteau electrique tombé",
+                "localisation" => "Rue De Brias, 62470 Calonne-Ricouart",
+                "reference" => "probleme_55"
+            ],
+            [
+                "Commune" => "Calonne-Ricouart",
+                "Categorie" => "Nuisance sonore",
+                "Priorité" => "Urgent",
+                "titre" => "Voisin trop bruyant",
+                "description" => "Pollution sonore quotidienne",
+                "localisation" => "88 Rue André Mancey, 62470 Calonne-Ricouart",
+                "reference" => "probleme_56"
+            ],
+            [
+                "Commune" => "Calonne-Ricouart",
+                "Categorie" => "Incendie",
+                "Priorité" => "Urgent",
+                "titre" => "Incendie",
+                "description" => "début d'incendie dans le parc",
+                "localisation" => "61 Rue De Katowice, 62470 Calonne-Ricouart",
+                "reference" => "probleme_57"
+            ],
+            [
+                "Commune" => "Calonne-Ricouart",
+                "Categorie" => "Vandalisme",
+                "Priorité" => "Faible",
+                "titre" => "Arret de bus détruit",
+                "description" => "Arret de bus détruit",
+                "localisation" => "56 Rue De La Gare, 62470 Calonne-Ricouart",
+                "reference" => "probleme_58"
             ],
             [
                 "Commune" => "Calonne-Ricouart",
@@ -158,8 +608,8 @@ class ProblemeFixtures extends Fixture implements DependentFixtureInterface
                 "Priorité" => "Faible",
                 "titre" => "Conteneur de vêtement brulé",
                 "description" => "Conteneur de vêtement brulé à l'intérieur et à l'extérieur",
-                "localisation" => "3 Rue De Bruay, 62470 Calonne-Ricouart",
-                "reference" => "probleme_9"
+                "localisation" => "61 Rue De Katowice, 62470 Calonne-Ricouart",
+                "reference" => "probleme_59"
             ],
             [
                 "Commune" => "Calonne-Ricouart",
@@ -167,9 +617,9 @@ class ProblemeFixtures extends Fixture implements DependentFixtureInterface
                 "Priorité" => "Urgent",
                 "titre" => "Maison cambriolée ",
                 "description" => "Trâces d'effraction visible sur la maison (fenêtres brisées, serrure de porte cassée",
-                "localisation" => "2 Rue D'hesdin, 62470 Calonne-Ricouart",
-                "reference" => "probleme_10"
-            ],
+                "localisation" => "5 Rue Du 11 Novembre 1918, 62470 Calonne-Ricouart",
+                "reference" => "probleme_60"
+            ]
         ];
 
         foreach ($datas as $data){

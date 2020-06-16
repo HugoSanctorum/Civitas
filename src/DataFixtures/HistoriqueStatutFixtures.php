@@ -70,7 +70,7 @@ class HistoriqueStatutFixtures extends Fixture implements DependentFixtureInterf
         ];
 
         $problemes = [];
-        for($i = 1; $i <= 5; $i++){
+        for($i = 1; $i <= 60; $i++){
             array_push($problemes, $this->getReference("probleme_".$i));
         }
 
@@ -79,9 +79,12 @@ class HistoriqueStatutFixtures extends Fixture implements DependentFixtureInterf
             $statut = $statuts[array_rand($statuts)];
 
             $manager->persist($this->createHistoriqueStatut("Nouveau", $probleme));
+            $manager->persist($this->createIntervenirSignaleur($probleme));
 
             if ($statut->getNom() == "Ouvert") {
                 $manager->persist($this->createHistoriqueStatut("Ouvert", $probleme));
+                $manager->persist($this->createIntervenirSignaleur($probleme));
+
             } else if ($statut->getNom() == "Affecté") {
                 $manager->persist($this->createHistoriqueStatut("Ouvert", $probleme));
                 $manager->persist($this->createHistoriqueStatut("Affecté", $probleme));
@@ -100,9 +103,16 @@ class HistoriqueStatutFixtures extends Fixture implements DependentFixtureInterf
                 $manager->persist($this->createHistoriqueStatut("Résolu", $probleme));
                 $manager->persist($this->createIntervenirTechnicien($manager, $probleme));
                 $manager->persist($this->createIntervenirSignaleur($probleme));
+            } else if ($statut->getNom() == "Archivé") {
+                $manager->persist($this->createHistoriqueStatut("Ouvert", $probleme));
+                $manager->persist($this->createHistoriqueStatut("Affecté", $probleme));
+                $manager->persist($this->createHistoriqueStatut("En cours de traitement", $probleme));
+                $manager->persist($this->createHistoriqueStatut("Résolu", $probleme));
+                $manager->persist($this->createHistoriqueStatut("Archivé", $probleme));
+                $manager->persist($this->createIntervenirTechnicien($manager, $probleme));
+                $manager->persist($this->createIntervenirSignaleur($probleme));
             }
         }
-        $manager->persist($this->createHistoriqueStatut("Nouveau", $this->getReference('probleme_1')));
         $manager->flush();
     }
     /**

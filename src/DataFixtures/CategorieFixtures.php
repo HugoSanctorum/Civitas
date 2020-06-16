@@ -33,8 +33,8 @@ class CategorieFixtures extends Fixture
             ),
             array(
                 "nom" => "Nuisance sonore",
-                "couleur" => "red",
-                "icone" => "angry",
+                "couleur" => "darkgreen",
+                "icone" => "volume-up",
             ),
             array(
                 "nom" => "Vandalisme",
