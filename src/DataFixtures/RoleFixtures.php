@@ -67,11 +67,13 @@ class RoleFixtures extends Fixture implements DependentFixtureInterface
 
 		$technicienPermissions = [
             $this->getReference("GET_INTERVENED_PROBLEME"),
+            $this->getReference("GET_OTHER_PROBLEME"),
             $this->getReference("GET_SELF_INTERVENTION"),
             $this->getReference("CAN_DO_INTERVENTION"),
             $this->getReference( "POST_INTERVENTION"),
             $this->getReference("GET_SELF_COMPTE_RENDU"),
-            $this->getReference("POST_COMPTE_RENDU")
+            $this->getReference("POST_COMPTE_RENDU"),
+
         ];
 
 		$gestionnairePermissions = [
@@ -106,6 +108,7 @@ class RoleFixtures extends Fixture implements DependentFixtureInterface
         	$this->getReference("UPDATE_OTHER_PRIORITE"),
 
         	$this->getReference("GET_OTHER_HISTORIQUE_STATUT"),
+        	$this->getReference("UPDATE_OTHER_HISTORIQUE_STATUT"),
 
         	$this->getReference("GET_OTHER_CATEGORIE"),
         	$this->getReference("POST_CATEGORIE"),

@@ -85,6 +85,7 @@ class CompteRenduController extends AbstractController
                 $form = $this->createForm(ChoiceProblemType::class);
                 $form->handleRequest($request);
                 if ($form->isSubmitted() && $form->isValid()) {
+                    dd($request);
                     $problemeId = (int)$request->request->all()['choice_problem']["Probleme"];
                     $probleme = $this->problemeRepository->find($problemeId);
                     $session->set('Probleme', $probleme);

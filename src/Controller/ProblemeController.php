@@ -360,7 +360,6 @@ class ProblemeController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager = $this->getDoctrine()->getManager();
-            $problemeService->PersistUrlWithProbleme($tabUrl, $probleme);
             $mail = $request->request->all()["redirect_probleme"]["mail"];
             $isExisting = $personneRepository->findOneBy(['mail'=>$mail]);
             if($isExisting){
@@ -368,8 +367,8 @@ class ProblemeController extends AbstractController
             }else{
                 $problemeService->CreateNewProblemeMailNonExistingNonAuthentificated($probleme,$mail);
             }
+            $problemeService->PersistUrlWithProbleme($tabUrl, $probleme);
             $entityManager->flush();
-            $session->clear();
 
             return $this->redirectToRoute('home_index');
         }else{

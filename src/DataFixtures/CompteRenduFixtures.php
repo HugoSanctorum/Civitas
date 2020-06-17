@@ -11,17 +11,6 @@ class CompteRenduFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager)
     {
-        for($i = 1; $i <= 10; $i++){
-            $compteRendu = new CompteRendu();
-            $compteRendu->setUrlDocument('');
-            $compteRendu->setPersonne($this->getReference("RogerDupont@ens.univ-artois.fr"));
-            $compteRendu->setProbleme($this->getReference("probleme_".$i));
-            $compteRendu->setIntervenir($this->getReference('intervention_1'));
-            $compteRendu->setTitre('compte_rendu'.$i);
-            $compteRendu->setDate(new \DateTime());
-            $manager->persist($compteRendu);
-        }
-        $manager->flush();
     }
 
     /**

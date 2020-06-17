@@ -64,9 +64,7 @@ class HistoriqueStatutFixtures extends Fixture implements DependentFixtureInterf
         $statuts = [
             $this->getReference("Nouveau"),
             $this->getReference("Ouvert"),
-            $this->getReference("Affecté"),
-            $this->getReference("En cours de traitement"),
-            $this->getReference("Résolu")
+            $this->getReference("Affecté")
         ];
 
         $problemes = [];
@@ -77,38 +75,17 @@ class HistoriqueStatutFixtures extends Fixture implements DependentFixtureInterf
         foreach ($problemes as $probleme) {
             $this->offset = 0;
             $statut = $statuts[array_rand($statuts)];
+            if ($statut->getNom() == "Nouveau") {
+                $manager->persist($this->createHistoriqueStatut("Nouveau", $probleme));
+                $manager->persist($this->createIntervenirSignaleur($probleme));
 
-            $manager->persist($this->createHistoriqueStatut("Nouveau", $probleme));
-            $manager->persist($this->createIntervenirSignaleur($probleme));
-
-            if ($statut->getNom() == "Ouvert") {
+            }else if($statut->getNom() == "Ouvert") {
                 $manager->persist($this->createHistoriqueStatut("Ouvert", $probleme));
                 $manager->persist($this->createIntervenirSignaleur($probleme));
 
             } else if ($statut->getNom() == "Affecté") {
                 $manager->persist($this->createHistoriqueStatut("Ouvert", $probleme));
                 $manager->persist($this->createHistoriqueStatut("Affecté", $probleme));
-                $manager->persist($this->createIntervenirTechnicien($manager, $probleme));
-                $manager->persist($this->createIntervenirSignaleur($probleme));
-            } else if ($statut->getNom() == "En cours de traitement") {
-                $manager->persist($this->createHistoriqueStatut("Ouvert", $probleme));
-                $manager->persist($this->createHistoriqueStatut("Affecté", $probleme));
-                $manager->persist($this->createHistoriqueStatut("En cours de traitement", $probleme));
-                $manager->persist($this->createIntervenirTechnicien($manager, $probleme));
-                $manager->persist($this->createIntervenirSignaleur($probleme));
-            } else if ($statut->getNom() == "Résolu") {
-                $manager->persist($this->createHistoriqueStatut("Ouvert", $probleme));
-                $manager->persist($this->createHistoriqueStatut("Affecté", $probleme));
-                $manager->persist($this->createHistoriqueStatut("En cours de traitement", $probleme));
-                $manager->persist($this->createHistoriqueStatut("Résolu", $probleme));
-                $manager->persist($this->createIntervenirTechnicien($manager, $probleme));
-                $manager->persist($this->createIntervenirSignaleur($probleme));
-            } else if ($statut->getNom() == "Archivé") {
-                $manager->persist($this->createHistoriqueStatut("Ouvert", $probleme));
-                $manager->persist($this->createHistoriqueStatut("Affecté", $probleme));
-                $manager->persist($this->createHistoriqueStatut("En cours de traitement", $probleme));
-                $manager->persist($this->createHistoriqueStatut("Résolu", $probleme));
-                $manager->persist($this->createHistoriqueStatut("Archivé", $probleme));
                 $manager->persist($this->createIntervenirTechnicien($manager, $probleme));
                 $manager->persist($this->createIntervenirSignaleur($probleme));
             }
