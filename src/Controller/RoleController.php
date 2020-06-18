@@ -157,6 +157,13 @@ class RoleController extends AbstractController
                 $form->handleRequest($request);
 
                 if ($form->isSubmitted() && $form->isValid()) {
+                    dd($request->request->all());
+                    foreach($role->getPermissions() as $permission){
+                        $role->removePermissions($permission);
+                    }
+                    foreach($request->request->all()['role']['Permissions'] as $permission){
+                        $role->addPermissions($permission);
+                    }
                     $this->getDoctrine()->getManager()->flush();
 
                     return $this->redirectToRoute('role_index');
