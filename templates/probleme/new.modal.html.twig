@@ -3,3 +3,56 @@
     {{ include('probleme/forms/_form.modal.html.twig') }}
 
 {% endblock %}
+{% block moreScript %}
+	<script type="text/javascript">
+		$(document).ready(function(){
+			let div1 = $("#div_upload_1");
+			let div2 = $("#div_upload_2").hide();
+			let div3 = $("#div_upload_3").hide();
+			let div4 = $("#div_upload_4").hide();
+
+			let input1 = $("#probleme_Image1");
+			let input2 = $("#probleme_Image2");
+			let input3 = $("#probleme_Image3");
+			let input4 = $("#probleme_Image4");
+
+			let upload_success1 = $("#upload_success1").hide();
+			let upload_success2 = $("#upload_success2").hide();
+			let upload_success3 = $("#upload_success3").hide();
+			let upload_success4 = $("#upload_success4").hide();
+
+			let add_image = $("#add_image").hide();
+			let cpt = 2;
+
+			$(input1).change(function(e){
+				$("#image_name_1").text(e.target.files[0].name);
+				div1.hide();
+				$(upload_success1).show(500);
+				$(add_image).fadeIn(500);
+			});
+			$(input2).change(function(e){
+				$("#image_name_2").text(e.target.files[0].name);
+				div2.hide();
+				$(upload_success2).show(500);
+				$(add_image).fadeIn(500);
+			});
+			$(input3).change(function(e){
+				$("#image_name_3").text(e.target.files[0].name);
+				div3.hide();
+				$(upload_success3).show(500);
+				$(add_image).fadeIn(500);
+			});
+			$(input4).change(function(e){
+				$("#image_name_4").text(e.target.files[0].name);
+				div4.hide();
+				$(upload_success4).show(500);
+			});
+
+			$(add_image).click(function(){
+				$(add_image).hide();
+				$("#div_upload_"+cpt).fadeIn(500);
+				cpt++;
+			});
+		});
+	</script>
+{% endblock %}

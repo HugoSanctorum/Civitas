@@ -14,18 +14,6 @@
     <div class="form-group">
     	{{ form_row(form.Priorite, {'attr': {'class': 'form-control selectpicker'}}) }}
     </div>
-    <div class="form-group">
-        {% if images is defined %}
-            <h4 class="text-primary section">Liste des images</h4>
-            <div class="zoom-gallery">
-                {% for image in images %}
-                    <a href="{{ asset('/probleme/'~image.url) }}">
-                        <img class="img-thumbnail" src="{{ asset('/probleme/'~image.url) }}">
-                    </a>
-                {% endfor %}
-            </div>
-        {% endif %}
-    </div>
     <div class="mt-2 mb-1">
         Images
     </div>

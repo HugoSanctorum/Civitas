@@ -20,4 +20,54 @@
         {{ form_widget(form.Image3, {'attr': {'class': 'form-control', 'hidden': 'true'}}) }}
         {{ form_widget(form.Image4, {'attr': {'class': 'form-control', 'hidden': 'true'}}) }}
     </div>
+    <div class="mt-2 mb-1">
+        Images
+    </div>
+    <div class="form-group">
+        <div id="div_upload_1" class="custom-file">
+            {{ form_widget(form.Image1, {'attr': {'class': 'custom-file-input'}}) }}
+            {{ form_label(form.Image1, "Choisir une image", {'label_attr': {'class': 'custom-file-label', 'aria-describedby': 'probleme_Image1'}}) }}
+        </div>
+        <a id="upload_success1" class="btn btn-success btn-block text-white">
+            <span class="font-weight-bold mr-1" id="image_name_1"></span>
+            <i class="fa fa-check-circle"></i>
+        </a>
+    </div>
+
+    <div class="form-group">
+        <div id="div_upload_2" class="custom-file">
+            {{ form_widget(form.Image2, {'attr': {'class': 'custom-file-input'}}) }}
+            {{ form_label(form.Image2, "Choisir une image", {'label_attr': {'class': 'custom-file-label', 'aria-describedby': 'probleme_Image1'}}) }}
+        </div>
+        <a id="upload_success2" class="btn btn-success btn-block text-white">
+            <span class="font-weight-bold mr-1" id="image_name_2"></span>
+            <i class="fa fa-check-circle"></i>
+        </a>
+    </div>
+
+    <div class="form-group">
+        <div id="div_upload_3" class="custom-file">
+            {{ form_widget(form.Image3, {'attr': {'class': 'custom-file-input'}}) }}
+            {{ form_label(form.Image3, "Choisir une image", {'label_attr': {'class': 'custom-file-label', 'aria-describedby': 'probleme_Image1'}}) }}
+        </div>
+        <a id="upload_success3" class="btn btn-success btn-block text-white">
+            <span class="font-weight-bold mr-1" id="image_name_3"></span>
+            <i class="fa fa-check-circle"></i>
+        </a>
+    </div>
+
+    <div class="form-group">
+        <div id="div_upload_4" class="custom-file">
+            {{ form_widget(form.Image4, {'attr': {'class': 'custom-file-input'}}) }}
+            {{ form_label(form.Image4, "Choisir une image", {'label_attr': {'class': 'custom-file-label', 'aria-describedby': 'probleme_Image1'}}) }}
+        </div>
+        <a id="upload_success4" class="btn btn-success btn-block text-white">
+            <span class="font-weight-bold mr-1" id="image_name_4"></span>
+            <i class="fa fa-check-circle"></i>
+        </a>
+    </div>
+    
+    <div class="form-group">
+        <a id="add_image" class="btn btn-link text-success custom-link"><i class="fa fa-plus-circle mr-1"></i>Ajouter une autre image</a>
+    </div>
 {{ form_end(form) }}
