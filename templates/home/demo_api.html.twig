@@ -1,0 +1,81 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Civitas Home{% endblock %}
+
+{% block body %}
+
+	<div class="jumbotron jumbotron-fluid">
+		<div class="container">
+			<h1 class="display-4">Démo API REST</h1>
+			<p class="lead">
+    			<code>http://projetmunicipalite/rest/probleme?&lt;options&gt;</code>
+    		</p>
+    		<p>
+    			<h5>Options :</h5>
+    			<ul>
+    				<li><kbd>tri</kbd><i class="fa fa-arrow-right mx-1"></i>Permet l'utilisation de l'API dans l'application.</li>
+    				<li><kbd>nom</kbd><i class="fa fa-arrow-right mx-1"></i>Titre du problème.</li>
+    				<li><kbd>statuts</kbd><i class="fa fa-arrow-right mx-1"></i>Liste des statuts possibles pour un problème.</li>
+    				<li><kbd>categories</kbd><i class="fa fa-arrow-right mx-1"></i>Liste des catégories possibles pour un problème.</li>
+    				<li><kbd>orderBy</kbd><i class="fa fa-arrow-right mx-1"></i>Valeur pour l'ordre de renvoie des éléments (par statut, nom, date_asc, ...).</li>
+    				<li><kbd>element</kbd><i class="fa fa-arrow-right mx-1"></i>Nombre de valeurs renvoyés par la requête.</li>
+    			</ul>
+    		</p>
+		</div>
+	</div>
+	<div class="page-center-container">
+    	<div class="list-group d-flex" style="width:60%;">
+    		<div class="list-group-item">
+    			<p>
+    				<a class="btn btn-info btn-block" target="blank" href="{{ path('rest_probleme', {'tri': 'true'}) }}">Récupérer tout les problèmes</a>
+    			</p>
+    			<p class="justify-center">
+    				<code>http://projetmunicipalite/rest/probleme?tri=true</code>
+    			</p>
+    			<ul>
+    				<li><kbd>tri = <kbd>true</kbd></kbd></li>
+    			</ul>
+    		</div>
+    		<div class="list-group-item">
+    			<p>
+    				<a class="btn btn-info btn-block" target="blank" href="{{ path('rest_probleme', {'tri': 'true', 'statuts': 'Nouveau'}) }}">Récupérer tout les nouveaux problèmes</a>
+    			</p>
+    			<p class="justify-center">
+    				<code>http://projetmunicipalite/rest/probleme?tri=true&statuts=Nouveau</code>
+    			</p>
+    			<ul>
+    				<li><kbd>tri = <kbd>true</kbd></kbd></li>
+    				<li><kbd>statuts = <kbd>Nouveau</kbd></kbd></li>
+    			</ul>
+    		</div>
+    		<div class="list-group-item">
+    			<p>
+    				<a class="btn btn-info btn-block" target="blank" href="{{ path('rest_probleme', {'tri': 'true', 'categories': 'Innondation', 'element': 2}) }}">Récupérer les 2 premiers problèmes d'innondations</a>
+    			</p>
+    			<p class="justify-center">
+    				<code>http://projetmunicipalite/rest/probleme?tri=true&categories=Innondation&element=2</code>
+    			</p>
+    			<ul>
+    				<li><kbd>tri = <kbd>true</kbd></kbd></li>
+    				<li><kbd>categories = <kbd>Innondation</kbd></kbd></li>
+    				<li><kbd>element = <kbd>2</kbd></kbd></li>
+    			</ul>
+    		</div>
+    		<div class="list-group-item">
+    			<p>
+    				<a class="btn btn-info btn-block" target="blank" href="{{ path('rest_probleme', {'tri': 'true', 'statuts': 'Résolu', 'nom': 'vitre', 'orderBy': 'date_asc'}) }}">Récupérer tout les problèmes résolus qui ont 'vitre' dans le titre et les trier par date croissante</a>
+    			</p>
+    			<p class="justify-center">
+    				<code>http://projetmunicipalite/rest/probleme?tri=true&statuts=R%C3%A9solu&nom=vitre&orderBy=date_asc</code>
+    			</p>
+    			<ul>
+    				<li><kbd>tri = <kbd>true</kbd></kbd></li>
+    				<li><kbd>statuts = <kbd>Résolu</kbd></kbd></li>
+    				<li><kbd>nom = <kbd>vitre</kbd></kbd></li>
+    				<li><kbd>orderBy = <kbd>date_asc</kbd></kbd></li>
+    			</ul>
+    		</div>
+    	</div>
+    </div>
+
+{% endblock %}

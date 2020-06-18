@@ -42,7 +42,7 @@ class ProblemeFixtures extends Fixture implements DependentFixtureInterface
 //        $categories = [
 //            $this->getReference("Dégradation"),
 //            $this->getReference("Incendie"),
-//            $this->getReference("Innondation"),
+//            $this->getReference("Inondation"),
 //            $this->getReference("Accident de voiture"),
 //            $this->getReference("Vandalisme")
 //        ];
@@ -109,10 +109,10 @@ class ProblemeFixtures extends Fixture implements DependentFixtureInterface
             ],
             [
                 "Commune" => "Lens",
-                "Categorie" => "Innondation",
+                "Categorie" => "Inondation",
                 "Priorité" => "Urgent",
-                "titre" => "Route inonndée",
-                "description" => "Route innondée",
+                "titre" => "Route inondée",
+                "description" => "Route inondée",
                 "localisation" => "146 Avenue Alfred Van Pelt, 62300 Lens",
                 "reference" => "probleme_4"
             ],
@@ -199,10 +199,10 @@ class ProblemeFixtures extends Fixture implements DependentFixtureInterface
             ],
             [
                 "Commune" => "Lille",
-                "Categorie" => "Innondation",
+                "Categorie" => "Inondation",
                 "Priorité" => "Urgent",
                 "titre" => "Route inonndée",
-                "description" => "Route innondée",
+                "description" => "Route inondée",
                 "localisation" => "169 Rue D'arras, 59000 Lille",
                 "reference" => "probleme_14"
             ],
@@ -289,10 +289,10 @@ class ProblemeFixtures extends Fixture implements DependentFixtureInterface
             ],
             [
                 "Commune" => "Liévin",
-                "Categorie" => "Innondation",
+                "Categorie" => "Inondation",
                 "Priorité" => "Urgent",
                 "titre" => "Route inonndée",
-                "description" => "Route innondée",
+                "description" => "Route inondée",
                 "localisation" => "4 Avenue De La Résistance, 62800 Liévin",
                 "reference" => "probleme_24"
             ],
@@ -379,10 +379,10 @@ class ProblemeFixtures extends Fixture implements DependentFixtureInterface
             ],
             [
                 "Commune" => "Bruay-la-Buissière",
-                "Categorie" => "Innondation",
+                "Categorie" => "Inondation",
                 "Priorité" => "Urgent",
                 "titre" => "Route inonndée",
-                "description" => "Route innondée",
+                "description" => "Route inondée",
                 "localisation" => "34 Rue Des Sports, 62700 Bruay-la-Buissière",
                 "reference" => "probleme_34"
             ],
@@ -469,10 +469,10 @@ class ProblemeFixtures extends Fixture implements DependentFixtureInterface
             ],
             [
                 "Commune" => "Béthune",
-                "Categorie" => "Innondation",
+                "Categorie" => "Inondation",
                 "Priorité" => "Urgent",
                 "titre" => "Route inonndée",
-                "description" => "Route innondée",
+                "description" => "Route inondée",
                 "localisation" => "210 Rue De Lille, 62400 Béthune",
                 "reference" => "probleme_44"
             ],
@@ -559,10 +559,10 @@ class ProblemeFixtures extends Fixture implements DependentFixtureInterface
             ],
             [
                 "Commune" => "Calonne-Ricouart",
-                "Categorie" => "Innondation",
+                "Categorie" => "Inondation",
                 "Priorité" => "Urgent",
                 "titre" => "Route inonndée",
-                "description" => "Route innondée",
+                "description" => "Route inondée",
                 "localisation" => "12 Rue Du Parc, 62470 Calonne-Ricouart",
                 "reference" => "probleme_54"
             ],

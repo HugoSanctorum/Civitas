@@ -115,8 +115,7 @@ class HomeController extends AbstractController
                 $this->addFlash('fail', 'Vous ne possedez pas les permissions necessaires.');
                 return new RedirectResponse("/");
             }else {
-                return $this->render('home/panel/gestionnaire.html.twig', [
-                ]);
+                return $this->render('home/panel/gestionnaire.html.twig');
             }
         }
     }
@@ -145,6 +144,25 @@ class HomeController extends AbstractController
                     "affected_interventions" => $intervenirRepository->getAffectedIntervenirByTechnician($personne),
                     "others_interventions" => $intervenirRepository->getOthersIntervenirByTechnician($personne)
                 ]);
+            }
+        }
+    }
+
+    /**
+     * @Route("/demoapi", name="demo_api")
+     * @IsGranted("ROLE_USER")
+     */
+    public function demo_api()
+    {
+        if(!$this->isGranted('ROLE_USER')){
+            $this->addFlash('fail','Veuillez vous connectez pour acceder à cette page.');
+            return $this->redirectToRoute('app_login');
+        }else {
+            if (!$this->permissionChecker->isUserGranted(["GET_OTHER_PROBLEME"])) {
+                $this->addFlash('fail', 'Vous ne possedez pas les permissions necessaires.');
+                return new RedirectResponse("/");
+            }else {
+                return $this->render('home/demo_api.html.twig');
             }
         }
     }
