@@ -106,6 +106,7 @@ class RoleController extends AbstractController
      */
     public function show(Role $role): Response
     {
+
         if(!$this->isGranted('ROLE_USER')){
             $this->addFlash('fail','Veuillez vous connectez pour acceder à cette page.');
             return $this->redirectToRoute('app_login');
@@ -157,7 +158,14 @@ class RoleController extends AbstractController
                 $form->handleRequest($request);
 
                 if ($form->isSubmitted() && $form->isValid()) {
+//                    foreach ($role->getPermissions() as $permission){
+//                        $role->removePermissions($permission);
+//                    }
+//                    dump($this->getDoctrine()->getManager()->getRepository(Role::class)->find($role->getId()));
+//                    dump($role);
+
                     $this->getDoctrine()->getManager()->flush();
+//                    dd($this->getDoctrine()->getManager()->getRepository(Role::class)->find($role->getId()));
 
                     return $this->redirectToRoute('role_index');
                 }
