@@ -109,6 +109,8 @@ class PermissionFixtures extends Fixture
             ["POST_COMPTE_RENDU","Creer un compte-rendu"],
             ["UPDATE_SELF_COMPTE_RENDU","Modifier ses comptes-rendus"],
             ["UPDATE_OTHER_COMPTE_RENDU","Modifier tous les comptes-rendus"],
+            ["GET_PANEL_GESTIONNAIRE", "Voir le panel gestionnaire"],
+            ["GET_PANEL_TECHNICIEN", "Voir le panel technicien"],
 /*            ["DELETE_SELF_COMPTE_RENDU","Supprimer ses comptes-rendus"],*/
 /*            ["DELETE_OTHER_COMPTE_RENDU","Supprimer tous les comptes-rendus"],*/
         ];
