@@ -4,7 +4,7 @@
 
 {% block body %}
 
-	{% set image_path = "/images/" ~ commune.imageBackground %}
+	{% set image_path = "/communeBackground/" ~ commune.imageBackground %}
 
 	{% for message in app.flashes('fail') %}
 		<div class="alert alert-danger">
