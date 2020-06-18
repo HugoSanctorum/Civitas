@@ -73,6 +73,7 @@ class RoleFixtures extends Fixture implements DependentFixtureInterface
             $this->getReference( "POST_INTERVENTION"),
             $this->getReference("GET_SELF_COMPTE_RENDU"),
             $this->getReference("POST_COMPTE_RENDU"),
+            $this->getReference("GET_PANEL_TECHNICIEN"),
 
         ];
 
@@ -81,6 +82,8 @@ class RoleFixtures extends Fixture implements DependentFixtureInterface
 			$this->getReference("UPDATE_OTHER_PROBLEME"),
 			$this->getReference("DELETE_OTHER_PROBLEME"),
             $this->getReference("VALIDATE_PROBLEME"),
+            $this->getReference("GET_PANEL_GESTIONNAIRE"),
+
             
             //$this->getReference("ARCHIVATE_PROBLEME"),
 
