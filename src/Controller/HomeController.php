@@ -44,7 +44,7 @@ class HomeController extends AbstractController
         $render = $user ? 'home/home_commune.html.twig' : 'home/home_general.html.twig';
         
         if($user){
-            $parameters["commune"] = $user->getCommune()->getNom();
+            $parameters["commune"] = $user->getCommune();
         }
 
         return $this->render($render, $parameters);

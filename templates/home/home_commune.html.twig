@@ -4,6 +4,8 @@
 
 {% block body %}
 
+	{% set image_path = "/images/" ~ commune.imageBackground %}
+
 	{% for message in app.flashes('fail') %}
 		<div class="alert alert-danger">
 			{{ message }}
@@ -17,14 +19,14 @@
 	<style type="text/css">
 		.header-image
 		{
-			background-image: url( {{ asset("/images/lens.jpg") }} );
+			background-image: url( {{ asset(image_path) }} );
 		}
 	</style>
 	<div class="main_container mb-4">
 		<div class="header-image"></div>
 		<div class="container header">
 			<div class="text-center">
-				<h1 class="display-4 text-primary">CIVITAS {{commune|upper}}</h1>
+				<h1 class="display-4 text-primary">CIVITAS {{commune.nom|upper}}</h1>
 			</div>
 		</div>
 	</div>
@@ -35,7 +37,7 @@
 				<i class="fa fa-globe-europe fa-stack-1x text-light"></i>
 			</span>
 			<h2>Carte</h2>
-			<p>Vous pouvez visualiser les problèmes de {{commune}} sur une carte.</p>
+			<p>Vous pouvez visualiser les problèmes de {{commune.nom}} sur une carte.</p>
 			<p><a class="btn btn-secondary" href="{{ path('home_carte') }}" role="button">Voir <i class="fa fa-arrow-right"></i></a></p>
       	</div>
       	<div class="col-lg-4 mb-5">

@@ -172,9 +172,9 @@
                                         </span>
                                         {{ inter.Personne.username }}
                                         {% if inter.CompteRendus|length == 1 %}
-                                            <span class="badge badge-pill badge-danger" data-toggle="tooltip" data-placement="right" title="{{inter.CompteRendus|length}} compte-rendu consultable">{{inter.CompteRendus|length}}</span>
+                                            <span class="badge badge-pill badge-danger in-front" data-toggle="tooltip" data-placement="right" title="{{inter.CompteRendus|length}} compte-rendu consultable">{{inter.CompteRendus|length}}</span>
                                         {% elseif inter.CompteRendus|length > 0 %}
-                                            <span class="badge badge-pill badge-danger" data-toggle="tooltip" data-placement="right" title="{{inter.CompteRendus|length}} comptes-rendus consultables">{{inter.CompteRendus|length}}</span>
+                                            <span class="badge badge-pill badge-danger in-front" data-toggle="tooltip" data-placement="right" title="{{inter.CompteRendus|length}} comptes-rendus consultables">{{inter.CompteRendus|length}}</span>
                                         {% endif %}
                                         </a>
                                     </p>

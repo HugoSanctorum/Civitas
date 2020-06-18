@@ -1,11 +1,18 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Fournisser une adresse mail{% endblock %}
+{% block title %}Adresse de contact{% endblock %}
 
 {% block body %}
-    <h1>Fournissez une adresse mail</h1>
+    <div class="jumbotron jumbotron-fluid">
+		<div class="container">
+			<h1 class="display-4">Mail de contact</h1>
+			<p class="lead">
+				Veuillez saisir une adresse mail afin de vous faire part de l'état de votre signalement.
+			</p>
+		</div>
+	</div>
+	<div class="container">
+    	{{ include('probleme/forms/_formRedirect.html.twig') }}
+	</div>
 
-    {{ include('probleme/forms/_formRedirect.html.twig') }}
-
-    <a href="{{ path('probleme_index') }}">back to list</a>
 {% endblock %}

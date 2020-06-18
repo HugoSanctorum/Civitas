@@ -8,15 +8,14 @@
         </button>
       </div>
       <div class="modal-body">
-      Voulez-vous vraiment supprimer ce problème ?<br>
-      <font>cela inclue toutes les informations qui le concerne, à savoir :
-        <ul id="delete_probleme" style="width: 40%" class="list-group"  role="tablist">
-          <li style="font-size: smaller" class="list-group-item py-1" role="tab">Ses images</li>
-          <li style="font-size: smaller" class="list-group-item py-1" role="tab">Ses historiques</li>
-          <li style="font-size: smaller" class="list-group-item py-1" role="tab">Ses interventions</li>
-          <li style="font-size: smaller" class="list-group-item py-1" role="tab">Ses comptes rendus </li>
-        </ul>
-      </font>
+      <h5>Voulez-vous vraiment supprimer ce problème ?</h5>
+      <h6>Cela inclue toutes les informations qui le concerne, à savoir :</h6>
+      <ul id="delete_probleme" class="list-group" role="tablist">
+        <li class="list-group-item py-1" role="tab"><i class="fa fa-image mr-1"></i>Ses images</li>
+        <li class="list-group-item py-1" role="tab"><i class="fa fa-clipboard mr-1"></i>Ses historiques</li>
+        <li class="list-group-item py-1" role="tab"><i class="fa fa-tools mr-1"></i>Ses interventions</li>
+        <li class="list-group-item py-1" role="tab"><i class="fa fa-file-alt mr-1"></i>Ses comptes rendus </li>
+      </ul>
       {{ include('probleme/forms/_delete_form.html.twig') }}
       </div>
       <div class="modal-footer">

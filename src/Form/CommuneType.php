@@ -45,6 +45,7 @@ class CommuneType extends AbstractType
             'label' => 'Image de fond',
             'mapped' => false,
             'multiple' => false,
+            'required' => false,
             'constraints' => [
                 new File([
                     'maxSize' => '1024k',
