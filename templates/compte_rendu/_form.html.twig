@@ -1,4 +1,27 @@
 {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+	<div class="form-group">
+    	{{ form_row(form.titre, {'attr': {'class': 'form-control'}}) }}
+	</div>
+	<div class="form-group">
+    	{{ form_row(form.description, {'attr': {'class': 'form-control'}}) }}
+	</div>
+	<div class="form-group">
+		<div id="div_upload" class="custom-file">
+    		{{ form_widget(form.urlDocument, {'attr': {'class': 'custom-file-input'}}) }}
+        	{{ form_label(form.urlDocument, "Choisir un document", {'label_attr': {'class': 'custom-file-label'}}) }}
+    	</div>
+    	<a id="upload_success" class="btn btn-success btn-block text-white">
+            <span class="font-weight-bold mr-1" id="image_name"></span>
+            <i class="fa fa-check-circle"></i>
+        </a>
+	</div>
+	{{ form_widget(form.Intervenir, {'attr': {'class': 'form-control d-none'}}) }}
+    <div class="row mt-4">
+    	<div class="col mb-2">
+    		<a class="btn btn-secondary btn-block" href="{{ app.request.headers.get('referer') }}">Retour</a>
+    	</div>
+    	<div class="col">
+    		<button class="btn btn-success btn-block">{{ button_label|default('Ajouter') }}</button>
+    	</div>
+    </div>
 {{ form_end(form) }}

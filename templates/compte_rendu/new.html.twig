@@ -1,11 +1,29 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New CompteRendu{% endblock %}
+{% block title %}Ajouter compte-rendu{% endblock %}
 
 {% block body %}
-    <h1>Create new CompteRendu</h1>
+    <div class="jumbotron jumbotron-fluid">
+		<div class="container">
+			<h1 class="display-4">Ajouter un nouveau compte-rendu</h1>
+		</div>
+	</div>
+	<div class="container">
+    	{{ include('compte_rendu/_form.html.twig') }}
+    </div>
+{% endblock %}
+{% block moreScript %}
+	<script type="text/javascript">
+		$(document).ready(function(){
+			let div = $("#div_upload");
+			let input = $("#compte_rendu_urlDocument");
+			let upload_success = $("#upload_success").hide();
 
-    {{ include('compte_rendu/_form.html.twig') }}
-
-    <a href="{{ path('compte_rendu_index') }}">back to list</a>
+			$(input).change(function(e){
+				$("#image_name").text(e.target.files[0].name);
+				div.hide();
+				$(upload_success).show(500);
+			});
+		});
+	</script>
 {% endblock %}

@@ -1,4 +1,9 @@
 {{ form_start(form) }}
-    {{ form_widget(form) }}
-<button class="btn">{{ button_label|default('Save') }}</button>
+	<div class="input-group input-group-lg mb-3">
+        <div class="input-group-prepend">
+            <label class="input-group-text" for="redirect_probleme_mail"><i class="fa fa-at"></i></label>
+        </div>
+    	{{ form_widget(form.mail, {'attr': {'class': 'form-control', 'autofocus': 'true'}}) }}
+    </div>
+	<button class="btn btn-success btn-block"><i class="fa fa-check-double mr-1"></i>Utiliser ce mail</button>
 {{ form_end(form) }}
