@@ -56,6 +56,7 @@ class CommuneFixtures extends Fixture implements DependentFixtureInterface
             $this->geoquery->populate($entity, $commune["nom"], $commune["code"]);
             $this->addReference($entity->getNom(), $entity);
             $entity->addService($this->getReference($commune["Service"]));
+            $entity->setImageBackground("default/default_city_banner.jpg");
             $manager->persist($entity);
         }
         $manager->flush();

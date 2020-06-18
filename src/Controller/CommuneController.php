@@ -81,12 +81,15 @@ class CommuneController extends AbstractController
 
                 if ($form->isSubmitted() && $form->isValid()) {
                     $array = $request->request->all()["commune"];
+
                     $geoquery->populate($commune, $array["nom"], $array["code"]);
+
                     $document = $form->get('imageBackground')->getData();
-                    $communeService->SetBackground($commune,$document);
+                    $communeService->setBackground($commune, $document);
                     $entityManager = $this->getDoctrine()->getManager();
                     $entityManager->persist($commune);
                     $entityManager->flush();
+
                     return $this->redirectToRoute('commune_index');
                 }
 

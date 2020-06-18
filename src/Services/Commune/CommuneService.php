@@ -20,9 +20,13 @@ class CommuneService
         $this->entityManager = $entityManager;
     }
 
-    public function SetBackground(Commune $commune, $imageBackground)
+    public function setBackground(Commune $commune, $imageBackground)
     {
-        $commune->setImageBackground($this->documentService->UploadDocument($imageBackground, 'communeBackground_directory'));
-
+        if ($imageBackground == null){
+            $commune->setImageBackground("default/default_city_banner.jpg");
+        }
+        else {
+            $commune->setImageBackground($this->documentService->UploadDocument($imageBackground, 'communeBackground_directory'));
+        }
     }
 }

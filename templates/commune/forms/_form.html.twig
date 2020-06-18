@@ -1,5 +1,5 @@
 {{ form_start(form) }}
-	<div>
+	<div class="form-group">
     	{{ form_row(form.nom) }}
     </div>
     <div class="form-group">
@@ -9,7 +9,7 @@
     	{{ form_row(form.Service, {'attr': {'class': 'form-control selectpicker'}}) }}
     </div>
 	<div class="form-group">
-		{{ form_row(form.imageBackground) }}
+		{{ form_row(form.imageBackground, {'attr': {'class': 'form-control'}}) }}
 	</div>
     <div class="row">
     	<div class="col">
