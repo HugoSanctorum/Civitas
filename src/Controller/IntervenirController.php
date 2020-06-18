@@ -154,10 +154,14 @@ class IntervenirController extends AbstractController
             $this->addFlash('fail','Veuillez vous connectez pour acceder à cette page.');
             return $this->redirectToRoute('app_login');
         }else {
+            $query = $this->historiqueStatutInterventionRepository->getLatestByIntervention($intervenir);
+            if($query) $latest_historique = $query;
+            else $latest_historique = null;
             if ($request == false) {
                 if($this->permissionChecker->isUserGranted(['GET_OTHER_INTERVENTION'])){
                     return $this->render('intervenir/show.html.twig', [
                         'intervenir' => $intervenir,
+                        'latest_historique' => $latest_historique
                     ]);
                 }else {
                     $this->addFlash('fail', 'Cette intervention ne vous concerne pas.');
@@ -168,9 +172,6 @@ class IntervenirController extends AbstractController
                     $this->addFlash('fail', 'Vous ne possedez pas les permissions necessaires.');
                     return $this->redirectToRoute('home_index');
                 } else {
-                    $query = $this->historiqueStatutInterventionRepository->getLatestByIntervention($intervenir);
-                    if($query) $latest_historique = $query;
-                    else $latest_historique = null;
                     return $this->render('intervenir/show.html.twig', [
                         'intervenir' => $intervenir,
                         'latest_historique' => $latest_historique
