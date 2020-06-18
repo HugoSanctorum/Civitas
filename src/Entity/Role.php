@@ -28,7 +28,7 @@ class Role
     private $role;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Permission", mappedBy="Role")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Permission", inversedBy="Role")
      */
     private $Permissions;
 
